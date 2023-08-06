@@ -1,11 +1,23 @@
+require("dotenv").config();
+
 const express = require("express");
-const fs = require("fs");
-
 const app = express();
+const cors = require("cors");
 
-const config = JSON.parse(fs.readFileSync("config.json"));
-const port = config.port;
+app.use(cors());
 
-app.get("/", (req, res) => res.send("Lorem ipsum"));
+app.use(express.json());
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+// APP ROUTES
+//////////////////////////////////////////////////////////////////////////////
+const loginRoute = require("./routes/login.route");
+const userRoute = require("./routes/user.route");
+
+app.use("/", loginRoute); // home
+app.use("/", userRoute); // user (user table)
+
+// APP START
+//////////////////////////////////////////////////////////////////////////////
+app.listen(process.env.PORT, () =>
+  console.log(`Listening on port ${process.env.PORT}!`)
+);
