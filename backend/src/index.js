@@ -12,9 +12,11 @@ app.use(express.json());
 //////////////////////////////////////////////////////////////////////////////
 const loginRoute = require("./routes/login.route");
 const userRoute = require("./routes/user.route");
+const announcementRoute = require("./routes/announcement.route");
 
 app.use("/", loginRoute); // home
 app.use("/", userRoute); // user (user table)
+app.use("/", announcementRoute); // announcement (announcement table)
 
 // APP START
 //////////////////////////////////////////////////////////////////////////////

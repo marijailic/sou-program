@@ -4,7 +4,7 @@
       <h1>Tko si?</h1>
       <div class="row">
         <div class="col-sm">
-          <form @submit="sendCredentials">
+          <form @submit="login">
             <div class="form-group mt-4">
               <label for="username">Korisničko ime</label>
               <input
@@ -47,7 +47,7 @@ export default {
     };
   },
   methods: {
-    sendCredentials(event) {
+    login(event) {
       event.preventDefault();
       const credentials = {
         username: this.username,
@@ -66,7 +66,7 @@ export default {
             localStorage.setItem("token", response.data.token);
             localStorage.setItem("refreshToken", response.data.refreshToken);
             localStorage.setItem("username", response.data.username);
-            window.location.href = "/";
+            window.location.href = "/newsfeed";
           } else {
             console.log("Unauthorized", response);
           }
