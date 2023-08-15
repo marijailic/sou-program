@@ -1,7 +1,17 @@
 <template>
   <div>
     <h1>DOBRO DOŠLI!</h1>
-    <h2>{{ announcement.test }}</h2>
+    <div v-for="objava in announcement" :key="objava.id" value="objava.id">
+      <h2>
+        {{ objava.text }}
+      </h2>
+      <button
+        @click="deleteAnnouncement(objava.id)"
+        class="btn btn-primary mt-3"
+      >
+        Izbriši
+      </button>
+    </div>
     <button @click="logout" class="btn btn-primary mt-3">Odjavi me!</button>
   </div>
 </template>
@@ -33,7 +43,22 @@ export default {
       window.location.href = "/login";
     },
     async getAnnouncements() {
-      this.announcement = await this.storeAnnouncement.fetchAnnouncement();
+      const objave = await this.storeAnnouncement.fetchAnnouncement();
+      this.announcement = objave;
+    },
+    async deleteAnnouncement(idObjava) {
+      const isConfirmed = window.confirm(
+        "Jeste li sigurni da želite izbrisati objavu?"
+      );
+
+      if (isConfirmed) {
+        const response = await this.storeAnnouncement.deleteAnnouncement(
+          idObjava
+        );
+        if (response && response.success) {
+          alert(response.message);
+        }
+      }
     },
   },
 };
