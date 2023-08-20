@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import WebsiteHome from "../views/WebsiteHomeView.vue";
 
 const routes = [
   {
     path: "/",
     name: "HomeView",
-    component: HomeView,
+    component: WebsiteHome,
     meta: {
       authRequired: false,
     },

@@ -1,18 +1,15 @@
 <template>
   <div>
-    <h1>DOBRO DOŠLI!</h1>
-    <div v-for="objava in announcement" :key="objava.id" value="objava.id">
-      <h2>
-        {{ objava.text }}
-      </h2>
-      <button
-        @click="deleteAnnouncement(objava.id)"
-        class="btn btn-primary mt-3"
-      >
-        Izbriši
-      </button>
-    </div>
+    <h1>NEWSFEED</h1>
     <button @click="logout" class="btn btn-primary mt-3">Odjavi me!</button>
+
+    <add-announcement />
+
+    <show-announcement
+      v-for="announcement in announcements"
+      :key="announcement.id"
+      :announcementData="announcement"
+    />
   </div>
 </template>
 
@@ -20,14 +17,20 @@
 // @ is an alias to /src
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 
+import addAnnouncement from "@/components/addAnnouncement.vue";
+import showAnnouncement from "@/components/showAnnouncement.vue";
+
 export default {
   name: "NewsfeedView",
   data() {
     return {
-      announcement: [],
+      announcements: [],
     };
   },
-  components: {},
+  components: {
+    addAnnouncement,
+    showAnnouncement,
+  },
   setup() {
     const storeAnnouncement = useStoreAnnouncement();
     return { storeAnnouncement };
@@ -43,22 +46,8 @@ export default {
       window.location.href = "/login";
     },
     async getAnnouncements() {
-      const objave = await this.storeAnnouncement.fetchAnnouncement();
-      this.announcement = objave;
-    },
-    async deleteAnnouncement(idObjava) {
-      const isConfirmed = window.confirm(
-        "Jeste li sigurni da želite izbrisati objavu?"
-      );
-
-      if (isConfirmed) {
-        const response = await this.storeAnnouncement.deleteAnnouncement(
-          idObjava
-        );
-        if (response && response.success) {
-          alert(response.message);
-        }
-      }
+      const announcements = await this.storeAnnouncement.fetchAnnouncement();
+      this.announcements = announcements;
     },
   },
 };
