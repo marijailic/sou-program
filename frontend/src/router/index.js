@@ -52,6 +52,18 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/NewsfeedView.vue"),
   },
+  {
+    path: "/search",
+    name: "SearchView",
+    meta: {
+      authRequired: true,
+    },
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/SearchView.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -66,7 +78,7 @@ router.beforeEach((to, _from, next) => {
   // provjera auth
   if (to.meta.authRequired) {
     if (isUserLoggedIn) {
-      if (to.name !== "NewsfeedView") {
+      if (to.name !== "NewsfeedView" && to.name !== "SearchView") {
         return next({ name: "NewsfeedView" });
       }
     } else {
@@ -76,7 +88,11 @@ router.beforeEach((to, _from, next) => {
     }
   } else {
     if (isUserLoggedIn) {
-      if (to.name === "LoginView" || to.name === "HomeView") {
+      if (
+        to.name === "LoginView" ||
+        to.name === "HomeView" ||
+        to.name === "SearchView"
+      ) {
         return next({ name: "NewsfeedView" });
       }
     }
