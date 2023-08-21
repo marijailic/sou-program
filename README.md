@@ -1,19 +1,12 @@
-# sou-program
+# Šou program
 
-## Project setup
-```
-yarn install
-```
+## backend .env file
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+- PORT
+- CONNECTION_STRING (DB)
+- ACCESS_TOKEN_SECRET (JWT)
+- REFRESH_TOKEN_SECRET (JWT)
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## frontend .env file
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- VUE_APP_URL
