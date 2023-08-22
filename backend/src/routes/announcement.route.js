@@ -8,7 +8,11 @@ const { authMiddleware } = require("../auth");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
   try {
-    const announcement = await db.select().from("announcement");
+    const announcement = await db
+      .select()
+      .from("announcement")
+      .orderBy("id", "desc")
+      .limit(10);
     // throw new Error();
     res.json({
       message: "Announcement fetched successfully",

@@ -5,10 +5,10 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
     announcement: [],
   }),
   getters: {
-    getAllAnnouncements: (state) => () => {
-      const announcements = state.announcement;
-      return announcements;
-    },
+    // getAllAnnouncements: (state) => () => {
+    //   const announcements = state.announcement;
+    //   return announcements;
+    // },
   },
   actions: {
     async fetchAnnouncement() {

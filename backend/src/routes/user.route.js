@@ -3,29 +3,20 @@ const router = express.Router();
 
 const db = require("../db");
 
-router.get("/", async (req, res) => {
+const { authMiddleware } = require("../auth");
+
+router.get("/user", authMiddleware, async (req, res) => {
   try {
-    let users = await db.select().from("user");
-    console.log(users);
+    const user = await db.select().from("user").orderBy("id", "desc");
+    // throw new Error();
+    res.json({
+      message: "User fetched successfully",
+      data: user,
+    });
   } catch (error) {
-    console.log("XXXXXXXXXXX", error);
+    console.log("Error:", error);
+    res.status(500).json({ message: "Internal server error", data: {} });
   }
-
-  res.send("Welcome to the homepage!");
-});
-
-router.get("/users/:id", async (req, res) => {
-  const id = req.params.id;
-  console.log(id);
-
-  try {
-    let users = await db.where("id", id).select().from("user");
-    console.log(users);
-  } catch (error) {
-    console.log(error);
-  }
-
-  res.send("Welcome to the homepage!");
 });
 
 module.exports = router;
