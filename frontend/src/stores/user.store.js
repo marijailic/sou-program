@@ -42,5 +42,71 @@ export const useStoreUser = defineStore("storeUser", {
 
       return resObj.data;
     },
+    async deleteUser(idUser) {
+      const token = localStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const username = localStorage.getItem("username");
+
+      const res = await fetch(`${process.env.VUE_APP_URL}/delete-user`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          RefreshToken: refreshToken,
+          Username: username,
+        },
+        body: JSON.stringify({ id: idUser }),
+      });
+
+      if (!res.ok) {
+        window.location.href = "/error";
+        return;
+      }
+      window.location.href = "/success";
+    },
+    async createUser(newUserData) {
+      const token = localStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const username = localStorage.getItem("username");
+
+      const res = await fetch(`${process.env.VUE_APP_URL}/create-user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          RefreshToken: refreshToken,
+          Username: username,
+        },
+        body: JSON.stringify(newUserData),
+      });
+
+      if (!res.ok) {
+        window.location.href = "/error";
+        return;
+      }
+      window.location.href = "/success";
+    },
+    async updateUser(updateData) {
+      const token = localStorage.getItem("token");
+      const refreshToken = localStorage.getItem("refreshToken");
+      const username = localStorage.getItem("username");
+
+      const res = await fetch(`${process.env.VUE_APP_URL}/update-user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          RefreshToken: refreshToken,
+          Username: username,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      if (!res.ok) {
+        window.location.href = "/error";
+        return;
+      }
+      window.location.href = "/success";
+    },
   },
 });

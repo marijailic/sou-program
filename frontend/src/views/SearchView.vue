@@ -1,6 +1,10 @@
 <template>
   <div class="search">
     <h1>SEARCH</h1>
+    <button class="btn btn-primary mt-3" @click="openAddUser">
+      Dodaj korisnika
+    </button>
+    <add-user v-if="addUser" />
     <search-user />
     <show-user v-for="user in users" :key="user.id" :userData="user" />
   </div>
@@ -12,6 +16,7 @@ import eventBus from "@/eventBus";
 
 import searchUser from "@/components/searchUser.vue";
 import showUser from "@/components/showUser.vue";
+import addUser from "@/components/addUser.vue";
 
 export default {
   name: "SearchView",
@@ -19,11 +24,13 @@ export default {
     return {
       users: [],
       searchText: "",
+      addUser: false,
     };
   },
   components: {
     searchUser,
     showUser,
+    addUser,
   },
   setup() {
     const storeUser = useStoreUser();
@@ -44,6 +51,9 @@ export default {
 
         this.users = this.storeUser.getFilteredUsers(searchText);
       });
+    },
+    openAddUser() {
+      this.addUser = true;
     },
   },
 };
