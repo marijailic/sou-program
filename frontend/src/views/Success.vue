@@ -1,12 +1,22 @@
 <template>
   <div class="success-msg">
-    <h1>YAS! :)</h1>
+    <div class="msg-n-btn">
+      <h1>YAS! :)</h1>
+      <button class="btn btn-primary mt-3" @click="goBack">
+        Vrati me natrag
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "Success",
+  methods: {
+    goBack() {
+      window.history.back();
+    },
+  },
 };
 </script>
 
@@ -16,7 +26,7 @@ export default {
   display: flex;
   justify-content: center;
 }
-h1 {
+.msg-n-btn {
   align-self: center;
 }
 </style>

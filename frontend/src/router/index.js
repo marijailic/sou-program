@@ -90,6 +90,34 @@ const routes = [
         component: () =>
             import(/* webpackChunkName: "about" */ "../views/SearchView.vue"),
     },
+    {
+        path: "/my-profile",
+        name: "MyProfileView",
+        meta: {
+            authRequired: true,
+        },
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+            import(
+                /* webpackChunkName: "about" */ "../views/MyProfileView.vue"
+            ),
+    },
+    {
+        path: "/user-profile",
+        name: "UserProfileView",
+        meta: {
+            authRequired: true,
+        },
+        // route level code-splitting
+        // this generates a separate chunk (about.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () =>
+            import(
+                /* webpackChunkName: "about" */ "../views/UserProfileView.vue"
+            ),
+    },
 ];
 
 const router = createRouter({
@@ -110,18 +138,12 @@ router.beforeEach((to, _from, next) => {
 
     // provjera auth
     if (to.meta.authRequired) {
-        if (isUserLoggedIn) {
-            if (to.name !== "NewsfeedView" && to.name !== "SearchView") {
-                return next({ name: "NewsfeedView" });
-            }
+        if (!isUserLoggedIn) {
+            return next({ name: "LoginView" });
         }
     } else {
         if (isUserLoggedIn) {
-            if (
-                to.name === "LoginView" ||
-                to.name === "HomeView" ||
-                to.name === "SearchView"
-            ) {
+            if (to.name === "LoginView") {
                 return next({ name: "NewsfeedView" });
             }
         }
