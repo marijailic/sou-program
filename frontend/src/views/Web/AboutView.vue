@@ -142,6 +142,15 @@
             </div>
         </div>
 
+        <!-- Image -->
+        <div class="row">
+            <div class="col">
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/2560px-Aspect-ratio-16x9.svg.png"
+                />
+            </div>
+        </div>
+
         <!-- CTA Join us -->
         <div class="row join-container">
             <div class="col-3">Join Us</div>
@@ -179,14 +188,6 @@ export default {
 </script>
 
 <style scoped>
-h1 {
-    padding: 64px 32px;
-}
-
-h6 {
-    margin-top: 2em;
-}
-
 img {
     width: 100%;
 }

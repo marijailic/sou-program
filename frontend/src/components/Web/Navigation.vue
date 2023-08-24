@@ -16,7 +16,7 @@
                     </router-link>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link" :to="'Podcast'">
+                    <router-link class="nav-link" :to="'podcast'">
                         Podcast
                     </router-link>
                 </li>

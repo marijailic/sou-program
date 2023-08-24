@@ -25,6 +25,7 @@ export default {
 
     h1 {
         font-size: 4rem;
+        padding: 64px 32px;
     }
 
     h2 {
@@ -45,6 +46,11 @@ export default {
 
     h6 {
         font-size: 1.25rem;
+        margin-top: 2em;
+    }
+
+    img {
+        width: 100%;
     }
 }
 </style>
