@@ -2,7 +2,7 @@
   <div class="container show-user">
     <div class="user-profile">
       <img
-        src="user-profile-image-url"
+        src="@/assets/sp-icon.png"
         class="user-profile-image rounded-circle"
       />
       <div class="user-info">

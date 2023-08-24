@@ -3,7 +3,7 @@
     <div class="show-announcement">
       <div class="d-flex align-items-center">
         <img
-          src="user-profile-image-url"
+          src="@/assets/sp-icon.png"
           class="user-profile-image rounded-circle"
         />
         <div class="announcement-content">

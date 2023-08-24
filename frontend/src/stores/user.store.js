@@ -17,6 +17,12 @@ export const useStoreUser = defineStore("storeUser", {
       });
       return filteredUsers;
     },
+    getCurrentUser: (state) => (username) => {
+      const currentUser = state.user.find((user) => {
+        return user.username.toLowerCase() === username.toLowerCase();
+      });
+      return currentUser;
+    },
   },
   actions: {
     async fetchUser() {

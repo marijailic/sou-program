@@ -7,6 +7,11 @@
 </template>
 
 <style lang="scss">
+html,
+body {
+  background-color: #f5f5f5;
+}
+
 #app {
   font-family: "Poppins", sans-serif;
   text-align: center;
