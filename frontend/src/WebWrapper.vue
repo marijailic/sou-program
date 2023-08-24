@@ -1,12 +1,19 @@
 <template>
-    <div id="app-web">
-        <router-view></router-view>
+    <div>
+        <!-- TODO Not for production -->
+        <Navigation />
+        <router-view id="app-web"></router-view>
     </div>
 </template>
 
 <script>
+import Navigation from "@/components/Web/Navigation.vue";
+
 export default {
     name: "WebWrapper",
+    components: {
+        Navigation,
+    },
 };
 </script>
 
