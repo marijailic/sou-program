@@ -77,6 +77,30 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/SearchView.vue"),
   },
+  {
+    path: "/my-profile",
+    name: "MyProfileView",
+    meta: {
+      authRequired: true,
+    },
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/MyProfileView.vue"),
+  },
+  {
+    path: "/user-profile",
+    name: "UserProfileView",
+    meta: {
+      authRequired: true,
+    },
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/UserProfileView.vue"),
+  },
 ];
 
 const router = createRouter({
