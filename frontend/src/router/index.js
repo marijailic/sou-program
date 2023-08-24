@@ -1,25 +1,38 @@
 import { createRouter, createWebHistory } from "vue-router";
-import WebsiteHome from "@/views/Web/HomeView.vue";
-import WebWrapper from "@/WebWrapper.vue";
 
 const routes = [
     {
         path: "/",
-        name: "HomeView",
-        component: WebWrapper,
+        name: "WebWrapper",
+        component: () => import("@/WebWrapper.vue"),
         meta: {
             authRequired: false,
         },
         children: [
             {
-                path: "/",
+                path: "",
                 name: "HomeView",
-                component: WebsiteHome,
+                component: () => import("@/views/Web/HomeView.vue"),
             },
             {
                 path: "about",
-                name: "AboutUs",
+                name: "AboutView",
                 component: () => import("@/views/Web/AboutView"),
+            },
+            {
+                path: "contact",
+                name: "ContactView",
+                component: () => import("@/views/Web/ContactView"),
+            },
+            {
+                path: "educators",
+                name: "EducatorsView",
+                component: () => import("@/views/Web/EducatorsView"),
+            },
+            {
+                path: "podcast",
+                name: "PodcastView",
+                component: () => import("@/views/Web/PodcastView"),
             },
         ],
     },
@@ -82,6 +95,13 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
+
+    // TODO Check if we can apply this globaly
+    scrollBehavior(to, from, savedPosition) {
+        return {
+            top: -1,
+        };
+    },
 });
 
 router.beforeEach((to, _from, next) => {

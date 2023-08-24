@@ -2,63 +2,8 @@
     <div>
         <!-- Title -->
         <div class="row">
-            <div class="col">
-                <h1 class="title">
-                    Lorem <u>ipsum</u> dolor sit amet,
-                    <u>consect adipiscing</u> elit ased
-                </h1>
-            </div>
-        </div>
-
-        <!-- Images-->
-        <div class="row">
-            <div class="col-6">
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/2560px-Aspect-ratio-16x9.svg.png"
-                />
-            </div>
-            <div class="col-6">
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/2560px-Aspect-ratio-16x9.svg.png"
-                />
-            </div>
-        </div>
-
-        <!-- Who are we -->
-        <div class="row about-container">
-            <div class="col-3">Tko Smo Mi</div>
-            <div class="col-9">
-                <div class="row">
-                    <div class="col">
-                        <h4>
-                            We have completed over 150 projects for digital
-                            companies from all over the world — from Australia
-                            to California, from Sweden to South Africa.
-                        </h4>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h6>
-                            As a fully remote agency of more than 50 creative
-                            professionals, our team consists of: brand, graphic,
-                            web and motion designers, illustrators, copywriters,
-                            webflow–developers, producers and project managers,
-                            branding, web art directors and heads of production.
-                            And we are also proud of our 42 awards from Awwwards
-                            and Behance.
-                        </h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Image -->
-        <div class="row">
-            <div class="col">
-                <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/Aspect-ratio-16x9.svg/2560px-Aspect-ratio-16x9.svg.png"
-                />
+            <div class="col text-center">
+                <EducatorCalendar></EducatorCalendar>
             </div>
         </div>
 
@@ -96,11 +41,7 @@
                         </div>
                         <div class="row mt-4">
                             <div class="col">
-                                <h4>
-                                    <router-link :to="'educators'">
-                                        Edukatori
-                                    </router-link>
-                                </h4>
+                                <h4>Edukatori</h4>
                             </div>
                         </div>
                         <div class="row">
@@ -120,11 +61,7 @@
                         </div>
                         <div class="row mt-4">
                             <div class="col">
-                                <h4>
-                                    <router-link :to="'podcast'">
-                                        Podcast
-                                    </router-link>
-                                </h4>
+                                <h4>Podcast</h4>
                             </div>
                         </div>
                         <div class="row">
@@ -142,15 +79,15 @@
             </div>
         </div>
 
-        <!-- CTA Join us -->
+        <!-- Join us -->
         <div class="row join-container">
             <div class="col-3">Join Us</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
                         <h4>
-                            We have completed over 150 projects for digital
-                            companies from.
+                            We have compl242324eted over 150 projects for
+                            digital companies from.
                             <router-link :to="'contact'">
                                 Kontakt forma
                             </router-link>
@@ -168,17 +105,24 @@
 </template>
 
 <script>
+import EducatorCalendar from "@/components/Web/EducatorCalendar.vue";
 import EmailLink from "@/components/Web/EmailLink.vue";
 
 export default {
-    name: "About",
+    name: "Educators",
     components: {
+        EducatorCalendar,
         EmailLink,
     },
 };
 </script>
 
 <style scoped>
+/* Debug */
+_* {
+    border: 1px solid red;
+}
+
 h1 {
     padding: 64px 32px;
 }
