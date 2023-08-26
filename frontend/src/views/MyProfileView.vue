@@ -1,30 +1,40 @@
 <template>
   <div class="profile container">
     <show-profile :currentUserData="currentUserData" />
+    <show-profile-post
+      v-for="post in currentUserPosts"
+      :key="post.id"
+      :postData="post"
+    />
   </div>
 </template>
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
+import { useStoreProfilePost } from "@/stores/profilepost.store";
 
 import showProfile from "@/components/showProfile.vue";
+import showProfilePost from "@/components/showProfilePost.vue";
 
 export default {
   name: "MyProfileView",
-  components: { showProfile },
+  components: { showProfile, showProfilePost },
   data() {
     return {
       currentUserData: {},
+      currentUserPosts: [],
     };
   },
   setup() {
     const currentUserUsername = localStorage.getItem("username");
     const storeUser = useStoreUser();
+    const storeProfilePost = useStoreProfilePost();
 
-    return { storeUser, currentUserUsername };
+    return { storeUser, storeProfilePost, currentUserUsername };
   },
-  created() {
-    this.getCurrentUser();
+  async created() {
+    await this.getCurrentUser();
+    await this.getCurrentUserPosts();
   },
   methods: {
     async getCurrentUser() {
@@ -33,6 +43,12 @@ export default {
         this.currentUserUsername
       );
       this.currentUserData = currentUserData;
+    },
+    async getCurrentUserPosts() {
+      const currentUserPosts = await this.storeProfilePost.fetchProfilePost(
+        this.currentUserData.id
+      );
+      this.currentUserPosts = currentUserPosts;
     },
   },
 };

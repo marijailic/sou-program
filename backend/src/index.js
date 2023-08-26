@@ -15,12 +15,14 @@ const userRoute = require("./routes/user.route");
 const announcementRoute = require("./routes/announcement.route");
 const galleryRoute = require("./routes/gallery.route");
 const galleryItemRoute = require("./routes/galleryitem.route");
+const profilePostRoute = require("./routes/profilepost.route");
 
 app.use("/", loginRoute); // home
 app.use("/", userRoute); // user (user table)
 app.use("/", announcementRoute); // announcement (announcement table)
 app.use("/", galleryRoute); // gallery (gallery table)
 app.use("/", galleryItemRoute); // gallery (gallery item table)
+app.use("/", profilePostRoute); // profile-post (profile post table && comment table)
 
 // APP START
 //////////////////////////////////////////////////////////////////////////////
