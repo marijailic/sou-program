@@ -14,6 +14,7 @@ export default {
   name: "Success",
   methods: {
     goBack() {
+      localStorage.setItem("shouldRefresh", true);
       window.history.back();
     },
   },
