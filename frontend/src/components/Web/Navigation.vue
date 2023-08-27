@@ -38,14 +38,66 @@
 </template>
 -->
 <template>
-    <nav id="nav" class="d-flex p-4 justify-content-between">
-        <img src="@/assets/sp-icon.png" width="64" height="64" alt="" />
-        <div class="menu-icon"><i class="d-block fa-solid fa-bars"></i></div>
+    <nav id="nav" class="d-flex p-3 justify-content-between">
+        <img
+            class="m-2"
+            src="@/assets/sp-icon.png"
+            width="64"
+            height="64"
+            alt=""
+        />
+        <div @click="navOpen" class="menu-icon p-3 cursor-pointer">
+            <i class="d-block fa-solid fa-bars"></i>
+        </div>
+
+        <div :hidden="!navOpened" id="nav-content">
+            <div @click="navClose" class="float-end p-4 close-nav">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+
+            <div>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="'/'">
+                            Home
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="'about'">
+                            About
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="'educators'">
+                            Educators
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="'podcast'">
+                            Podcast
+                        </router-link>
+                    </li>
+                    <li class="nav-item">
+                        <router-link class="nav-link" :to="'contact'">
+                            Contact
+                        </router-link>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
 </template>
 
 <script>
-let nav, body, content, scrollThreshold;
+let nav, body, content, scrollThreshold, navContent;
+
+function disableScroll() {
+    document.body.style.overflow = "hidden";
+}
+
+function enableScroll() {
+    document.body.style.overflow = "initial";
+}
 
 window.addEventListener("scroll", () => {
     if (window.scrollY >= scrollThreshold && !nav.classList.contains("fixed")) {
@@ -85,11 +137,26 @@ document.addEventListener("keypress", function (event) {
 });
 
 export default {
+    data() {
+        return {
+            navOpened: false,
+        };
+    },
     mounted() {
         nav = document.getElementById("nav");
         body = document.getElementsByTagName("body")[0];
         content = document.getElementById("web-container");
         scrollThreshold = nav.offsetHeight;
+    },
+    methods: {
+        navOpen() {
+            this.navOpened = true;
+            disableScroll();
+        },
+        navClose() {
+            this.navOpened = false;
+            enableScroll();
+        },
     },
     name: "educatorCalendar",
 };
@@ -119,10 +186,27 @@ nav {
         right: 1em;
         top: 0.5em;
     }
-}
 
-.menu-icon {
-    font-size: 64px;
-    height: auto;
+    .menu-icon {
+        font-size: 64px;
+        height: auto;
+        cursor: pointer;
+    }
+
+    #nav-content {
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: blueviolet;
+        height: 100vw;
+        width: 100%;
+    }
+
+    .close-nav {
+        display: flex;
+        align-items: flex-start;
+        font-size: 64px;
+        cursor: pointer;
+    }
 }
 </style>
