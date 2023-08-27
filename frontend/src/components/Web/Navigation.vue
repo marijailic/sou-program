@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
     <nav id="nav" class="navbar fixed-top navbar-expand-lg">
         <div class="d-flex justify-content-center collapse navbar-collapse">
             <ul class="navbar-nav">
@@ -36,9 +36,44 @@
         </div>
     </nav>
 </template>
+-->
+<template>
+    <nav id="nav" class="d-flex p-4 justify-content-between">
+        <img src="@/assets/sp-icon.png" width="64" height="64" alt="" />
+        <div class="menu-icon"><i class="d-block fa-solid fa-bars"></i></div>
+    </nav>
+</template>
 
 <script>
-let nav, body;
+let nav, body, content, scrollThreshold;
+
+window.addEventListener("scroll", () => {
+    if (window.scrollY >= scrollThreshold && !nav.classList.contains("fixed")) {
+        nav.style.transition = "transform 0s";
+        nav.style.transform = "translateY(-100%)";
+
+        nav.classList.add("fixed");
+        content.style.marginTop = `${nav.offsetHeight}px`;
+
+        nav.style.transition = "transform 0.3s ease-out";
+        nav.style.transform = "translateY(0%)";
+    } else if (
+        window.scrollY < scrollThreshold &&
+        nav.classList.contains("fixed")
+    ) {
+        nav.classList.remove("fixed");
+        content.style.marginTop = 0;
+
+        nav.style.transition = "transform 0s";
+        nav.style.transform = "translateY(100%)";
+
+        setTimeout(() => {
+            nav.style.transition =
+                "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1.11)";
+            nav.style.transform = "translateY(0)";
+        }, 10);
+    }
+});
 
 document.addEventListener("keypress", function (event) {
     if (event.key === "h") {
@@ -53,6 +88,8 @@ export default {
     mounted() {
         nav = document.getElementById("nav");
         body = document.getElementsByTagName("body")[0];
+        content = document.getElementById("web-container");
+        scrollThreshold = nav.offsetHeight;
     },
     name: "educatorCalendar",
 };
@@ -62,10 +99,13 @@ export default {
 .debugger-border * {
     box-shadow: 0 0 0 1px red;
 }
+nav.fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+}
 
 nav {
-    background-color: lightskyblue;
-
     a.router-link-exact-active {
         color: inherit !important;
     }
@@ -79,5 +119,10 @@ nav {
         right: 1em;
         top: 0.5em;
     }
+}
+
+.menu-icon {
+    font-size: 64px;
+    height: auto;
 }
 </style>
