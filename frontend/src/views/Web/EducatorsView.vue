@@ -9,7 +9,7 @@
 
         <!-- Branches -->
         <div class="row teams-container">
-            <div class="col-3">Područja</div>
+            <div class="col-3 text-muted">Područja</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
@@ -33,7 +33,7 @@
                 <div class="row teams">
                     <div class="col-6 mt-5">
                         <div class="row">
-                            <div class="col">01</div>
+                            <div class="col text-muted">01</div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -53,7 +53,7 @@
 
                     <div class="col-6 mt-5">
                         <div class="row">
-                            <div class="col">02</div>
+                            <div class="col text-muted">02</div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -74,7 +74,7 @@
 
                     <div class="col-6 mt-5">
                         <div class="row">
-                            <div class="col">03</div>
+                            <div class="col text-muted">03</div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -94,7 +94,7 @@
 
                     <div class="col-6 mt-5">
                         <div class="row">
-                            <div class="col">04</div>
+                            <div class="col text-muted">04</div>
                         </div>
                         <div class="row mt-3">
                             <div class="col">
@@ -127,7 +127,7 @@
 
         <!-- Join us -->
         <div class="row join-container">
-            <div class="col-3">Join Us</div>
+            <div class="col-3 text-muted">Join Us</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
