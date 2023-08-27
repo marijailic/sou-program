@@ -25,7 +25,10 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-end">
+            <div
+                class="card-footer text-end"
+                v-if="parentComponent === 'MyProfileView'"
+            >
                 <button
                     @click="deleteProfilePost(postData.id)"
                     class="delete-btn btn btn-primary"
@@ -70,6 +73,10 @@ export default {
         },
         postData: {
             type: Object,
+            required: true,
+        },
+        parentComponent: {
+            type: String,
             required: true,
         },
     },

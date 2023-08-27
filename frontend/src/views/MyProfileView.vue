@@ -6,6 +6,7 @@
             Nema objava...
         </h1>
         <show-profile-post
+            :parentComponent="parentComponent"
             :userData="currentUserData"
             v-for="post in currentUserPosts"
             :key="post.id"
@@ -29,6 +30,7 @@ export default {
         return {
             currentUserData: {},
             currentUserPosts: [],
+            parentComponent: "MyProfileView",
         };
     },
     setup() {

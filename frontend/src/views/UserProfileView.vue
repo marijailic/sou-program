@@ -1,12 +1,11 @@
 <template>
     <div class="profile container">
         <show-profile :userData="userData" />
-        <h1 class="mt-5" v-if="currentUserPosts.length === 0">
-            Nema objava...
-        </h1>
+        <h1 class="mt-5" v-if="userPosts.length === 0">Nema objava...</h1>
         <show-profile-post
+            :parentComponent="parentComponent"
             :userData="userData"
-            v-for="post in currentUserPosts"
+            v-for="post in userPosts"
             :key="post.id"
             :postData="post"
         />
@@ -28,40 +27,36 @@ export default {
     data() {
         return {
             userData: {},
-            currentUserPosts: [],
+            userPosts: [],
+            parentComponent: "UserProfileView",
         };
     },
     setup() {
-        const currentUserUsername = localStorage.getItem("username");
         const storeUser = useStoreUser();
         const storeProfilePost = useStoreProfilePost();
 
         // get user id from url
         const route = useRoute();
         const userID = route.params.id;
-        console.log("SETUP", userID);
 
-        return { storeUser, storeProfilePost, currentUserUsername, userID };
+        return { storeUser, storeProfilePost, userID };
     },
     async created() {
-        await this.getCurrentUser();
-        // await this.getCurrentUserPosts();
+        await this.getUser();
+        await this.getUserPosts();
     },
     methods: {
-        async getCurrentUser() {
-            console.log(this.userID);
+        async getUser() {
             await this.storeUser.fetchUser();
             const userData = await this.storeUser.getUserById(this.userID);
             this.userData = userData;
-            console.log(userData);
         },
-        // async getCurrentUserPosts() {
-        //     const currentUserPosts =
-        //         await this.storeProfilePost.fetchProfilePost(
-        //             this.currentUserData.id
-        //         );
-        //     this.currentUserPosts = currentUserPosts;
-        // },
+        async getUserPosts() {
+            const userPosts = await this.storeProfilePost.fetchProfilePost(
+                this.userID
+            );
+            this.userPosts = userPosts;
+        },
     },
 };
 </script>
