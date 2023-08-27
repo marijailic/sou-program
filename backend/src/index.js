@@ -27,5 +27,5 @@ app.use("/", profilePostRoute); // profile-post (profile post table && comment t
 // APP START
 //////////////////////////////////////////////////////////////////////////////
 app.listen(process.env.PORT, () =>
-  console.log(`Listening on port ${process.env.PORT}!`)
+    console.log(`Listening on port ${process.env.PORT}!`)
 );
