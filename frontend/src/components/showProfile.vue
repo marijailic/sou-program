@@ -12,14 +12,14 @@
             <div class="second-col col-md-9 d-flex align-items-center">
                 <div class="card-body text-start">
                     <h1 class="card-title">
-                        {{ currentUserData.name }} {{ currentUserData.surname }}
+                        {{ userData.name }} {{ userData.surname }}
                     </h1>
                     <p class="card-text">
-                        {{ currentUserData.username }} -
-                        {{ currentUserData.type }}
+                        {{ userData.username }} -
+                        {{ userData.type }}
                     </p>
-                    <p class="card-text">{{ currentUserData.e_mail }}</p>
-                    <p class="card-text">{{ currentUserData.bio }}</p>
+                    <p class="card-text">{{ userData.e_mail }}</p>
+                    <p class="card-text">{{ userData.bio }}</p>
                 </div>
             </div>
         </div>
@@ -30,7 +30,7 @@
 export default {
     name: "showProfile",
     props: {
-        currentUserData: {
+        userData: {
             type: Object,
             required: true,
         },

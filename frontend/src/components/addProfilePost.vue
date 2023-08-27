@@ -20,6 +20,7 @@
                                 class="form-control"
                                 rows="3"
                                 placeholder="Napiši objavu..."
+                                required
                             ></textarea>
                         </div>
                     </div>
@@ -41,7 +42,7 @@ import { ref } from "vue";
 export default {
     name: "addProfilePost",
     props: {
-        currentUserData: {
+        userData: {
             type: Object,
             required: true,
         },
@@ -53,13 +54,16 @@ export default {
 
         const postProfilePost = async () => {
             const text = postText.value;
-            const authorId = props.currentUserData.id;
+            const authorId = props.userData.id;
 
             const profilePostData = {
                 text: text,
                 authorId: authorId,
             };
-            await storeProfilePost.createProfilePost(profilePostData);
+
+            if (text.trim() !== "") {
+                await storeProfilePost.createProfilePost(profilePostData);
+            }
         };
 
         return {

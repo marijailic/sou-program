@@ -15,8 +15,8 @@
                 >
                     <div class="card-right card-body text-start">
                         <h5 class="card-title d-inline m-0">
-                            {{ currentUserData.name }}
-                            {{ currentUserData.surname }}
+                            {{ userData.name }}
+                            {{ userData.surname }}
                         </h5>
                         <span class="text-muted">
                             • {{ formatDate(postData.timestamp) }} ago
@@ -64,7 +64,7 @@ export default {
         };
     },
     props: {
-        currentUserData: {
+        userData: {
             type: Object,
             required: true,
         },

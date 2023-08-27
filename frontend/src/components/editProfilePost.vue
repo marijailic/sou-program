@@ -1,7 +1,7 @@
 <template>
     <div>
         <form @submit.prevent="updateProfilePost">
-            <div class="card">
+            <div class="card mb-5">
                 <div class="row">
                     <div
                         class="first-col card-body col-md-1 d-flex justify-content-center"
@@ -19,6 +19,7 @@
                                 v-model="postText"
                                 class="form-control"
                                 rows="3"
+                                required
                             ></textarea>
                         </div>
                     </div>
@@ -58,14 +59,17 @@ export default {
         const postText = ref(props.postData.text);
 
         const updateProfilePost = async () => {
-            const text = postText.value;
             const id = props.postData.id;
+            const text = postText.value;
 
             const updateData = {
                 id: id,
                 text: text,
             };
-            await storeProfilePost.updateProfilePost(updateData);
+
+            if (text.trim() !== "") {
+                await storeProfilePost.updateProfilePost(updateData);
+            }
         };
 
         return {

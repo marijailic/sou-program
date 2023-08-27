@@ -14,7 +14,8 @@ router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
             .select()
             .from("profile_post")
             .where("author_id", authorId)
-            .orderBy("timestamp", "desc");
+            .orderBy("timestamp", "desc")
+            .limit(10);
         // throw new Error();
         res.json({
             message: "Profile post fetched successfully",
@@ -32,6 +33,10 @@ router.post("/create-profile-post", authMiddleware, async (req, res) => {
 
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+
+    if (text.trim() === "") {
+        res.status(400).json({ message: "Client error", data: {} });
+    }
 
     const profilePostData = {
         text: text,
@@ -67,6 +72,10 @@ router.delete("/delete-profile-post", authMiddleware, async (req, res) => {
 router.post("/update-profile-post", authMiddleware, async (req, res) => {
     const id = req.body.id;
     const text = req.body.text;
+
+    if (text.trim() === "") {
+        res.status(400).json({ message: "Client error", data: {} });
+    }
 
     try {
         await db("profile_post").where({ id: id }).update({ text: text });

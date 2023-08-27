@@ -25,6 +25,12 @@ export const useStoreUser = defineStore("storeUser", {
             });
             return currentUser;
         },
+        getUserById: (state) => (userID) => {
+            const user = state.user.find((user) => {
+                return user.id === Number(userID);
+            });
+            return user;
+        },
     },
     actions: {
         async fetchUser() {

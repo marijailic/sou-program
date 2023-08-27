@@ -11,6 +11,7 @@
                     class="form-control"
                     rows="3"
                     placeholder="Napiši obavijest..."
+                    required
                 ></textarea>
             </div>
             <div class="post-btn d-flex justify-content-end">
@@ -36,7 +37,10 @@ export default {
 
         const postAnnouncement = async () => {
             const text = announcementText.value;
-            await storeAnnouncement.createAnnouncement(text);
+
+            if (text.trim() !== "") {
+                await storeAnnouncement.createAnnouncement(text);
+            }
         };
 
         return {

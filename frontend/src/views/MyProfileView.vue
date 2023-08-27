@@ -1,9 +1,12 @@
 <template>
     <div class="profile container">
-        <show-profile :currentUserData="currentUserData" />
-        <add-profile-post :currentUserData="currentUserData" />
+        <show-profile :userData="currentUserData" />
+        <add-profile-post :userData="currentUserData" />
+        <h1 class="mt-5" v-if="currentUserPosts.length === 0">
+            Nema objava...
+        </h1>
         <show-profile-post
-            :currentUserData="currentUserData"
+            :userData="currentUserData"
             v-for="post in currentUserPosts"
             :key="post.id"
             :postData="post"
