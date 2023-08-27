@@ -1,10 +1,12 @@
 <template>
-    <div>
-        <!-- TODO Not for production -->
-        <Navigation />
-        <router-view id="app-web"></router-view>
+    <div id="web-wrapper" class="d-flex flex-column">
+        <div class="flex-grow-1">
+            <!-- TODO Not for production -->
+            <Navigation />
+            <router-view id="web-container"></router-view>
+        </div>
+        <SouFooter class="flex-shrink-0" />
     </div>
-    <SouFooter />
 </template>
 
 <script>
@@ -21,10 +23,15 @@ export default {
 </script>
 
 <style lang="scss">
-#app-web {
+#web-wrapper {
+    min-height: 100vh;
+}
+
+#web-container {
     padding: 8em;
     text-align: left;
     line-height: 20px;
+    font-weight: 100;
 
     h1 {
         font-size: 4rem;
@@ -50,10 +57,15 @@ export default {
     h6 {
         font-size: 1.25rem;
         margin-top: 2em;
+        font-weight: 100;
     }
 
     img {
         width: 100%;
+    }
+
+    .text-muted {
+        font-size: 0.85em;
     }
 }
 </style>
