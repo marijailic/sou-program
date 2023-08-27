@@ -30,9 +30,6 @@ import { ref } from "vue";
 
 export default {
     name: "editAnnouncement",
-    data() {
-        return {};
-    },
     props: {
         announcementData: {
             type: Object,

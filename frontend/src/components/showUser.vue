@@ -54,10 +54,7 @@ export default {
             );
 
             if (isConfirmed) {
-                const response = await this.storeUser.deleteUser(idUser);
-                if (response && response.success) {
-                    alert(response.message);
-                }
+                await this.storeUser.deleteUser(idUser);
             }
         },
         openEditUser() {

@@ -1,7 +1,7 @@
 <template>
     <div class="profile container">
         <show-profile :currentUserData="currentUserData" />
-        <add-profile-post />
+        <add-profile-post :currentUserData="currentUserData" />
         <show-profile-post
             :currentUserData="currentUserData"
             v-for="post in currentUserPosts"
