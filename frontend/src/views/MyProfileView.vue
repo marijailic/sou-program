@@ -1,5 +1,5 @@
 <template>
-    <div class="profile container">
+    <div class="container">
         <show-profile :userData="currentUserData" />
         <add-profile-post :userData="currentUserData" />
         <h1 class="mt-5" v-if="currentUserPosts.length === 0">
@@ -62,10 +62,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.profile {
-    margin-top: 3vw;
-    margin-bottom: 3vw;
-}
-</style>

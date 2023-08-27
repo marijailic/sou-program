@@ -1,5 +1,5 @@
 <template>
-    <div class="profile container">
+    <div class="container">
         <show-profile :userData="userData" />
         <h1 class="mt-5" v-if="userPosts.length === 0">Nema objava...</h1>
         <show-profile-post
@@ -60,10 +60,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.profile {
-    margin-top: 3vw;
-    margin-bottom: 3vw;
-}
-</style>
