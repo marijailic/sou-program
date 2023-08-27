@@ -4,15 +4,18 @@
         <Navigation />
         <router-view id="app-web"></router-view>
     </div>
+    <SouFooter />
 </template>
 
 <script>
 import Navigation from "@/components/Web/Navigation.vue";
+import SouFooter from "@/components/Web/SouFooter.vue";
 
 export default {
     name: "WebWrapper",
     components: {
         Navigation,
+        SouFooter,
     },
 };
 </script>
