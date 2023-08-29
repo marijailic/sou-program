@@ -1,20 +1,16 @@
 <template>
-    <a :href="{ mailHref }">{{ mailto }}</a>
+    <a :href="{ mailHref }">{{ mailTo }}</a>
 </template>
 
 <script>
+import socialUrls from "@/utils/socialUrls.js";
+
 export default {
     name: "EmailLink",
     data() {
-        const mailto = process.env.VUE_APP_CONTACT_EMAIL;
-        const subject = "Email from site";
-        const subjcetURIEncoded = encodeURIComponent(subject);
-
-        const mailHref = `mailto:${mailto}?subject=${subjcetURIEncoded}`;
-
         return {
-            mailto,
-            mailHref,
+            mailTo: socialUrls.mail.mailTo,
+            mailHref: socialUrls.mail.mailHref,
         };
     },
 };

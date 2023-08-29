@@ -26,7 +26,7 @@
 
         <!-- Who are we -->
         <div class="row about-container">
-            <div class="col-3">Tko Smo Mi</div>
+            <div class="col-3 text-muted">Tko Smo Mi</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
@@ -64,7 +64,7 @@
 
         <!-- Teams -->
         <div class="row teams-container">
-            <div class="col-3">Timovi</div>
+            <div class="col-3 text-muted">Timovi</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
@@ -92,7 +92,7 @@
                 <div class="row teams">
                     <div class="col-6">
                         <div class="row">
-                            <div class="col">01</div>
+                            <div class="col text-muted">01</div>
                         </div>
                         <div class="row mt-4">
                             <div class="col">
@@ -116,7 +116,7 @@
 
                     <div class="col-6">
                         <div class="row">
-                            <div class="col">02</div>
+                            <div class="col text-muted">02</div>
                         </div>
                         <div class="row mt-4">
                             <div class="col">
@@ -153,7 +153,7 @@
 
         <!-- CTA Join us -->
         <div class="row join-container">
-            <div class="col-3">Join Us</div>
+            <div class="col-3 text-muted">Join Us</div>
             <div class="col-9">
                 <div class="row">
                     <div class="col">
