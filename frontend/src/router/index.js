@@ -15,6 +15,14 @@ const routes = [
                 component: () => import("@/views/Web/HomeView.vue"),
             },
             {
+                path: "/login",
+                name: "LoginView",
+                meta: {
+                    authRequired: false,
+                },
+                component: () => import("../views/LoginView.vue"),
+            },
+            {
                 path: "about",
                 name: "AboutView",
                 component: () => import("@/views/Web/AboutView"),
@@ -44,14 +52,6 @@ const routes = [
             authRequired: true,
         },
         children: [
-            {
-                path: "/login",
-                name: "LoginView",
-                meta: {
-                    authRequired: false,
-                },
-                component: () => import("../views/LoginView.vue"),
-            },
             {
                 path: "/error",
                 name: "Error",

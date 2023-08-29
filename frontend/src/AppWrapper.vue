@@ -43,14 +43,14 @@ body {
     width: 20vw;
     height: 100vh;
     position: fixed;
-    padding-top: 3vw;
-    padding-bottom: 3vw;
+    padding-top: 2vw;
+    padding-bottom: 2vw;
     padding-left: 2vw;
     padding-right: 2vw;
 }
 .content-container {
     margin-left: 20vw;
-    padding-top: 3vw;
-    padding-bottom: 3vw;
+    padding-top: 2vw;
+    padding-bottom: 2vw;
 }
 </style>
