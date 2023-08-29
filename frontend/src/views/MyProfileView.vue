@@ -1,9 +1,13 @@
 <template>
-    <div class="profile container">
-        <show-profile :currentUserData="currentUserData" />
-        <add-profile-post />
+    <div class="container">
+        <show-profile :userData="currentUserData" />
+        <add-profile-post :userData="currentUserData" />
+        <h1 class="mt-5" v-if="currentUserPosts.length === 0">
+            Nema objava...
+        </h1>
         <show-profile-post
-            :currentUserData="currentUserData"
+            :parentComponent="parentComponent"
+            :userData="currentUserData"
             v-for="post in currentUserPosts"
             :key="post.id"
             :postData="post"
@@ -26,6 +30,7 @@ export default {
         return {
             currentUserData: {},
             currentUserPosts: [],
+            parentComponent: "MyProfileView",
         };
     },
     setup() {
@@ -57,10 +62,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.profile {
-    margin-top: 3vw;
-    margin-bottom: 3vw;
-}
-</style>

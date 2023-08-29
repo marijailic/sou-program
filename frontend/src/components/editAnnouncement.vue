@@ -10,6 +10,7 @@
                     v-model="announcementText"
                     class="form-control"
                     rows="3"
+                    required
                 ></textarea>
             </div>
             <div class="d-flex justify-content-end">
@@ -30,9 +31,6 @@ import { ref } from "vue";
 
 export default {
     name: "editAnnouncement",
-    data() {
-        return {};
-    },
     props: {
         announcementData: {
             type: Object,
@@ -49,14 +47,17 @@ export default {
         const announcementText = ref(props.announcementData.text);
 
         const updateAnnouncement = async () => {
-            const text = announcementText.value;
             const id = props.announcementData.id;
+            const text = announcementText.value;
 
             const updateData = {
                 id: id,
                 text: text,
             };
-            await storeAnnouncement.updateAnnouncement(updateData);
+
+            if (text.trim() !== "") {
+                await storeAnnouncement.updateAnnouncement(updateData);
+            }
         };
 
         return {

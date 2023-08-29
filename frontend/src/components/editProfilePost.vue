@@ -1,7 +1,7 @@
 <template>
     <div>
-        <form @submit.prevent="postProfilePost">
-            <div class="card">
+        <form @submit.prevent="updateProfilePost">
+            <div class="card mb-5">
                 <div class="row">
                     <div
                         class="first-col card-body col-md-1 d-flex justify-content-center"
@@ -19,15 +19,17 @@
                                 v-model="postText"
                                 class="form-control"
                                 rows="3"
-                                placeholder="Napiši objavu..."
                                 required
                             ></textarea>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer text-end">
+                    <a class="escape-btn btn btn-primary" @click="closeEdit">
+                        Odustani
+                    </a>
                     <button type="submit" class="btn btn-primary">
-                        Objavi
+                        Spremi promjenu
                     </button>
                 </div>
             </div>
@@ -40,37 +42,46 @@ import { useStoreProfilePost } from "@/stores/profilepost.store";
 import { ref } from "vue";
 
 export default {
-    name: "addProfilePost",
+    name: "editProfilePost",
     props: {
-        userData: {
+        postData: {
             type: Object,
+            required: true,
+        },
+        closeEdit: {
+            type: Function,
             required: true,
         },
     },
     setup(props) {
         const storeProfilePost = useStoreProfilePost();
 
-        const postText = ref("");
+        const postText = ref(props.postData.text);
 
-        const postProfilePost = async () => {
+        const updateProfilePost = async () => {
+            const id = props.postData.id;
             const text = postText.value;
-            const authorId = props.userData.id;
 
-            const profilePostData = {
+            const updateData = {
+                id: id,
                 text: text,
-                authorId: authorId,
             };
 
             if (text.trim() !== "") {
-                await storeProfilePost.createProfilePost(profilePostData);
+                await storeProfilePost.updateProfilePost(updateData);
             }
         };
 
         return {
             storeProfilePost,
-            postProfilePost,
+            updateProfilePost,
             postText,
         };
+    },
+    methods: {
+        closeEdit() {
+            this.closeEdit();
+        },
     },
 };
 </script>
@@ -98,5 +109,8 @@ export default {
 .profile-pic {
     width: 50px;
     height: 50px;
+}
+.escape-btn {
+    margin-right: 1vw;
 }
 </style>

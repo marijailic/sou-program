@@ -72,11 +72,7 @@ export default {
             );
 
             if (isConfirmed) {
-                const response =
-                    await this.storeAnnouncement.deleteAnnouncement(idObjava);
-                if (response && response.success) {
-                    alert(response.message);
-                }
+                await this.storeAnnouncement.deleteAnnouncement(idObjava);
             }
         },
         openEdit() {

@@ -42,6 +42,10 @@ router.post("/create-announcement", authMiddleware, async (req, res) => {
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
 
+    if (text.trim() === "") {
+        res.status(400).json({ message: "Client error", data: {} });
+    }
+
     const announcementData = {
         text: text,
         picture_key: "",
@@ -64,6 +68,10 @@ router.post("/create-announcement", authMiddleware, async (req, res) => {
 router.post("/update-announcement", authMiddleware, async (req, res) => {
     const id = req.body.id;
     const text = req.body.text;
+
+    if (text.trim() === "") {
+        res.status(400).json({ message: "Client error", data: {} });
+    }
 
     try {
         await db("announcement").where({ id: id }).update({ text: text });

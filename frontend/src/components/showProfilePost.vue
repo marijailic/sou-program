@@ -15,8 +15,8 @@
                 >
                     <div class="card-right card-body text-start">
                         <h5 class="card-title d-inline m-0">
-                            {{ currentUserData.name }}
-                            {{ currentUserData.surname }}
+                            {{ userData.name }}
+                            {{ userData.surname }}
                         </h5>
                         <span class="text-muted">
                             • {{ formatDate(postData.timestamp) }} ago
@@ -25,21 +25,49 @@
                     </div>
                 </div>
             </div>
-            <div class="card-footer text-end">
-                <button class="delete-btn btn btn-primary">Izbriši</button>
-                <button class="edit-btn btn btn-primary">Uredi</button>
+            <div
+                class="card-footer text-end"
+                v-if="parentComponent === 'MyProfileView'"
+            >
+                <button
+                    @click="deleteProfilePost(postData.id)"
+                    class="delete-btn btn btn-primary"
+                >
+                    Izbriši
+                </button>
+                <button class="edit-btn btn btn-primary" @click="openEdit">
+                    Uredi
+                </button>
             </div>
         </div>
+        <edit-profile-post
+            :postData="postData"
+            :closeEdit="closeEdit"
+            v-if="editText"
+        />
     </div>
 </template>
 
 <script>
+import { useStoreProfilePost } from "@/stores/profilepost.store";
+
 import { formatDistanceToNow } from "date-fns";
+
+import editProfilePost from "./editProfilePost.vue";
 
 export default {
     name: "showProfilePost",
+    components: {
+        editProfilePost,
+    },
+    data() {
+        return {
+            closeEdit: () => {},
+            editText: false,
+        };
+    },
     props: {
-        currentUserData: {
+        userData: {
             type: Object,
             required: true,
         },
@@ -47,12 +75,37 @@ export default {
             type: Object,
             required: true,
         },
+        parentComponent: {
+            type: String,
+            required: true,
+        },
+    },
+    setup() {
+        const storeProfilePost = useStoreProfilePost();
+        return { storeProfilePost };
+    },
+    created() {
+        this.closeEdit = () => {
+            this.editText = false;
+        };
     },
     methods: {
         formatDate(strDate) {
             const objDate = new Date(strDate);
             const timeAgo = formatDistanceToNow(objDate);
             return timeAgo;
+        },
+        async deleteProfilePost(idPost) {
+            const isConfirmed = window.confirm(
+                "Jeste li sigurni da želite izbrisati objavu?"
+            );
+
+            if (isConfirmed) {
+                await this.storeProfilePost.deleteProfilePost(idPost);
+            }
+        },
+        openEdit() {
+            this.editText = true;
         },
     },
 };

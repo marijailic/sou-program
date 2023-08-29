@@ -1,23 +1,25 @@
 <template>
     <div class="card">
         <div class="row">
-            <div class="col-md-4">
+            <div
+                class="col-md-3 d-flex justify-content-center align-items-center"
+            >
                 <img
                     src="@/assets/sp-icon.png"
                     class="profile-pic rounded-circle"
                 />
             </div>
-            <div class="col-md-8 d-flex align-items-center">
+            <div class="second-col col-md-9 d-flex align-items-center">
                 <div class="card-body text-start">
                     <h1 class="card-title">
-                        {{ currentUserData.name }} {{ currentUserData.surname }}
+                        {{ userData.name }} {{ userData.surname }}
                     </h1>
                     <p class="card-text">
-                        {{ currentUserData.username }} -
-                        {{ currentUserData.type }}
+                        {{ userData.username }} -
+                        {{ userData.type }}
                     </p>
-                    <p class="card-text">{{ currentUserData.e_mail }}</p>
-                    <p class="card-text">{{ currentUserData.bio }}</p>
+                    <p class="card-text">{{ userData.e_mail }}</p>
+                    <p class="card-text">{{ userData.bio }}</p>
                 </div>
             </div>
         </div>
@@ -28,7 +30,7 @@
 export default {
     name: "showProfile",
     props: {
-        currentUserData: {
+        userData: {
             type: Object,
             required: true,
         },
@@ -42,7 +44,13 @@ export default {
     padding: 1vw;
 }
 .profile-pic {
-    width: 250px;
-    height: 250px;
+    width: 200px;
+    height: 200px;
+}
+.second-col {
+    padding-left: 0;
+}
+.card-body {
+    padding-left: 0;
 }
 </style>

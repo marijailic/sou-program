@@ -7,7 +7,9 @@
             />
             <div class="user-info">
                 <div class="user-name">
-                    {{ userData.name }} {{ userData.surname }}
+                    <router-link :to="'/user-profile/' + userData.id"
+                        >{{ userData.name }} {{ userData.surname }}</router-link
+                    >
                 </div>
                 <div class="username">{{ userData.username }}</div>
             </div>
@@ -54,10 +56,7 @@ export default {
             );
 
             if (isConfirmed) {
-                const response = await this.storeUser.deleteUser(idUser);
-                if (response && response.success) {
-                    alert(response.message);
-                }
+                await this.storeUser.deleteUser(idUser);
             }
         },
         openEditUser() {
