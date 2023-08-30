@@ -1,7 +1,11 @@
 <template>
-    <div class="container">
+    <div>
         <show-profile :userData="userData" />
-        <h1 class="mt-5" v-if="userPosts.length === 0">Nema objava...</h1>
+
+        <div class="d-flex justify-content-center">
+            <h1 class="mt-5" v-if="userPosts.length === 0">Nema objava...</h1>
+        </div>
+
         <show-profile-post
             :parentComponent="parentComponent"
             :userData="userData"

@@ -1,9 +1,16 @@
 <template>
-    <div class="search">
-        <h1>SEARCH</h1>
-        <button class="btn btn-primary mt-3" @click="openAddUser">
+    <div>
+        <div class="card">
+            <div class="header">
+                <h1>Stalkaonica</h1>
+                <button class="btn btn-primary" @click="openAddUser">
+                    Dodaj korisnika
+                </button>
+            </div>
+        </div>
+        <!-- <button class="btn btn-primary mt-3" @click="openAddUser">
             Dodaj korisnika
-        </button>
+        </button> -->
         <add-user v-if="addUser" />
         <search-user />
         <show-user v-for="user in users" :key="user.id" :userData="user" />
@@ -60,8 +67,13 @@ export default {
 </script>
 
 <style scoped>
-.search {
-    margin-top: 3vw;
-    margin-bottom: 3vw;
+.card {
+    border: none;
+    padding: 1vw;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 </style>
