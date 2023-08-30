@@ -1,25 +1,37 @@
 <template>
-    <div class="edit-announcement">
+    <div>
         <form @submit.prevent="updateAnnouncement">
-            <div class="d-flex align-items-center">
-                <img
-                    src="@/assets/sp-icon.png"
-                    class="user-profile-image rounded-circle"
-                />
-                <textarea
-                    v-model="announcementText"
-                    class="form-control"
-                    rows="3"
-                    required
-                ></textarea>
-            </div>
-            <div class="d-flex justify-content-end">
-                <a class="escape-btn btn btn-primary" @click="closeEdit">
-                    Odustani
-                </a>
-                <button type="submit" class="post-btn btn btn-primary">
-                    Uredi
-                </button>
+            <div class="card">
+                <div class="row">
+                    <div
+                        class="first-col card-body col-md-1 d-flex justify-content-center"
+                    >
+                        <img
+                            src="@/assets/sp-icon.png"
+                            class="profile-pic rounded-circle"
+                        />
+                    </div>
+                    <div
+                        class="second-col col-md-11 d-flex align-items-center text-start"
+                    >
+                        <div class="card-right card-body text-start">
+                            <textarea
+                                v-model="announcementText"
+                                class="form-control"
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a class="escape-btn btn btn-primary" @click="closeEdit">
+                        Odustani
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        Spremi promjenu
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -75,21 +87,30 @@ export default {
 </script>
 
 <style scoped>
-.edit-announcement {
-    padding-right: 2vw;
-    padding-left: 2vw;
-    padding-bottom: 2vw;
+.card {
+    border: none;
+    padding: 0;
+    background-color: #eaeaea;
+    margin-top: 1vw;
 }
-.user-profile-image {
-    width: 40px;
-    height: 40px;
-    margin-right: 1vw;
+.row {
+    padding: 1vw;
+}
+.second-col {
+    padding-left: 0;
+}
+.card-right {
+    padding-left: 0;
+}
+.card-footer {
+    padding: 0.7vw;
+    background-color: #eaeaea;
+}
+.profile-pic {
+    width: 50px;
+    height: 50px;
 }
 .escape-btn {
-    margin-top: 1vw;
     margin-right: 1vw;
-}
-.post-btn {
-    margin-top: 1vw;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div>
         <form @submit.prevent="updateProfilePost">
-            <div class="card mb-5">
+            <div class="card">
                 <div class="row">
                     <div
                         class="first-col card-body col-md-1 d-flex justify-content-center"
@@ -90,8 +90,8 @@ export default {
 .card {
     border: none;
     padding: 0;
+    background-color: #eaeaea;
     margin-top: 1vw;
-    margin-bottom: 1vw;
 }
 .row {
     padding: 1vw;
@@ -104,7 +104,7 @@ export default {
 }
 .card-footer {
     padding: 0.7vw;
-    background-color: white;
+    background-color: #eaeaea;
 }
 .profile-pic {
     width: 50px;

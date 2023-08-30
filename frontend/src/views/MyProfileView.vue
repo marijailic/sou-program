@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <show-profile :userData="currentUserData" />
         <add-profile-post :userData="currentUserData" />
         <h1 class="mt-5" v-if="currentUserPosts.length === 0">

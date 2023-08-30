@@ -59,7 +59,7 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
             }
             window.location.href = "/success";
         },
-        async createAnnouncement(announcementText) {
+        async createAnnouncement(announcementData) {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshToken");
             const username = localStorage.getItem("username");
@@ -74,7 +74,7 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
                         RefreshToken: refreshToken,
                         Username: username,
                     },
-                    body: JSON.stringify({ text: announcementText }),
+                    body: JSON.stringify(announcementData),
                 }
             );
 

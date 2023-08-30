@@ -1,9 +1,16 @@
 <template>
     <div>
-        <h1>NEWSFEED</h1>
-        <button @click="logout" class="btn btn-primary mt-3">Odjavi me!</button>
+        <div class="card">
+            <h1>Naslovnica</h1>
+        </div>
 
-        <add-announcement />
+        <add-announcement :userData="currentUserData" />
+
+        <div class="d-flex justify-content-center">
+            <h1 class="mt-5" v-if="announcements.length === 0">
+                Nema obavijesti...
+            </h1>
+        </div>
 
         <show-announcement
             v-for="announcement in announcements"
@@ -14,7 +21,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
+import { useStoreUser } from "@/stores/user.store";
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 
 import addAnnouncement from "@/components/addAnnouncement.vue";
@@ -24,6 +31,7 @@ export default {
     name: "NewsfeedView",
     data() {
         return {
+            currentUserData: {},
             announcements: [],
         };
     },
@@ -32,18 +40,23 @@ export default {
         showAnnouncement,
     },
     setup() {
+        const currentUserUsername = localStorage.getItem("username");
+        const storeUser = useStoreUser();
         const storeAnnouncement = useStoreAnnouncement();
-        return { storeAnnouncement };
+
+        return { storeUser, storeAnnouncement, currentUserUsername };
     },
     created() {
+        this.getCurrentUser();
         this.getAnnouncements();
     },
     methods: {
-        logout() {
-            localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("username");
-            window.location.href = "/login";
+        async getCurrentUser() {
+            await this.storeUser.fetchUser();
+            const currentUserData = await this.storeUser.getCurrentUser(
+                this.currentUserUsername
+            );
+            this.currentUserData = currentUserData;
         },
         async getAnnouncements() {
             const announcements =
@@ -53,3 +66,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.card {
+    border: none;
+    padding: 1vw;
+}
+</style>

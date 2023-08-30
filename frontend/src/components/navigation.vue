@@ -32,10 +32,14 @@
             </div>
             <div class="nav-btns">
                 <div class="info-link">
-                    <a class="info-btn">Resursi</a>
+                    <router-link to="/resources" class="info-btn">
+                        Resursi</router-link
+                    >
                 </div>
                 <div>
-                    <button class="btn btn-primary">Odjavi me</button>
+                    <button class="btn btn-primary" @click="logout">
+                        Odjavi me
+                    </button>
                 </div>
             </div>
         </div>
@@ -47,8 +51,23 @@ export default {
     name: "navigation",
     data() {
         return {
-            username: "JohnDoe",
+            username: "",
         };
+    },
+    created() {
+        this.getUsername();
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem("token");
+            localStorage.removeItem("refreshToken");
+            localStorage.removeItem("username");
+            window.location.href = "/login";
+        },
+        getUsername() {
+            const username = localStorage.getItem("username");
+            this.username = username;
+        },
     },
 };
 </script>

@@ -46,11 +46,13 @@ body {
     padding-top: 2vw;
     padding-bottom: 2vw;
     padding-left: 2vw;
-    padding-right: 2vw;
+    padding-right: 0;
 }
 .content-container {
     margin-left: 20vw;
     padding-top: 2vw;
     padding-bottom: 2vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
 }
 </style>

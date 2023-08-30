@@ -11,7 +11,7 @@ router.get("/announcement", authMiddleware, async (req, res) => {
         const announcement = await db
             .select()
             .from("announcement")
-            .orderBy("id", "desc")
+            .orderBy("timestamp", "desc")
             .limit(10);
         // throw new Error();
         res.json({
@@ -38,6 +38,7 @@ router.delete("/delete-announcement", authMiddleware, async (req, res) => {
 
 router.post("/create-announcement", authMiddleware, async (req, res) => {
     const text = req.body.text;
+    const authorId = req.body.authorId;
 
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
@@ -49,7 +50,7 @@ router.post("/create-announcement", authMiddleware, async (req, res) => {
     const announcementData = {
         text: text,
         picture_key: "",
-        author_id: 1,
+        author_id: authorId,
         timestamp: timestamp,
     };
 

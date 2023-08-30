@@ -1,19 +1,34 @@
 <template>
     <div>
-        <div class="show-announcement">
-            <div class="d-flex align-items-center">
-                <img
-                    src="@/assets/sp-icon.png"
-                    class="user-profile-image rounded-circle"
-                />
-                <div class="announcement-content">
-                    <p class="announcement-text mb-0">
-                        {{ announcementData.text }}
-                    </p>
-                    <!-- <small class="text-muted">{{}}</small> -->
+        <div class="card">
+            <div class="row">
+                <div
+                    class="first-col card-body col-md-1 d-flex justify-content-center"
+                >
+                    <img
+                        src="@/assets/sp-icon.png"
+                        class="profile-pic rounded-circle"
+                    />
+                </div>
+                <div
+                    class="second-col col-md-11 d-flex align-items-center text-start"
+                >
+                    <div class="card-right card-body text-start">
+                        <h5 class="card-title d-inline m-0">
+                            {{ postAuthor.name }}
+                            {{ postAuthor.surname }}
+                        </h5>
+                        <span class="text-muted">
+                            • {{ formatDate(announcementData.timestamp) }} ago
+                        </span>
+                        <p class="card-text mt-2">
+                            {{ announcementData.text }}
+                        </p>
+                    </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-end">
+
+            <div class="card-footer text-end">
                 <button
                     @click="deleteAnnouncement(announcementData.id)"
                     class="delete-btn btn btn-primary"
@@ -36,6 +51,9 @@
 
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
+import { useStoreUser } from "@/stores/user.store";
+
+import { formatDistanceToNow } from "date-fns";
 
 import editAnnouncement from "./editAnnouncement.vue";
 
@@ -46,6 +64,7 @@ export default {
     },
     data() {
         return {
+            postAuthor: {},
             closeEdit: () => {},
             editText: false,
         };
@@ -56,16 +75,30 @@ export default {
             required: true,
         },
     },
-    setup() {
+    setup(props) {
         const storeAnnouncement = useStoreAnnouncement();
-        return { storeAnnouncement };
+        const storeUser = useStoreUser();
+        const authorID = props.announcementData.author_id;
+
+        return { storeAnnouncement, storeUser, authorID };
     },
     created() {
+        this.getPostAuthor();
         this.closeEdit = () => {
             this.editText = false;
         };
     },
     methods: {
+        async getPostAuthor() {
+            await this.storeUser.fetchUser();
+            const postAuthor = await this.storeUser.getUserById(this.authorID);
+            this.postAuthor = postAuthor;
+        },
+        formatDate(strDate) {
+            const objDate = new Date(strDate);
+            const timeAgo = formatDistanceToNow(objDate);
+            return timeAgo;
+        },
         async deleteAnnouncement(idObjava) {
             const isConfirmed = window.confirm(
                 "Jeste li sigurni da želite izbrisati objavu?"
@@ -83,24 +116,29 @@ export default {
 </script>
 
 <style scoped>
-.show-announcement {
-    padding-bottom: 2vw;
-    padding-left: 2vw;
-    padding-right: 2vw;
+.card {
+    border: none;
+    padding: 0;
+    margin-top: 1vw;
 }
-.user-profile-image {
-    width: 40px;
-    height: 40px;
-    margin-right: 1vw;
+.row {
+    padding: 1vw;
 }
-.announcement-text {
-    text-align: left;
+.second-col {
+    padding-left: 0;
+}
+.card-right {
+    padding-left: 0;
+}
+.card-footer {
+    padding: 0.7vw;
+    background-color: white;
+}
+.profile-pic {
+    width: 50px;
+    height: 50px;
 }
 .delete-btn {
-    margin-top: 1vw;
     margin-right: 1vw;
-}
-.edit-btn {
-    margin-top: 1vw;
 }
 </style>

@@ -25,6 +25,7 @@
                     </div>
                 </div>
             </div>
+
             <div
                 class="card-footer text-end"
                 v-if="parentComponent === 'MyProfileView'"
@@ -40,6 +41,7 @@
                 </button>
             </div>
         </div>
+
         <edit-profile-post
             :postData="postData"
             :closeEdit="closeEdit"
@@ -116,7 +118,6 @@ export default {
     border: none;
     padding: 0;
     margin-top: 1vw;
-    margin-bottom: 1vw;
 }
 .row {
     padding: 1vw;
