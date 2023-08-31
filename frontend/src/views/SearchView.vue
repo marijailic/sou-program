@@ -8,12 +8,20 @@
                 </button>
             </div>
         </div>
-        <!-- <button class="btn btn-primary mt-3" @click="openAddUser">
-            Dodaj korisnika
-        </button> -->
-        <add-user v-if="addUser" />
-        <search-user />
-        <show-user v-for="user in users" :key="user.id" :userData="user" />
+        <div class="row">
+            <div class="col">
+                <search-user />
+                <show-user
+                    v-for="user in users"
+                    :key="user.id"
+                    :userData="user"
+                />
+            </div>
+            <div class="col" v-if="addUser || editUser">
+                <add-user v-if="addUser" />
+                <edit-user :userID="editUserID" v-if="editUser" />
+            </div>
+        </div>
     </div>
 </template>
 
@@ -24,6 +32,7 @@ import eventBus from "@/eventBus";
 import searchUser from "@/components/searchUser.vue";
 import showUser from "@/components/showUser.vue";
 import addUser from "@/components/addUser.vue";
+import editUser from "@/components/editUser.vue";
 
 export default {
     name: "SearchView",
@@ -32,12 +41,15 @@ export default {
             users: [],
             searchText: "",
             addUser: false,
+            editUser: false,
+            editUserID: null,
         };
     },
     components: {
         searchUser,
         showUser,
         addUser,
+        editUser,
     },
     setup() {
         const storeUser = useStoreUser();
@@ -46,6 +58,7 @@ export default {
     created() {
         this.getUsers();
         this.filterUsers();
+        this.openEditUser();
     },
     methods: {
         async getUsers() {
@@ -61,6 +74,12 @@ export default {
         },
         openAddUser() {
             this.addUser = true;
+        },
+        openEditUser() {
+            eventBus.on("editUser", (editObj) => {
+                this.editUser = editObj.editUser;
+                this.editUserID = editObj.editUserID;
+            });
         },
     },
 };

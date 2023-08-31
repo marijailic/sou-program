@@ -34,6 +34,9 @@ body {
     .btn-primary:active {
         background-color: #66ccff !important;
     }
+    .btn-primary:focus {
+        background-color: #66ccff;
+    }
 }
 .main-container {
     margin-left: 0;

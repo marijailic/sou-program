@@ -1,44 +1,50 @@
 <template>
-    <div class="container show-user">
-        <div class="user-profile">
-            <img
-                src="@/assets/sp-icon.png"
-                class="user-profile-image rounded-circle"
-            />
-            <div class="user-info">
-                <div class="user-name">
-                    <router-link :to="'/user-profile/' + userData.id"
-                        >{{ userData.name }} {{ userData.surname }}</router-link
+    <div>
+        <div class="card">
+            <div class="user-profile">
+                <img
+                    src="@/assets/sp-icon.png"
+                    class="user-profile-image rounded-circle"
+                />
+                <div class="user-info">
+                    <router-link
+                        :to="'/user-profile/' + userData.id"
+                        class="user-name"
                     >
+                        {{ userData.name }} {{ userData.surname }}
+                    </router-link>
+                    <div class="username text-muted">
+                        {{ userData.username }}
+                    </div>
                 </div>
-                <div class="username">{{ userData.username }}</div>
-            </div>
-            <div class="user-actions d-flex justify-content-end">
-                <button
-                    class="delete-btn btn btn-primary"
-                    @click="deleteUser(userData.id)"
-                >
-                    Izbriši
-                </button>
-                <button class="edit-btn btn btn-primary" @click="openEditUser">
-                    Uredi
-                </button>
+                <div class="user-actions d-flex justify-content-end">
+                    <button
+                        class="delete-btn btn btn-primary"
+                        @click="deleteUser(userData.id)"
+                    >
+                        Izbriši
+                    </button>
+                    <button
+                        class="edit-btn btn btn-primary"
+                        @click="openEditUser"
+                    >
+                        Uredi
+                    </button>
+                </div>
             </div>
         </div>
-        <edit-user :userData="userData" v-if="editUser" />
     </div>
 </template>
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
-import editUser from "@/components/editUser.vue";
+import eventBus from "@/eventBus";
 
 export default {
     name: "showUser",
     data() {
-        return { editUser: false };
+        return {};
     },
-    components: { editUser },
     props: {
         userData: {
             type: Object,
@@ -60,19 +66,25 @@ export default {
             }
         },
         openEditUser() {
-            this.editUser = true;
+            const editUser = true;
+            const editUserID = this.userData.id;
+            const editObj = {
+                editUser,
+                editUserID,
+            };
+            eventBus.emit("editUser", editObj);
         },
     },
 };
 </script>
 
 <style scoped>
-.show-user {
-    margin-top: 2vw;
+.card {
+    border: none;
+    padding: 1vw;
+    margin-top: 1vw;
 }
 .user-profile {
-    margin-right: auto;
-    margin-left: auto;
     display: flex;
     align-items: center;
 }
@@ -81,24 +93,20 @@ export default {
     height: 40px;
     margin-right: 1vw;
 }
+.user-info {
+    width: 100%;
+}
 .user-name {
     text-align: left;
-    font-size: 16px;
-    font-weight: bold;
+    color: rgb(33, 37, 41);
 }
-
 .username {
     text-align: left;
     font-size: 14px;
-    color: #888;
-}
-.user-info {
-    width: 100%;
 }
 .user-actions {
     width: 100%;
 }
-
 .delete-btn {
     margin-right: 1vw;
 }

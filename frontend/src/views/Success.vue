@@ -1,11 +1,9 @@
 <template>
     <div class="success-msg">
-        <div class="msg-n-btn">
-            <h1>YAS! :)</h1>
-            <button class="btn btn-primary mt-3" @click="goBack">
-                Vrati me natrag
-            </button>
-        </div>
+        <h1>YAS! :)</h1>
+        <button class="btn btn-primary mt-3" @click="goBack">
+            Vrati me natrag
+        </button>
     </div>
 </template>
 
@@ -23,11 +21,10 @@ export default {
 
 <style scoped>
 .success-msg {
-    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-}
-.msg-n-btn {
-    align-self: center;
+    align-items: center;
+    height: 100vh;
 }
 </style>

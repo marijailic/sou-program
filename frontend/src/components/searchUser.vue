@@ -1,6 +1,6 @@
 <template>
-    <div class="container mt-4">
-        <div class="row justify-content-center">
+    <div>
+        <div class="card">
             <div class="input-group">
                 <input
                     type="text"
@@ -30,4 +30,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.card {
+    border: none;
+    padding: 1vw;
+    margin-top: 1vw;
+}
+</style>

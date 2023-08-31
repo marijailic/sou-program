@@ -15,11 +15,8 @@ const routes = [
                 component: () => import("@/views/Web/HomeView.vue"),
             },
             {
-                path: "/login",
+                path: "login",
                 name: "LoginView",
-                meta: {
-                    authRequired: false,
-                },
                 component: () => import("../views/LoginView.vue"),
             },
             {
@@ -53,19 +50,8 @@ const routes = [
         },
         children: [
             {
-                path: "/error",
-                name: "Error",
-                component: () => import("../views/Error.vue"),
-            },
-            {
-                path: "/success",
-                name: "Success",
-                component: () => import("../views/Success.vue"),
-            },
-            {
                 path: "/newsfeed",
                 name: "NewsfeedView",
-
                 component: () => import("../views/NewsfeedView.vue"),
             },
             {
@@ -82,6 +68,26 @@ const routes = [
                 path: "/user-profile/:id",
                 name: "UserProfileView",
                 component: () => import("../views/UserProfileView.vue"),
+            },
+        ],
+    },
+    {
+        path: "/",
+        name: "MsgWrapper",
+        component: () => import("@/MsgWrapper.vue"),
+        meta: {
+            authRequired: true,
+        },
+        children: [
+            {
+                path: "/error",
+                name: "Error",
+                component: () => import("../views/Error.vue"),
+            },
+            {
+                path: "/success",
+                name: "Success",
+                component: () => import("../views/Success.vue"),
             },
         ],
     },
