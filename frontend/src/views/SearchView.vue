@@ -18,8 +18,12 @@
                 />
             </div>
             <div class="col" v-if="addUser || editUser">
-                <add-user v-if="addUser" />
-                <edit-user :userID="editUserID" v-if="editUser" />
+                <add-user :closeAdd="closeAdd" v-if="addUser" />
+                <edit-user
+                    :userID="editUserID"
+                    :closeEdit="closeEdit"
+                    v-if="editUser"
+                />
             </div>
         </div>
     </div>
@@ -40,6 +44,8 @@ export default {
         return {
             users: [],
             searchText: "",
+            closeAdd: () => {},
+            closeEdit: () => {},
             addUser: false,
             editUser: false,
             editUserID: null,
@@ -59,10 +65,17 @@ export default {
         this.getUsers();
         this.filterUsers();
         this.openEditUser();
+        this.closeAdd = () => {
+            this.addUser = false;
+        };
+        this.closeEdit = () => {
+            this.editUser = false;
+        };
     },
     methods: {
         async getUsers() {
-            const users = await this.storeUser.fetchUser();
+            await this.storeUser.fetchUser();
+            const users = this.storeUser.getUsersExceptCurrent();
             this.users = users;
         },
         filterUsers() {
@@ -72,13 +85,23 @@ export default {
                 this.users = this.storeUser.getFilteredUsers(searchText);
             });
         },
+        rightColActiveCheck() {
+            this.addUser = false;
+            this.editUser = false;
+        },
         openAddUser() {
+            this.rightColActiveCheck();
             this.addUser = true;
         },
         openEditUser() {
             eventBus.on("editUser", (editObj) => {
-                this.editUser = editObj.editUser;
-                this.editUserID = editObj.editUserID;
+                if (this.editUserID !== editObj.editUserID) {
+                    this.rightColActiveCheck();
+                    this.editUserID = editObj.editUserID;
+                    this.$nextTick(() => {
+                        this.editUser = editObj.editUser;
+                    });
+                }
             });
         },
     },

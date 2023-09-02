@@ -24,6 +24,8 @@
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 
+import eventBus from "@/eventBus";
+
 import addAnnouncement from "@/components/addAnnouncement.vue";
 import showAnnouncement from "@/components/showAnnouncement.vue";
 
@@ -33,6 +35,7 @@ export default {
         return {
             currentUserData: {},
             announcements: [],
+            editingAnnouncementID: null,
         };
     },
     components: {
@@ -49,6 +52,7 @@ export default {
     created() {
         this.getCurrentUser();
         this.getAnnouncements();
+        this.getEditingAnnouncementID();
     },
     methods: {
         async getCurrentUser() {
@@ -62,6 +66,15 @@ export default {
             const announcements =
                 await this.storeAnnouncement.fetchAnnouncement();
             this.announcements = announcements;
+        },
+        getEditingAnnouncementID() {
+            eventBus.on("editingAnnouncementID", (editingAnnouncementID) => {
+                if (this.editingAnnouncementID !== editingAnnouncementID) {
+                    const editText = false;
+                    eventBus.emit("closeOpenedAnnouncementEdit", editText);
+                    this.editingAnnouncementID = editingAnnouncementID;
+                }
+            });
         },
     },
 };

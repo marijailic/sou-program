@@ -36,7 +36,10 @@
                 >
                     Izbriši
                 </button>
-                <button class="edit-btn btn btn-primary" @click="openEdit">
+                <button
+                    class="edit-btn btn btn-primary"
+                    @click="openEdit(postData.id)"
+                >
                     Uredi
                 </button>
             </div>
@@ -53,6 +56,7 @@
 <script>
 import { useStoreProfilePost } from "@/stores/profilepost.store";
 
+import eventBus from "@/eventBus";
 import { formatDistanceToNow } from "date-fns";
 
 import editProfilePost from "./editProfilePost.vue";
@@ -106,7 +110,14 @@ export default {
                 await this.storeProfilePost.deleteProfilePost(idPost);
             }
         },
-        openEdit() {
+        openedEditCheck() {
+            eventBus.on("closeOpenedPostEdit", (editText) => {
+                this.editText = editText;
+            });
+        },
+        openEdit(editingPostID) {
+            this.openedEditCheck();
+            eventBus.emit("editingPostID", editingPostID);
             this.editText = true;
         },
     },

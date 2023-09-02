@@ -89,7 +89,9 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary">Odustani</a>
+                    <a class="escape-btn btn btn-primary" @click="closeAdd"
+                        >Odustani</a
+                    >
                     <button type="submit" class="btn btn-primary">Dodaj</button>
                 </div>
             </div>
@@ -104,6 +106,12 @@ import { ref } from "vue";
 export default {
     name: "addUser",
     data() {},
+    props: {
+        closeAdd: {
+            type: Function,
+            required: true,
+        },
+    },
     setup() {
         const storeUser = useStoreUser();
 
@@ -139,6 +147,11 @@ export default {
             newUserBio,
             newUserType,
         };
+    },
+    methods: {
+        closeAdd() {
+            this.closeAdd();
+        },
     },
 };
 </script>

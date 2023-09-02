@@ -85,7 +85,9 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary">Odustani</a>
+                    <a class="escape-btn btn btn-primary" @click="closeEdit"
+                        >Odustani</a
+                    >
                     <button type="submit" class="btn btn-primary">Uredi</button>
                 </div>
             </div>
@@ -103,6 +105,10 @@ export default {
     props: {
         userID: {
             type: Number,
+            required: true,
+        },
+        closeEdit: {
+            type: Function,
             required: true,
         },
     },
@@ -148,6 +154,11 @@ export default {
             newUserBio,
             newUserType,
         };
+    },
+    methods: {
+        closeEdit() {
+            this.closeEdit();
+        },
     },
 };
 </script>

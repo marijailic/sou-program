@@ -23,6 +23,8 @@
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
 
+import eventBus from "@/eventBus";
+
 import showProfile from "@/components/showProfile.vue";
 import addProfilePost from "../components/addProfilePost.vue";
 import showProfilePost from "@/components/showProfilePost.vue";
@@ -35,6 +37,7 @@ export default {
             currentUserData: {},
             currentUserPosts: [],
             parentComponent: "MyProfileView",
+            editingPostID: null,
         };
     },
     setup() {
@@ -47,6 +50,7 @@ export default {
     async created() {
         await this.getCurrentUser();
         await this.getCurrentUserPosts();
+        this.getEditingPostID();
     },
     methods: {
         async getCurrentUser() {
@@ -62,6 +66,15 @@ export default {
                     this.currentUserData.id
                 );
             this.currentUserPosts = currentUserPosts;
+        },
+        getEditingPostID() {
+            eventBus.on("editingPostID", (editingPostID) => {
+                if (this.editingPostID !== editingPostID) {
+                    const editText = false;
+                    eventBus.emit("closeOpenedPostEdit", editText);
+                    this.editingPostID = editingPostID;
+                }
+            });
         },
     },
 };

@@ -35,7 +35,10 @@
                 >
                     Izbriši
                 </button>
-                <button class="edit-btn btn btn-primary" @click="openEdit">
+                <button
+                    class="edit-btn btn btn-primary"
+                    @click="openEdit(announcementData.id)"
+                >
                     Uredi
                 </button>
             </div>
@@ -53,6 +56,7 @@
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 import { useStoreUser } from "@/stores/user.store";
 
+import eventBus from "@/eventBus";
 import { formatDistanceToNow } from "date-fns";
 
 import editAnnouncement from "./editAnnouncement.vue";
@@ -108,7 +112,14 @@ export default {
                 await this.storeAnnouncement.deleteAnnouncement(idObjava);
             }
         },
-        openEdit() {
+        openedEditCheck() {
+            eventBus.on("closeOpenedAnnouncementEdit", (editText) => {
+                this.editText = editText;
+            });
+        },
+        openEdit(editingAnnouncementID) {
+            this.openedEditCheck();
+            eventBus.emit("editingAnnouncementID", editingAnnouncementID);
             this.editText = true;
         },
     },

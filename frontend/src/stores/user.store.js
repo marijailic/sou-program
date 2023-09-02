@@ -5,16 +5,28 @@ export const useStoreUser = defineStore("storeUser", {
         user: [],
     }),
     getters: {
+        getUsersExceptCurrent: (state) => () => {
+            const currentUser = localStorage.getItem("username");
+            return state.user.filter((user) => {
+                return (
+                    user.username.toLowerCase() !== currentUser.toLowerCase()
+                );
+            });
+        },
         getFilteredUsers: (state) => (searchText) => {
+            const currentUser = localStorage.getItem("username");
             const filteredUsers = state.user.filter((user) => {
                 const fullName = `${user.name} ${user.surname}`;
                 const reversedFullName = `${user.surname} ${user.name}`;
 
+                const userFullName = fullName.toLowerCase();
+                const reversedUserFullName = reversedFullName.toLowerCase();
+                const searchLowerCase = searchText.toLowerCase();
+
                 return (
-                    fullName.toLowerCase().includes(searchText.toLowerCase()) ||
-                    reversedFullName
-                        .toLowerCase()
-                        .includes(searchText.toLowerCase())
+                    (userFullName.includes(searchLowerCase) ||
+                        reversedUserFullName.includes(searchLowerCase)) &&
+                    user.username.toLowerCase() !== currentUser.toLowerCase()
                 );
             });
             return filteredUsers;
