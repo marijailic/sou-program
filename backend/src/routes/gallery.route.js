@@ -13,7 +13,7 @@ router.get("/gallery", authMiddleware, async (req, res) => {
             .from("gallery")
             .orderBy("id", "desc")
             .limit(10);
-        console.log(gallery);
+        //console.log(gallery);
         res.json({
             message: "Gallery fetched successfully",
             data: gallery,
@@ -28,10 +28,20 @@ router.get("/gallery/:id", authMiddleware, async (req, res) => {
     const idGallery = req.params.id;
 
     try {
-        const gallery = await db("gallery").where({ id: idGallery }).del();
+        const gallery = await db
+            .select()
+            .from("gallery")
+            .where({ id: idGallery })
+
+        const galleryItems = await db
+            .select()
+            .from("gallery_item")
+            .where({ gallery_id: idGallery })
+
         res.json({
             message: "Gallery with id fetched successfully",
             data: gallery,
+            dataItems: galleryItems
         });
     } catch (error) {
         console.log("Error:", error);
@@ -65,10 +75,11 @@ router.post("/gallery", authMiddleware, async (req, res) => {
     };
 
     try {
-        await db("gallery").insert(galleryData);
-        res.status(201).json({
+        const [id] = await db("gallery").insert(galleryData, "id");
+
+        res.json({
             message: "Gallery created successfully",
-            data: {},
+            data: id,
         });
     } catch (error) {
         console.log("Error:", error);
@@ -93,5 +104,47 @@ router.patch("/gallery/:id", authMiddleware, async (req, res) => {
         res.status(500).json({ message: "Internal server error", data: {} });
     }
 });
+
+router.get("/gallery/item", authMiddleware, async (req, res) => {
+    try {
+        var galleryItem = await db.select().from("gallery-item");
+        console.log(galleryItem);
+        res.json({
+            message: "Gallery item fetched successfully",
+            data: galleryItem,
+        });
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({ message: "Internal server error", data: {} });
+    }
+});
+
+router.post("/gallery/:id/items", authMiddleware, async (req, res) => {
+    const galleryId = req.params.id;
+    const { picture_keys } = req.body;
+
+    const timezone = "Europe/Amsterdam";
+
+    try {
+        for (let i = 0; i < picture_keys.length; i++) {
+            const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+            const galleryItemData = {
+                gallery_id: galleryId,
+                picture_key: picture_keys[i],
+                timestamp: timestamp,
+            };
+
+            await db("gallery-item").insert(galleryItemData);
+        }
+        res.status(201).json({
+            message: "Gallery items created successfully",
+            data: {},
+        });
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({ message: "Internal server error", data: {} });
+    }
+});
+
 
 module.exports = router;

@@ -15,11 +15,6 @@ const routes = [
                 component: () => import("@/views/Web/HomeView.vue"),
             },
             {
-                path: "login",
-                name: "LoginView",
-                component: () => import("../views/LoginView.vue"),
-            },
-            {
                 path: "about",
                 name: "AboutView",
                 component: () => import("@/views/Web/AboutView"),
@@ -50,8 +45,27 @@ const routes = [
         },
         children: [
             {
+                path: "/login",
+                name: "LoginView",
+                meta: {
+                    authRequired: false,
+                },
+                component: () => import("../views/LoginView.vue"),
+            },
+            {
+                path: "/error",
+                name: "Error",
+                component: () => import("../views/Error.vue"),
+            },
+            {
+                path: "/success",
+                name: "Success",
+                component: () => import("../views/Success.vue"),
+            },
+            {
                 path: "/newsfeed",
                 name: "NewsfeedView",
+
                 component: () => import("../views/NewsfeedView.vue"),
             },
             {
@@ -69,26 +83,11 @@ const routes = [
                 name: "UserProfileView",
                 component: () => import("../views/UserProfileView.vue"),
             },
-        ],
-    },
-    {
-        path: "/",
-        name: "MsgWrapper",
-        component: () => import("@/MsgWrapper.vue"),
-        meta: {
-            authRequired: true,
-        },
-        children: [
             {
-                path: "/error",
-                name: "Error",
-                component: () => import("../views/Error.vue"),
-            },
-            {
-                path: "/success",
-                name: "Success",
-                component: () => import("../views/Success.vue"),
-            },
+                path: "/gallery",
+                name: "GalleryView",
+                component: () => import("../views/GalleryView.vue"),
+            }
         ],
     },
 ];
