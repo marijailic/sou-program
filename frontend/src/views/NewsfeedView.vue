@@ -6,10 +6,11 @@
 
         <add-announcement :userData="currentUserData" />
 
-        <div class="d-flex justify-content-center">
-            <h1 class="mt-5" v-if="announcements.length === 0">
-                Nema obavijesti...
-            </h1>
+        <div
+            class="d-flex justify-content-center"
+            v-if="announcements.length === 0"
+        >
+            <h1 class="mt-5">Nema obavijesti...</h1>
         </div>
 
         <show-announcement

@@ -2,8 +2,11 @@
     <div>
         <show-profile :userData="userData" />
 
-        <div class="d-flex justify-content-center">
-            <h1 class="mt-5" v-if="userPosts.length === 0">Nema objava...</h1>
+        <div
+            class="d-flex justify-content-center"
+            v-if="userPosts.length === 0"
+        >
+            <h1 class="mt-5">Nema objava...</h1>
         </div>
 
         <show-profile-post

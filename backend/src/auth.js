@@ -1,18 +1,23 @@
+const bcrypt = require("bcrypt");
+const db = require("./db");
 const jwt = require("jsonwebtoken");
 
-const db = require("./db");
+async function hashPassword(passwordInput) {
+    const passwordHash = await bcrypt.hash(passwordInput, 8);
+    return passwordHash;
+}
 
 async function authUser(username, password) {
-    const User = { username: username, password: password };
-
     try {
         const response = await db
-            .where("username", User.username)
-            .andWhere("password", User.password)
+            .where("username", username)
             .select()
             .from("user");
 
-        if (response[0].username && response[0].password) {
+        if (
+            response[0].username &&
+            (await bcrypt.compare(password, response[0].password))
+        ) {
             const authenticatedUser = {
                 username: response[0].username,
             };
@@ -118,6 +123,7 @@ function authMiddleware(req, res, next) {
 }
 
 module.exports = {
+    hashPassword,
     authUser,
     authMiddleware,
 };

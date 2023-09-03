@@ -4,7 +4,7 @@ const router = express.Router();
 
 const db = require("../db");
 
-const { authMiddleware } = require("../auth");
+const { hashPassword, authMiddleware } = require("../auth");
 
 router.get("/user", authMiddleware, async (req, res) => {
     try {
@@ -33,17 +33,17 @@ router.delete("/delete-user", authMiddleware, async (req, res) => {
 });
 
 router.post("/create-user", authMiddleware, async (req, res) => {
-    // const name = req.body.name;
-
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+
+    const passwordHash = await hashPassword(req.body.password);
 
     const userData = {
         name: req.body.name,
         surname: req.body.surname,
         e_mail: req.body.email,
         username: req.body.username,
-        password: req.body.password,
+        password: passwordHash,
         profile_picture_key: "",
         bio: req.body.bio,
         type: req.body.type,
