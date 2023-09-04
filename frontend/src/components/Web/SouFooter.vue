@@ -54,12 +54,16 @@ export default {
 </script>
 
 <style lang="scss">
+footer {
+    background-color: var(--primary-color);
+}
 .footer-item {
     padding: 0.5em;
     font-size: 1.5em;
 }
 
 .footer-item a {
-    color: black;
+    text-decoration: none;
+    color: white;
 }
 </style>
