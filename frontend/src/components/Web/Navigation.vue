@@ -96,7 +96,7 @@ function toggleNavOnScroll() {
         nav.style.transform = "translateY(-100%)";
 
         nav.classList.add("fixed");
-        content.style.marginTop = `${2.166 * nav.offsetHeight}px`;
+        content.style.marginTop = `${1.333 * nav.offsetHeight}px`;
 
         nav.style.transition = "transform 0.3s ease-out";
         nav.style.transform = "translateY(0%)";
@@ -184,7 +184,7 @@ nav {
     z-index: 2;
     transition: padding-top 1s;
     transition: padding-bottom 1s;
-    padding: 4em 1em;
+    padding: 2em 1em;
     background-color: var(--primary-color);
 
     #logo {

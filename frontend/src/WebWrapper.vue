@@ -47,7 +47,7 @@ body {
 
 .filler {
     position: absolute;
-    height: 208px;
+    height: 140px;
     width: 100%;
     background-color: var(--primary-color);
     z-index: 1;
