@@ -89,8 +89,8 @@ export default {
     align-items: center;
 }
 .user-profile-image {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     margin-right: 1vw;
 }
 .user-info {
