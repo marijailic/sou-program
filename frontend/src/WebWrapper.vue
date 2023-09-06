@@ -1,5 +1,6 @@
 <template>
     <div id="web-wrapper" class="d-flex flex-column">
+        <div class="filler">&nbsp;</div>
         <div class="flex-grow-1">
             <!-- TODO Not for production -->
             <Navigation />
@@ -15,6 +16,15 @@ import SouFooter from "@/components/Web/SouFooter.vue";
 
 export default {
     name: "WebWrapper",
+    created() {
+        const bodyStyles = window.getComputedStyle(document.body);
+        if (
+            bodyStyles.overflowX === "scroll" ||
+            bodyStyles.overflowX === "visible"
+        ) {
+            console.log("Hello");
+        }
+    },
     components: {
         Navigation,
         SouFooter,
@@ -23,19 +33,35 @@ export default {
 </script>
 
 <style lang="scss">
+:root {
+    --primary-color: rgb(100, 202, 255);
+}
+body {
+    background-color: var(--primary-color);
+}
+
 #web-wrapper {
+    background-color: white;
     min-height: 100vh;
 }
 
+.filler {
+    position: absolute;
+    height: 140px;
+    width: 100%;
+    background-color: var(--primary-color);
+    z-index: 1;
+}
+
 #web-container {
-    padding: 8em;
+    padding: 2em 8em;
     text-align: left;
     line-height: 20px;
     font-weight: 100;
 
     h1 {
         font-size: 4rem;
-        padding: 64px 32px;
+        padding: 0px 32px 64px 32px;
     }
 
     h2 {

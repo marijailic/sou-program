@@ -38,74 +38,65 @@
 </template>
 -->
 <template>
-    <nav id="nav" class="d-flex p-3 justify-content-between">
-        <img
-            class="m-2"
-            src="@/assets/sp-icon.png"
-            width="64"
-            height="64"
-            alt=""
-        />
-        <div @click="navOpen" class="menu-icon p-3 cursor-pointer">
-            <i class="d-block fa-solid fa-bars"></i>
-        </div>
-
-        <div :hidden="!navOpened" id="nav-content">
-            <div @click="navClose" class="float-end p-4 close-nav">
-                <i class="fa-solid fa-xmark"></i>
-            </div>
-
-            <div>
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="'/'">
-                            Home
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="'about'">
-                            About
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="'educators'">
-                            Educators
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="'podcast'">
-                            Podcast
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" :to="'contact'">
-                            Contact
-                        </router-link>
-                    </li>
-                </ul>
+    <nav id="nav" class="d-flex justify-content-between">
+        <a class="inline-block" href="/">
+            <img
+                id="logo"
+                :class="(navOpened ? 'opened' : '') + ' m-2'"
+                src="@/assets/sp-icon.png"
+                alt=""
+            />
+        </a>
+        <div class="d-flex align-items-center">
+            <div @click="navToggle" class="pl-5 menu-icon cursor-pointer">
+                <Hamburger :type="1" class="float-end p-4" />
             </div>
         </div>
     </nav>
+    <div :class="navOpened ? 'opened' : ''" id="nav-content">
+        <div class="flex">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="/" class="nav-link"> Home </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/about" class="nav-link"> About </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/educators" class="nav-link"> Educators </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/podcast" class="nav-link"> Podcast </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/contact" class="nav-link"> Contact </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script>
-let nav, body, content, scrollThreshold, navContent;
+import Hamburger from "./Hamburger.vue";
 
-function disableScroll() {
-    document.body.style.overflow = "hidden";
+let nav, body, content, scrollThreshold, navContent, timeout, logo;
+
+function toggleScroll() {
+    if (document.body.style.overflow === "hidden") {
+        document.body.style.overflow = "initial";
+    } else {
+        document.body.style.overflow = "hidden";
+    }
 }
 
-function enableScroll() {
-    document.body.style.overflow = "initial";
-}
-
-window.addEventListener("scroll", () => {
+function toggleNavOnScroll() {
     if (window.scrollY >= scrollThreshold && !nav.classList.contains("fixed")) {
+        // When scrolled down
         nav.style.transition = "transform 0s";
         nav.style.transform = "translateY(-100%)";
 
         nav.classList.add("fixed");
-        content.style.marginTop = `${nav.offsetHeight}px`;
+        content.style.marginTop = `${1.333 * nav.offsetHeight}px`;
 
         nav.style.transition = "transform 0.3s ease-out";
         nav.style.transform = "translateY(0%)";
@@ -113,6 +104,7 @@ window.addEventListener("scroll", () => {
         window.scrollY < scrollThreshold &&
         nav.classList.contains("fixed")
     ) {
+        // When on top
         nav.classList.remove("fixed");
         content.style.marginTop = 0;
 
@@ -125,6 +117,14 @@ window.addEventListener("scroll", () => {
             nav.style.transform = "translateY(0)";
         }, 10);
     }
+}
+
+const throttleTime = 10;
+window.addEventListener("scroll", () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        toggleNavOnScroll();
+    }, throttleTime);
 });
 
 document.addEventListener("keypress", function (event) {
@@ -142,20 +142,21 @@ export default {
             navOpened: false,
         };
     },
+    components: {
+        Hamburger,
+    },
     mounted() {
         nav = document.getElementById("nav");
         body = document.getElementsByTagName("body")[0];
         content = document.getElementById("web-container");
+        logo = document.getElementById("logo");
         scrollThreshold = nav.offsetHeight;
     },
     methods: {
-        navOpen() {
-            this.navOpened = true;
-            disableScroll();
-        },
-        navClose() {
-            this.navOpened = false;
-            enableScroll();
+        navToggle() {
+            toggleScroll();
+            this.navOpened = !this.navOpened;
+            document.dispatchEvent(new Event("toggleNav"));
         },
     },
     name: "educatorCalendar",
@@ -170,16 +171,41 @@ nav.fixed {
     position: fixed;
     left: 0;
     right: 0;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.menu-icon {
+    scale: 0.7;
 }
 
 nav {
-    a.router-link-exact-active {
-        color: inherit !important;
+    position: relative;
+    z-index: 2;
+    transition: padding-top 1s;
+    transition: padding-bottom 1s;
+    padding: 2em 1em;
+    background-color: var(--primary-color);
+
+    #logo {
+        height: 64px;
+        width: 64px;
+        border: 3px solid white;
+        border-radius: 50%;
+        transition: scale 0.3s;
     }
 
-    li {
-        font-size: 24px;
-        padding: 0.3em;
+    #logo.opened {
+        animation: rotate 1s ease-in-out;
+    }
+
+    @keyframes rotate {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(180deg);
+        }
     }
 
     .position-absolute {
@@ -188,18 +214,10 @@ nav {
     }
 
     .menu-icon {
+        z-index: 5;
         font-size: 64px;
         height: auto;
         cursor: pointer;
-    }
-
-    #nav-content {
-        position: fixed;
-        top: 0;
-        left: 0;
-        background-color: blueviolet;
-        height: 100vw;
-        width: 100%;
     }
 
     .close-nav {
@@ -208,5 +226,50 @@ nav {
         font-size: 64px;
         cursor: pointer;
     }
+}
+
+#nav-content {
+    position: fixed;
+    top: 100%;
+    left: 0;
+    background-color: var(--primary-color);
+    color: white;
+    transition: top 0.5s;
+    height: 100vw;
+    width: 100%;
+    padding: 12em;
+    z-index: 1;
+
+    li {
+        font-size: 24px;
+        padding: 0.1em;
+
+        a {
+            display: inline-block;
+            position: relative;
+            font-size: 24px;
+            border: 2px solid transparent;
+            overflow: hidden;
+        }
+
+        a::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px;
+            background-color: white;
+            transition: left 0.3s ease;
+        }
+
+        a:hover::after {
+            left: 0;
+        }
+    }
+}
+
+#nav-content.opened {
+    top: 0;
 }
 </style>

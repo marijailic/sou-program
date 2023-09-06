@@ -44,8 +44,8 @@ export default {
     padding: 1vw;
 }
 .profile-pic {
-    width: 200px;
-    height: 200px;
+    width: 10vw;
+    height: 10vw;
 }
 .second-col {
     padding-left: 0;

@@ -13,16 +13,19 @@ app.use(express.json());
 const loginRoute = require("./routes/login.route");
 const userRoute = require("./routes/user.route");
 const announcementRoute = require("./routes/announcement.route");
-const galleryRoute = require("./routes/gallery.route");
-const galleryItemRoute = require("./routes/galleryitem.route");
 const profilePostRoute = require("./routes/profilepost.route");
+const galleryRoute = require("./routes/gallery.route");
+const googleDriveRoute = require("./routes/googleauth.route");
 
-app.use("/", loginRoute); // home
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: true }));
+
+app.use("/", loginRoute); // login
 app.use("/", userRoute); // user (user table)
 app.use("/", announcementRoute); // announcement (announcement table)
-app.use("/", galleryRoute); // gallery (gallery table)
-app.use("/", galleryItemRoute); // gallery (gallery item table)
-app.use("/", profilePostRoute); // profile-post (profile post table && comment table)
+app.use("/", profilePostRoute); // profile-post (profile_post table && comment table)
+app.use("/", galleryRoute); // gallery (gallery table && gallery_item table)
+app.use("/", googleDriveRoute);
 
 // APP START
 //////////////////////////////////////////////////////////////////////////////

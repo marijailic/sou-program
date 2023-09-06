@@ -8,12 +8,12 @@ const { authMiddleware } = require("../auth");
 
 router.get("/gallery", authMiddleware, async (req, res) => {
     try {
-        var gallery = await db
+        const gallery = await db
             .select()
             .from("gallery")
-            .orderBy("id", "desc")
+            .orderBy("timestamp", "desc")
             .limit(10);
-        console.log(gallery);
+        //console.log(gallery);
         res.json({
             message: "Gallery fetched successfully",
             data: gallery,
@@ -24,27 +24,12 @@ router.get("/gallery", authMiddleware, async (req, res) => {
     }
 });
 
-router.get("/gallery/:id", authMiddleware, async (req, res) => {
-    const idGallery = req.params.id;
-
-    try {
-        const gallery = await db("gallery").where({ id: idGallery }).del();
-        res.json({
-            message: "Gallery with id fetched successfully",
-            data: gallery,
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
-    }
-});
-
-router.delete("/gallery/:id", authMiddleware, async (req, res) => {
-    const idGallery = req.params.id;
+router.delete("/gallery", authMiddleware, async (req, res) => {
+    const idGallery = req.body.id;
 
     try {
         await db("gallery").where({ id: idGallery }).del();
-        res.status(204).end();
+        res.json({ message: "Gallery deleted successfully", data: {} });
     } catch (error) {
         console.log("Error:", error);
         res.status(500).json({ message: "Internal server error", data: {} });
@@ -52,40 +37,28 @@ router.delete("/gallery/:id", authMiddleware, async (req, res) => {
 });
 
 router.post("/gallery", authMiddleware, async (req, res) => {
-    const { title, text, author_id } = req.body;
+    const title = req.body.title;
+    const text = req.body.text;
+    const author_id = req.body.author_id;
 
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
 
+    if (title.trim() === "" || text.trim() === "") {
+        res.status(400).json({ message: "Client error", data: {} });
+    }
+
     const galleryData = {
-        text: text,
         title: title,
+        text: text,
         author_id: author_id,
         timestamp: timestamp,
     };
 
     try {
         await db("gallery").insert(galleryData);
-        res.status(201).json({
-            message: "Gallery created successfully",
-            data: {},
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
-    }
-});
-
-router.patch("/gallery/:id", authMiddleware, async (req, res) => {
-    const idGallery = req.params.id;
-    const { title, text } = req.body;
-
-    try {
-        await db("gallery")
-            .where({ id: idGallery })
-            .update({ title: title, text: text });
         res.json({
-            message: "Gallery updated successfully",
+            message: "Gallery created successfully",
             data: {},
         });
     } catch (error) {

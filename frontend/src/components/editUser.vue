@@ -174,7 +174,6 @@ export default {
     padding: 1vw;
 }
 .headline {
-    margin-top: 0.5vw;
     margin-bottom: 1vw;
 }
 .form-group {
