@@ -69,6 +69,11 @@ const routes = [
                 name: "UserProfileView",
                 component: () => import("../views/UserProfileView.vue"),
             },
+            {
+                path: "/gallery",
+                name: "GalleryView",
+                component: () => import("../views/GalleryView.vue"),
+            },
         ],
     },
     {
