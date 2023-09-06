@@ -18,7 +18,7 @@
                             {{ galleryData.text }}
                         </p>
                         <p>
-                            {{ galleryData.author_id }}
+                            {{ authorUsername }}
                             <span class="text-muted">
                                 •
                                 {{ formatDate(galleryData.timestamp) }} ago
@@ -50,6 +50,11 @@ import { formatDistanceToNow } from "date-fns";
 
 export default {
     name: "showGallery",
+    data() {
+        return {
+            authorUsername: null,
+        };
+    },
     props: {
         galleryData: {
             type: Object,
@@ -65,6 +70,7 @@ export default {
     },
     async created() {
         // await this.displayImage(this.imageID);
+        await this.getAuthorUsername(this.galleryData.author_id);
     },
     methods: {
         async deleteGallery(idGallery) {
@@ -85,10 +91,11 @@ export default {
         //     const imgElement = document.getElementById("image");
         //     imgElement.src = `data:image/jpeg;base64,${image_}`;
         // },
-        // showAuthorUsername(userId) {
-        //     const user = this.storeUser.getUserById(userId);
-        //     return user.username;
-        // },
+        async getAuthorUsername(userID) {
+            await this.storeUser.fetchUser();
+            const user = await this.storeUser.getUserById(userID);
+            this.authorUsername = user.username;
+        },
         formatDate(strDate) {
             const objDate = new Date(strDate);
             const timeAgo = formatDistanceToNow(objDate);
