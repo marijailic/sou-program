@@ -67,15 +67,15 @@ export default {
         // await this.displayImage(this.imageID);
     },
     methods: {
-        // async deleteGallery(idGallery) {
-        //     const isConfirmed = window.confirm(
-        //         "Jeste li sigurni da želite izbrisati galeriju?"
-        //     );
+        async deleteGallery(idGallery) {
+            const isConfirmed = window.confirm(
+                "Jeste li sigurni da želite izbrisati galeriju?"
+            );
 
-        //     if (isConfirmed) {
-        //         await this.storeGallery.deleteGallery(idGallery);
-        //     }
-        // },
+            if (isConfirmed) {
+                await this.storeGallery.deleteGallery(idGallery);
+            }
+        },
         // openEdit() {
         //     location.href = "/gallery/" + idGallery;
         // },

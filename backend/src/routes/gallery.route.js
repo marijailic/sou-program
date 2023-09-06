@@ -24,4 +24,16 @@ router.get("/gallery", authMiddleware, async (req, res) => {
     }
 });
 
+router.delete("/gallery", authMiddleware, async (req, res) => {
+    const idGallery = req.body.id;
+
+    try {
+        await db("gallery").where({ id: idGallery }).del();
+        res.json({ message: "Gallery deleted successfully", data: {} });
+    } catch (error) {
+        console.log("Error:", error);
+        res.status(500).json({ message: "Internal server error", data: {} });
+    }
+});
+
 module.exports = router;
