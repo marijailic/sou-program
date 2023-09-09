@@ -51,6 +51,47 @@ export const useStoreGallery = defineStore("storeGallery", {
             }
             window.location.href = "/success";
         },
+        async uploadImages(images) {
+            const token = localStorage.getItem("token");
+            const refreshToken = localStorage.getItem("refreshToken");
+            const username = localStorage.getItem("username");
+
+            let galleryItemIDs = [];
+
+            for (const image of images) {
+                const folderName = "gallery";
+                const imageName =
+                    username +
+                    "-" +
+                    Date.now() +
+                    "-" +
+                    Math.floor(Math.random() * 101);
+
+                const res = await fetch(
+                    `${process.env.VUE_APP_URL}/upload-image/${folderName}/${imageName}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "text/plain",
+                            Authorization: `Bearer ${token}`,
+                            RefreshToken: refreshToken,
+                            Username: username,
+                        },
+                        body: image,
+                    }
+                );
+
+                if (!res.ok) {
+                    window.location.href = "/error";
+                    return;
+                }
+
+                const resObj = await res.json();
+                galleryItemIDs.push(resObj.data);
+            }
+
+            return galleryItemIDs;
+        },
         async createGallery(galleryData) {
             const token = localStorage.getItem("token");
             const refreshToken = localStorage.getItem("refreshToken");
@@ -71,7 +112,7 @@ export const useStoreGallery = defineStore("storeGallery", {
                 window.location.href = "/error";
                 return;
             }
-            window.location.href = "/success";
+            // window.location.href = "/success";
         },
     },
 });

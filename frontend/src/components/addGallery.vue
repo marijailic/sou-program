@@ -23,7 +23,7 @@
                             class="form-control"
                         ></textarea>
                     </div>
-                    <!-- <div class="form-group">
+                    <div class="form-group">
                         <input
                             type="file"
                             multiple
@@ -40,7 +40,7 @@
                         <p v-if="selectedFiles.length === 0">
                             Nijedna slika nije odabrana
                         </p>
-                    </div> -->
+                    </div>
                 </div>
                 <div class="card-footer text-end">
                     <a class="escape-btn btn btn-primary">Odustani</a>
@@ -59,11 +59,6 @@ import { ref } from "vue";
 
 export default {
     name: "addGallery",
-    data() {
-        return {
-            selectedFiles: [],
-        };
-    },
     setup() {
         const currentUserUsername = localStorage.getItem("username");
 
@@ -74,12 +69,33 @@ export default {
         const newGalleryText = ref("");
         const currentUserID = ref("");
 
+        const selectedFiles = ref([]);
+
         const postGallery = async () => {
+            // gallery_item, timestamp?
+            // const newGalleryItemData = {
+            //     galleryItemData: [
+            //         {
+            //             picture_key: "Key 1",
+            //             gallery_id: 5,
+            //             timestamp: "?",
+            //         },
+            //         {
+            //             picture_key: "Key 2",
+            //             gallery_id: 4,
+            //             timestamp: "?",
+            //         },
+            //     ],
+            // };
+
             const newGalleryData = {
                 title: newGalleryTitle.value,
                 text: newGalleryText.value,
                 author_id: currentUserID.value,
             };
+
+            // pozovi funkciju za selected files
+            await storeGallery.uploadImages(selectedFiles.value);
             await storeGallery.createGallery(newGalleryData);
         };
 
@@ -91,6 +107,7 @@ export default {
             newGalleryTitle,
             newGalleryText,
             currentUserID,
+            selectedFiles,
         };
     },
     async created() {
@@ -104,20 +121,12 @@ export default {
             );
             this.currentUserID = currentUserData.id;
         },
-        // handleFiles(event) {
-        //     for (let i = 0; i < event.target.files.length; i++) {
-        //         this.selectedFiles.push(event.target.files[i]);
-        //     }
-        // },
+        handleFiles(event) {
+            for (let i = 0; i < event.target.files.length; i++) {
+                this.selectedFiles.push(event.target.files[i]);
+            }
+        },
         // async postGallery() {
-        //     const title = this.newGalleryTitle;
-        //     const text = this.newGalleryText;
-        //     console.log("selectedFiles:", this.selectedFiles);
-        //     const newGalleryData = {
-        //         title,
-        //         text,
-        //         author_id: this.authorID,
-        //     };
         //     await this.storeGallery.createFullGallery(
         //         newGalleryData,
         //         this.selectedFiles

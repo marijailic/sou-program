@@ -15,7 +15,9 @@ const userRoute = require("./routes/user.route");
 const announcementRoute = require("./routes/announcement.route");
 const profilePostRoute = require("./routes/profilepost.route");
 const galleryRoute = require("./routes/gallery.route");
-const googleDriveRoute = require("./routes/googleauth.route");
+
+// GOOGLE
+const googleDriveRoute = require("./routes/googleDrive.route");
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
@@ -25,6 +27,8 @@ app.use("/", userRoute); // user (user table)
 app.use("/", announcementRoute); // announcement (announcement table)
 app.use("/", profilePostRoute); // profile-post (profile_post table && comment table)
 app.use("/", galleryRoute); // gallery (gallery table && gallery_item table)
+
+// GOOGLE
 app.use("/", googleDriveRoute);
 
 // APP START
