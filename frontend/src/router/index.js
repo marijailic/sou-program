@@ -50,27 +50,27 @@ const routes = [
         },
         children: [
             {
-                path: "/newsfeed",
+                path: "newsfeed",
                 name: "NewsfeedView",
                 component: () => import("../views/NewsfeedView.vue"),
             },
             {
-                path: "/search",
+                path: "search",
                 name: "SearchView",
                 component: () => import("../views/SearchView.vue"),
             },
             {
-                path: "/my-profile",
+                path: "my-profile",
                 name: "MyProfileView",
                 component: () => import("../views/MyProfileView.vue"),
             },
             {
-                path: "/user-profile/:id",
+                path: "user-profile/:id",
                 name: "UserProfileView",
                 component: () => import("../views/UserProfileView.vue"),
             },
             {
-                path: "/gallery",
+                path: "gallery",
                 name: "GalleryView",
                 component: () => import("../views/GalleryView.vue"),
             },
@@ -85,12 +85,12 @@ const routes = [
         },
         children: [
             {
-                path: "/error",
+                path: "error",
                 name: "Error",
                 component: () => import("../views/Error.vue"),
             },
             {
-                path: "/success",
+                path: "success",
                 name: "Success",
                 component: () => import("../views/Success.vue"),
             },
