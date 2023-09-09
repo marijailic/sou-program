@@ -62,6 +62,7 @@ export default {
             localStorage.removeItem("token");
             localStorage.removeItem("refreshToken");
             localStorage.removeItem("username");
+            localStorage.removeItem("type");
             window.location.href = "/login";
         },
         getUsername() {

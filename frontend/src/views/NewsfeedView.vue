@@ -30,6 +30,8 @@ import eventBus from "@/eventBus";
 import addAnnouncement from "@/components/addAnnouncement.vue";
 import showAnnouncement from "@/components/showAnnouncement.vue";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "NewsfeedView",
     data() {

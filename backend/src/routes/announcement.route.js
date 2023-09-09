@@ -7,6 +7,7 @@ const db = require("../db");
 const { authMiddleware } = require("../auth");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
+    console.log("Hello im in route");
     try {
         const announcement = await db
             .select()

@@ -9,7 +9,6 @@ const { hashPassword, authMiddleware } = require("../auth");
 router.get("/user", authMiddleware, async (req, res) => {
     try {
         const user = await db.select().from("user").orderBy("id", "desc");
-        // throw new Error();
         res.json({
             message: "User fetched successfully",
             data: user,

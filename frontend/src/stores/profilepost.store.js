@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { getAuthHeaders } from "@/services/authService";
 
 export const useStoreProfilePost = defineStore("storeProfilePost", {
     state: () => ({
@@ -6,18 +7,10 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
     }),
     actions: {
         async fetchProfilePost(authorId) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/profile-post/${authorId}`,
                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
-                    },
+                    headers: getAuthHeaders(),
                 }
             );
 
@@ -32,79 +25,49 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
             return resObj.data;
         },
         async createProfilePost(profilePostData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/create-profile-post`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
+                        ...getAuthHeaders(),
                     },
                     body: JSON.stringify(profilePostData),
                 }
             );
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async deleteProfilePost(idPost) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/delete-profile-post`,
                 {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
+                        ...getAuthHeaders(),
                     },
                     body: JSON.stringify({ id: idPost }),
                 }
             );
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async updateProfilePost(updateData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/update-profile-post`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
+                        ...getAuthHeaders(),
                     },
                     body: JSON.stringify(updateData),
                 }
             );
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
     },
 });

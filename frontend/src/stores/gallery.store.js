@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { getAuthHeaders } from "@/services/authService";
 
 export const useStoreGallery = defineStore("storeGallery", {
     state: () => ({
@@ -7,16 +8,8 @@ export const useStoreGallery = defineStore("storeGallery", {
     getters: {},
     actions: {
         async fetchGallery() {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
-                },
+                headers: getAuthHeaders(),
             });
 
             if (!res.ok) {
@@ -30,17 +23,11 @@ export const useStoreGallery = defineStore("storeGallery", {
             return resObj.data;
         },
         async deleteGallery(idGallery) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify({ id: idGallery }),
             });
@@ -52,10 +39,7 @@ export const useStoreGallery = defineStore("storeGallery", {
             window.location.href = "/success";
         },
         async uploadImages(images) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
             const username = localStorage.getItem("username");
-
             let galleryItemIDs = [];
 
             for (const image of images) {
@@ -73,9 +57,7 @@ export const useStoreGallery = defineStore("storeGallery", {
                         method: "POST",
                         headers: {
                             "Content-Type": "text/plain",
-                            Authorization: `Bearer ${token}`,
-                            RefreshToken: refreshToken,
-                            Username: username,
+                            ...getAuthHeaders(),
                         },
                         body: image,
                     }
@@ -93,17 +75,11 @@ export const useStoreGallery = defineStore("storeGallery", {
             return galleryItemIDs;
         },
         async createGallery(galleryData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify(galleryData),
             });

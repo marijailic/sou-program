@@ -7,123 +7,98 @@ async function hashPassword(passwordInput) {
     return passwordHash;
 }
 
-async function authUser(username, password) {
-    try {
-        const response = await db
-            .where("username", username)
-            .select()
-            .from("user");
+async function getAuthUserData(username, password) {
+    const user = await db
+        .select()
+        .from("user")
+        .where("username", username)
+        .first();
 
-        if (
-            response[0].username &&
-            (await bcrypt.compare(password, response[0].password))
-        ) {
-            const authenticatedUser = {
-                username: response[0].username,
-            };
+    if (!user) {
+        throw new Error("No user");
+    }
 
-            let token = jwt.sign(
-                authenticatedUser,
-                process.env.ACCESS_TOKEN_SECRET,
-                {
-                    algorithm: "HS512",
-                    expiresIn: "30s",
-                }
-            );
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+        throw new Error("Password fail");
+    }
 
-            let refreshToken = jwt.sign(
-                authenticatedUser,
-                process.env.REFRESH_TOKEN_SECRET,
-                {
-                    algorithm: "HS512",
-                }
-            );
+    const authenticatedUser = {
+        username,
+        type: user.type,
+    };
 
-            return {
-                token,
-                refreshToken: refreshToken,
-                username: authenticatedUser.username,
-            };
-        } else {
-            throw new Error("Unauthorized");
+    const token = jwt.sign(authenticatedUser, process.env.ACCESS_TOKEN_SECRET, {
+        algorithm: "HS512",
+        expiresIn: "30s",
+    });
+
+    const refreshToken = jwt.sign(
+        authenticatedUser,
+        process.env.REFRESH_TOKEN_SECRET,
+        {
+            algorithm: "HS512",
         }
-    } catch (error) {
-        throw error;
+    );
+
+    return { token, refreshToken, type: user.type };
+}
+
+function validateToken({ username, userType, token, secret }) {
+    try {
+        const tokenPayload = jwt.verify(token, secret);
+        const oldUsername = tokenPayload.username;
+        const oldUserType = tokenPayload.type;
+
+        return username === oldUsername && userType === oldUserType;
+    } catch (err) {
+        return false;
     }
 }
 
 function authMiddleware(req, res, next) {
-    try {
-        let authorization = req.headers["authorization"].split(" ");
-        let type = authorization[0];
-        let token = authorization[1];
+    const authorization = req.headers["authorization"].split(" ");
+    const authorizationType = authorization[0];
+    const token = authorization[1];
+    const refreshToken = req.headers["refreshtoken"];
+    const username = req.headers["username"];
+    const userType = req.headers["type"];
 
-        // console.log("TYPE", type);
-        // console.log("TOKEN", token);
-
-        let refreshToken = req.headers["refreshtoken"];
-        // console.log("REFRESH TOKEN", refreshToken);
-
-        let username = req.headers["username"];
-        // console.log("USERNAME", username);
-
-        if (type !== "Bearer") {
-            return res.status(401).json({ error: "Unauthorized" });
-        } else {
-            try {
-                req.jwt = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-                console.log("AUTH MIDDLEWARE: FIRST TOKEN");
-                next();
-            } catch (error) {
-                // console.log(error);
-                // console.log(error.name);
-                if (error.name === "TokenExpiredError") {
-                    try {
-                        if (refreshToken == null)
-                            return res
-                                .status(401)
-                                .json({ error: "Unauthorized" });
-
-                        req.jwt = jwt.verify(
-                            refreshToken,
-                            process.env.REFRESH_TOKEN_SECRET
-                        );
-
-                        let authenticatedUser = { username: username };
-
-                        let token = jwt.sign(
-                            authenticatedUser,
-                            process.env.ACCESS_TOKEN_SECRET,
-                            {
-                                algorithm: "HS512",
-                                expiresIn: "30s",
-                            }
-                        );
-
-                        req.jwt = jwt.verify(
-                            token,
-                            process.env.ACCESS_TOKEN_SECRET
-                        );
-
-                        console.log("AUTH MIDDLEWARE: TOKEN REFRESHED");
-
-                        next();
-                    } catch (error) {
-                        return res.status(401).json({ error: "Unauthorized" });
-                    }
-                } else {
-                    return res.status(401).json({ error: "Unauthorized" });
-                }
-            }
-        }
-    } catch (error) {
-        console.log(error);
+    if (authorizationType !== "Bearer") {
         return res.status(401).json({ error: "Unauthorized" });
     }
+
+    // Validate token
+    let isTokenValid = validateToken({
+        username,
+        userType,
+        token,
+        secret: process.env.ACCESS_TOKEN_SECRET,
+    });
+
+    if (isTokenValid) {
+        next();
+        return;
+    }
+
+    // Validate refresh token
+    let isRefreshTokenValid = validateToken({
+        username,
+        userType,
+        token: refreshToken,
+        secret: process.env.REFRESH_TOKEN_SECRET,
+    });
+
+    if (isRefreshTokenValid) {
+        next();
+        return;
+    }
+
+    return res.status(401).json({ error: "Unauthorized" });
 }
 
 module.exports = {
     hashPassword,
-    authUser,
+    getAuthUserData,
     authMiddleware,
 };

@@ -80,9 +80,6 @@ const routes = [
         path: "/",
         name: "MsgWrapper",
         component: () => import("@/MsgWrapper.vue"),
-        meta: {
-            authRequired: true,
-        },
         children: [
             {
                 path: "error",

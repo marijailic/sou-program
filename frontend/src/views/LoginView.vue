@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { saveAuthData } from "@/services/authService";
 
 export default {
     name: "LoginView",
@@ -47,39 +47,36 @@ export default {
         };
     },
     methods: {
-        login(event) {
+        async login(event) {
             event.preventDefault();
             const credentials = {
                 username: this.username,
                 password: this.password,
             };
 
-            // console.log(credentials);
+            const response = await fetch(`${process.env.VUE_APP_URL}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(credentials),
+            });
 
-            axios
-                .post(`${process.env.VUE_APP_URL}/login`, credentials)
-                .then((response) => {
-                    if (response.status === 200 && response.data.token) {
-                        // console.log("TOKEN", response.data.token);
-                        // console.log("REFRESH TOKEN", response.data.refreshToken);
-                        // console.log("USERNAME", response.data.username);
-                        localStorage.setItem("token", response.data.token);
-                        localStorage.setItem(
-                            "refreshToken",
-                            response.data.refreshToken
-                        );
-                        localStorage.setItem(
-                            "username",
-                            response.data.username
-                        );
-                        window.location.href = "/newsfeed";
-                    } else {
-                        console.log("Unauthorized", response);
-                    }
-                })
-                .catch((error) => {
-                    console.log("Error", error.message);
-                });
+            if (!response.ok) {
+                window.location.href = "/error";
+                return;
+            }
+
+            const data = await response.json();
+
+            saveAuthData({
+                username: data.username,
+                type: data.type,
+                token: data.token,
+                refreshToken: data.refreshToken,
+            });
+
+            window.location.href = "/newsfeed";
         },
     },
 };
