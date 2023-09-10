@@ -12,6 +12,7 @@
                             v-model="newGalleryTitle"
                             id="title"
                             class="form-control"
+                            required
                         />
                     </div>
                     <div class="form-group">
@@ -21,8 +22,10 @@
                             v-model="newGalleryText"
                             id="text"
                             class="form-control"
+                            required
                         ></textarea>
                     </div>
+
                     <div class="form-group">
                         <input
                             type="file"
@@ -30,20 +33,29 @@
                             @change="handleFiles"
                             id="files"
                             class="picture-input form-control"
+                            accept="image/*"
+                            required
                         />
-                        <p>Odabrane slike</p>
-                        <ul>
-                            <li v-for="file in selectedFiles" :key="file.name">
-                                {{ file.name }}
-                            </li>
-                        </ul>
-                        <p v-if="selectedFiles.length === 0">
-                            Nijedna slika nije odabrana
-                        </p>
+                        <div
+                            class="selected-images"
+                            v-if="selectedImages.length !== 0"
+                        >
+                            <p><b>Odabrane slike:</b></p>
+                            <ul>
+                                <li
+                                    v-for="image in selectedImages"
+                                    :key="image.name"
+                                >
+                                    {{ image.name }}
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary">Odustani</a>
+                    <a class="escape-btn btn btn-primary" @click="closeAdd"
+                        >Odustani</a
+                    >
                     <button type="submit" class="btn btn-primary">Dodaj</button>
                 </div>
             </div>
@@ -59,6 +71,12 @@ import { ref } from "vue";
 
 export default {
     name: "addGallery",
+    props: {
+        closeAdd: {
+            type: Function,
+            required: true,
+        },
+    },
     setup() {
         const currentUserUsername = localStorage.getItem("username");
 
@@ -69,33 +87,19 @@ export default {
         const newGalleryText = ref("");
         const currentUserID = ref("");
 
-        const selectedFiles = ref([]);
+        const selectedImages = ref([]);
 
         const postGallery = async () => {
-            // gallery_item, timestamp?
-            // const newGalleryItemData = {
-            //     galleryItemData: [
-            //         {
-            //             picture_key: "Key 1",
-            //             gallery_id: 5,
-            //             timestamp: "?",
-            //         },
-            //         {
-            //             picture_key: "Key 2",
-            //             gallery_id: 4,
-            //             timestamp: "?",
-            //         },
-            //     ],
-            // };
-
             const newGalleryData = {
-                title: newGalleryTitle.value,
-                text: newGalleryText.value,
-                author_id: currentUserID.value,
+                galleryData: {
+                    title: newGalleryTitle.value,
+                    text: newGalleryText.value,
+                    author_id: currentUserID.value,
+                },
+                galleryItemData: {
+                    images: selectedImages.value,
+                },
             };
-
-            // pozovi funkciju za selected files
-            await storeGallery.uploadImages(selectedFiles.value);
             await storeGallery.createGallery(newGalleryData);
         };
 
@@ -107,7 +111,7 @@ export default {
             newGalleryTitle,
             newGalleryText,
             currentUserID,
-            selectedFiles,
+            selectedImages,
         };
     },
     async created() {
@@ -122,17 +126,11 @@ export default {
             this.currentUserID = currentUserData.id;
         },
         handleFiles(event) {
-            for (let i = 0; i < event.target.files.length; i++) {
-                this.selectedFiles.push(event.target.files[i]);
-            }
+            this.selectedImages.push(...event.target.files);
         },
-        // async postGallery() {
-        //     await this.storeGallery.createFullGallery(
-        //         newGalleryData,
-        //         this.selectedFiles
-        //     );
-        //     alert("Upload complete!");
-        // },
+        closeAdd() {
+            this.closeAdd();
+        },
     },
 };
 </script>
@@ -154,6 +152,9 @@ export default {
 }
 .picture-input {
     margin-bottom: 1vw;
+}
+.selected-images {
+    margin-top: 3vw;
 }
 .card-footer {
     padding: 0.7vw;

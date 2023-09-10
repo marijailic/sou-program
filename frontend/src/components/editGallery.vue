@@ -1,0 +1,117 @@
+<template>
+    <div>
+        <form @submit.prevent="editGallery">
+            <div class="card">
+                <div class="row">
+                    <h3 class="headline">Uredi galeriju</h3>
+
+                    <div class="form-group">
+                        <label for="title">Naslov</label>
+                        <input
+                            type="text"
+                            v-model="newGalleryTitle"
+                            id="title"
+                            class="form-control"
+                            required
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="text">Tekst</label>
+                        <textarea
+                            type="text"
+                            v-model="newGalleryText"
+                            id="text"
+                            class="form-control"
+                            required
+                        ></textarea>
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <a class="escape-btn btn btn-primary" @click="closeEdit"
+                        >Odustani</a
+                    >
+                    <button type="submit" class="btn btn-primary">Uredi</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</template>
+
+<script>
+import { useStoreGallery } from "@/stores/gallery.store";
+import { ref } from "vue";
+
+export default {
+    name: "editGallery",
+    props: {
+        galleryID: {
+            type: Number,
+            required: true,
+        },
+        closeEdit: {
+            type: Function,
+            required: true,
+        },
+    },
+    setup(props) {
+        const storeGallery = useStoreGallery();
+        storeGallery.fetchGallery();
+
+        const galleryID = props.galleryID;
+        const galleryData = storeGallery.getGalleryById(galleryID);
+
+        const newGalleryTitle = ref(galleryData.title);
+        const newGalleryText = ref(galleryData.text);
+
+        const editGallery = async () => {
+            const id = galleryData.id;
+            const updateData = {
+                id: id,
+                title: newGalleryTitle.value,
+                text: newGalleryText.value,
+            };
+            await storeGallery.updateGallery(updateData);
+        };
+
+        return {
+            storeGallery,
+            editGallery,
+            newGalleryTitle,
+            newGalleryText,
+        };
+    },
+    methods: {
+        closeEdit() {
+            this.closeEdit();
+        },
+    },
+};
+</script>
+
+<style scoped>
+.card {
+    border: none;
+    padding: 0;
+    margin-top: 1vw;
+    background-color: #eaeaea;
+}
+.row {
+    padding: 1vw;
+}
+.headline {
+    margin-bottom: 1vw;
+}
+.form-group {
+    margin-bottom: 1vw;
+}
+.picture-input {
+    margin-bottom: 1vw;
+}
+.card-footer {
+    padding: 0.7vw;
+    background-color: #eaeaea;
+}
+.escape-btn {
+    margin-right: 1vw;
+}
+</style>

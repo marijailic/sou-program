@@ -4,7 +4,7 @@
             <h1>Naslovnica</h1>
         </div>
 
-        <add-announcement :userData="currentUserData" />
+        <add-announcement v-if="isDemos" :userData="currentUserData" />
 
         <div
             class="d-flex justify-content-center"
@@ -47,10 +47,11 @@ export default {
     },
     setup() {
         const currentUserUsername = localStorage.getItem("username");
+        const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
         const storeUser = useStoreUser();
         const storeAnnouncement = useStoreAnnouncement();
 
-        return { storeUser, storeAnnouncement, currentUserUsername };
+        return { storeUser, storeAnnouncement, currentUserUsername, isDemos };
     },
     created() {
         this.getCurrentUser();

@@ -3,7 +3,13 @@ const { Readable } = require("stream");
 
 import { googleAuth } from "../services/googleAuth.service";
 
-const drive = google.drive({ version: "v3", auth: googleAuth() });
+let drive;
+try {
+    drive = google.drive({ version: "v3", auth: googleAuth() });
+} catch (error) {
+    console.log(error.message);
+    drive = null;
+}
 
 function getFolderID(folder) {
     const folderIDs = {

@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            <div class="card-footer text-end">
+            <div v-if="isDemos" class="card-footer text-end">
                 <button
                     @click="deleteAnnouncement(announcementData.id)"
                     class="delete-btn btn btn-primary"
@@ -60,6 +60,7 @@ import eventBus from "@/eventBus";
 import { formatDistanceToNow } from "date-fns";
 
 import editAnnouncement from "./editAnnouncement.vue";
+import userTypeEnum from "@/enums/userTypeEnum";
 
 export default {
     name: "showAnnouncement",
@@ -68,6 +69,7 @@ export default {
     },
     data() {
         return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             postAuthor: {},
             closeEdit: () => {},
             editText: false,

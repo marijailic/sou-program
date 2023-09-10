@@ -4,7 +4,7 @@ const router = express.Router();
 
 const db = require("../db");
 
-const { hashPassword, authMiddleware } = require("../auth");
+const { hashPassword, authMiddleware, demosMiddleware } = require("../auth");
 
 router.get("/user", authMiddleware, async (req, res) => {
     try {
@@ -19,72 +19,93 @@ router.get("/user", authMiddleware, async (req, res) => {
     }
 });
 
-router.delete("/delete-user", authMiddleware, async (req, res) => {
-    const idUser = req.body.id;
+router.delete(
+    "/delete-user",
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        const idUser = req.body.id;
 
-    try {
-        await db("user").where({ id: idUser }).del();
-        res.json({ message: "User deleted successfully", data: {} });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
+        try {
+            await db("user").where({ id: idUser }).del();
+            res.json({ message: "User deleted successfully", data: {} });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
-});
+);
 
-router.post("/create-user", authMiddleware, async (req, res) => {
-    const timezone = "Europe/Amsterdam";
-    const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+router.post(
+    "/create-user",
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        const timezone = "Europe/Amsterdam";
+        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
 
-    const passwordHash = await hashPassword(req.body.password);
+        const passwordHash = await hashPassword(req.body.password);
 
-    const userData = {
-        name: req.body.name,
-        surname: req.body.surname,
-        e_mail: req.body.email,
-        username: req.body.username,
-        password: passwordHash,
-        profile_picture_key: "",
-        bio: req.body.bio,
-        type: req.body.type,
-        join_date: timestamp,
-    };
+        const userData = {
+            name: req.body.name,
+            surname: req.body.surname,
+            e_mail: req.body.email,
+            username: req.body.username,
+            password: passwordHash,
+            profile_picture_key: "",
+            bio: req.body.bio,
+            type: req.body.type,
+            join_date: timestamp,
+        };
 
-    try {
-        await db("user").insert(userData);
-        res.json({
-            message: "User created successfully",
-            data: {},
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
+        try {
+            await db("user").insert(userData);
+            res.json({
+                message: "User created successfully",
+                data: {},
+            });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
-});
+);
 
-router.post("/update-user", authMiddleware, async (req, res) => {
-    const id = req.body.id;
+router.post(
+    "/update-user",
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        const id = req.body.id;
 
-    const userData = {
-        name: req.body.name,
-        surname: req.body.surname,
-        e_mail: req.body.email,
-        // username: req.body.username,
-        // password: req.body.password,
-        profile_picture_key: "",
-        bio: req.body.bio,
-        type: req.body.type,
-    };
+        const userData = {
+            name: req.body.name,
+            surname: req.body.surname,
+            e_mail: req.body.email,
+            // username: req.body.username,
+            // password: req.body.password,
+            profile_picture_key: "",
+            bio: req.body.bio,
+            type: req.body.type,
+        };
 
-    try {
-        await db("user").where({ id: id }).update(userData);
-        res.json({
-            message: "User updated successfully",
-            data: {},
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
+        try {
+            await db("user").where({ id: id }).update(userData);
+            res.json({
+                message: "User updated successfully",
+                data: {},
+            });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
-});
+);
 
 module.exports = router;

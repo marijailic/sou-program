@@ -5,7 +5,16 @@
                 <div
                     class="first-col card-body col-md-3 d-flex justify-content-center align-items-center"
                 >
-                    <img class="main-pic rounded-circle" id="image" />
+                    <img
+                        v-if="image"
+                        class="main-pic rounded-circle"
+                        :src="image"
+                    />
+                    <img
+                        v-if="!image"
+                        class="main-pic rounded-circle"
+                        src="@/assets/sp-icon.png"
+                    />
                 </div>
                 <div
                     class="second-col col-md-9 d-flex align-items-center text-start"
@@ -34,8 +43,17 @@
                 >
                     Izbriši
                 </button>
-                <button class="edit-btn btn btn-primary" @click="openEdit">
+                <button
+                    class="edit-btn btn btn-primary"
+                    @click="openEditGallery"
+                >
                     Uredi
+                </button>
+                <button
+                    class="show-btn btn btn-primary"
+                    @click="openShowFullGallery"
+                >
+                    Prikaži
                 </button>
             </div>
         </div>
@@ -45,6 +63,7 @@
 <script>
 import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
+import eventBus from "@/eventBus";
 
 import { formatDistanceToNow } from "date-fns";
 
@@ -52,6 +71,7 @@ export default {
     name: "showGallery",
     data() {
         return {
+            image: "",
             authorUsername: null,
         };
     },
@@ -62,14 +82,13 @@ export default {
         },
     },
     setup() {
-        const imageID = "1kGbRhTTxYEkZUmG99XdWFaMyVZRh9bZ2";
         const storeGallery = useStoreGallery();
         const storeUser = useStoreUser();
 
-        return { storeGallery, storeUser, imageID };
+        return { storeGallery, storeUser };
     },
     async created() {
-        // await this.displayImage(this.imageID);
+        await this.displayImage(this.galleryData.images[0]);
         await this.getAuthorUsername(this.galleryData.author_id);
     },
     methods: {
@@ -82,15 +101,10 @@ export default {
                 await this.storeGallery.deleteGallery(idGallery);
             }
         },
-        // openEdit() {
-        //     location.href = "/gallery/" + idGallery;
-        // },
-        // async displayImage(imgId) {
-        //     const image_ = await this.storeGallery.showImage(imgId);
-
-        //     const imgElement = document.getElementById("image");
-        //     imgElement.src = `data:image/jpeg;base64,${image_}`;
-        // },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.image = `data:image/jpeg;base64,${image}`;
+        },
         async getAuthorUsername(userID) {
             await this.storeUser.fetchUser();
             const user = await this.storeUser.getUserById(userID);
@@ -100,6 +114,24 @@ export default {
             const objDate = new Date(strDate);
             const timeAgo = formatDistanceToNow(objDate);
             return timeAgo;
+        },
+        openEditGallery() {
+            const editGallery = true;
+            const editGalleryID = this.galleryData.id;
+            const editObj = {
+                editGallery,
+                editGalleryID,
+            };
+            eventBus.emit("editGallery", editObj);
+        },
+        openShowFullGallery() {
+            const showFullGallery = true;
+            const showFullGalleryID = this.galleryData.id;
+            const editObj = {
+                showFullGallery,
+                showFullGalleryID,
+            };
+            eventBus.emit("showFullGallery", editObj);
         },
     },
 };
@@ -133,6 +165,9 @@ export default {
     background-color: white;
 }
 .delete-btn {
+    margin-right: 1vw;
+}
+.edit-btn {
     margin-right: 1vw;
 }
 </style>

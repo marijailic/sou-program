@@ -22,7 +22,6 @@ export default {
             bodyStyles.overflowX === "scroll" ||
             bodyStyles.overflowX === "visible"
         ) {
-            console.log("Hello");
         }
     },
     components: {

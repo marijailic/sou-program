@@ -17,7 +17,10 @@
                         {{ userData.username }}
                     </div>
                 </div>
-                <div class="user-actions d-flex justify-content-end">
+                <div
+                    v-if="isDemos"
+                    class="user-actions d-flex justify-content-end"
+                >
                     <button
                         class="delete-btn btn btn-primary"
                         @click="deleteUser(userData.id)"
@@ -40,10 +43,14 @@
 import { useStoreUser } from "@/stores/user.store";
 import eventBus from "@/eventBus";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "showUser",
     data() {
-        return {};
+        return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
+        };
     },
     props: {
         userData: {

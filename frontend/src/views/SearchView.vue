@@ -3,7 +3,11 @@
         <div class="card">
             <div class="header">
                 <h1>Stalkaonica</h1>
-                <button class="btn btn-primary" @click="openAddUser">
+                <button
+                    v-if="isDemos"
+                    class="btn btn-primary"
+                    @click="openAddUser"
+                >
                     Dodaj korisnika
                 </button>
             </div>
@@ -44,10 +48,13 @@ import showUser from "@/components/showUser.vue";
 import addUser from "@/components/addUser.vue";
 import editUser from "@/components/editUser.vue";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "SearchView",
     data() {
         return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             users: [],
             searchText: "",
             closeAdd: () => {},
@@ -101,13 +108,11 @@ export default {
         },
         openEditUser() {
             eventBus.on("editUser", (editObj) => {
-                if (this.editUserID !== editObj.editUserID) {
-                    this.rightColActiveCheck();
-                    this.editUserID = editObj.editUserID;
-                    this.$nextTick(() => {
-                        this.editUser = editObj.editUser;
-                    });
-                }
+                this.rightColActiveCheck();
+                this.editUserID = editObj.editUserID;
+                this.$nextTick(() => {
+                    this.editUser = editObj.editUser;
+                });
             });
         },
     },

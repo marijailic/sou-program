@@ -17,7 +17,7 @@ const routes = [
             {
                 path: "login",
                 name: "LoginView",
-                component: () => import("../views/LoginView.vue"),
+                component: () => import("@/views/LoginView.vue"),
             },
             {
                 path: "about",
@@ -73,6 +73,11 @@ const routes = [
                 path: "gallery",
                 name: "GalleryView",
                 component: () => import("../views/GalleryView.vue"),
+            },
+            {
+                path: "competitions",
+                name: "CompetitionView",
+                component: () => import("../views/CompetitionView.vue"),
             },
         ],
     },

@@ -97,8 +97,20 @@ function authMiddleware(req, res, next) {
     return res.status(401).json({ error: "Unauthorized" });
 }
 
+function demosMiddleware(req, res, next) {
+    const userType = req.headers["type"];
+
+    if (userType === "demonstrator") {
+        next();
+        return;
+    }
+
+    return res.status(401).json({ error: "Unauthorized" });
+}
+
 module.exports = {
     hashPassword,
     getAuthUserData,
     authMiddleware,
+    demosMiddleware,
 };

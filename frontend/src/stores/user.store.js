@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getAuthHeaders } from "@/services/authService";
+import userTypeEnum from "@/enums/userTypeEnum";
 
 export const useStoreUser = defineStore("storeUser", {
     state: () => ({
@@ -8,14 +9,21 @@ export const useStoreUser = defineStore("storeUser", {
     getters: {
         getUsersExceptCurrent: (state) => () => {
             const currentUser = localStorage.getItem("username");
-            return state.user.filter((user) => {
-                return (
-                    user.username.toLowerCase() !== currentUser.toLowerCase()
-                );
-            });
+            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
+
+            return isDemos
+                ? state.user
+                : state.user.filter((user) => {
+                      return (
+                          user.username.toLowerCase() !==
+                          currentUser.toLowerCase()
+                      );
+                  });
         },
         getFilteredUsers: (state) => (searchText) => {
             const currentUser = localStorage.getItem("username");
+            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
+
             const filteredUsers = state.user.filter((user) => {
                 const fullName = `${user.name} ${user.surname}`;
                 const reversedFullName = `${user.surname} ${user.name}`;
@@ -24,11 +32,13 @@ export const useStoreUser = defineStore("storeUser", {
                 const reversedUserFullName = reversedFullName.toLowerCase();
                 const searchLowerCase = searchText.toLowerCase();
 
-                return (
-                    (userFullName.includes(searchLowerCase) ||
-                        reversedUserFullName.includes(searchLowerCase)) &&
-                    user.username.toLowerCase() !== currentUser.toLowerCase()
-                );
+                const userFound =
+                    userFullName.includes(searchLowerCase) ||
+                    reversedUserFullName.includes(searchLowerCase);
+
+                const isSelf =
+                    user.username.toLowerCase() === currentUser.toLowerCase();
+                return userFound && (!isSelf || isDemos);
             });
             return filteredUsers;
         },
