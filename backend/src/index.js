@@ -19,6 +19,7 @@ const competitionRoute = require("./routes/competition.route");
 
 // GOOGLE
 const googleDriveRoute = require("./routes/googleDrive.route");
+const googleCredsRoute = require("./routes/googleCreds.route");
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));
@@ -32,6 +33,7 @@ app.use("/", competitionRoute); // competition (competition table && team table 
 
 // GOOGLE
 app.use("/", googleDriveRoute);
+app.use("/", googleCredsRoute);
 
 // APP START
 //////////////////////////////////////////////////////////////////////////////

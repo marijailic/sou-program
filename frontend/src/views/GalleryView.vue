@@ -98,6 +98,7 @@ export default {
         rightColActiveCheck() {
             this.addGallery = false;
             this.editGallery = false;
+            this.showFullGallery = false;
         },
         openAddGallery() {
             this.rightColActiveCheck();
