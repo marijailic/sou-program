@@ -4,7 +4,7 @@ const router = express.Router();
 
 const db = require("../db");
 
-const { authMiddleware } = require("../auth");
+const { authMiddleware, demosMiddleware } = require("../auth");
 
 router.get("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {
     const galleryID = req.params.gallery_id;
@@ -45,17 +45,24 @@ router.get("/gallery", authMiddleware, async (req, res) => {
     }
 });
 
-router.delete("/gallery", authMiddleware, async (req, res) => {
-    const idGallery = req.body.id;
+router.delete(
+    "/gallery",
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        const idGallery = req.body.id;
 
-    try {
-        await db("gallery").where({ id: idGallery }).del();
-        res.json({ message: "Gallery deleted successfully", data: {} });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
+        try {
+            await db("gallery").where({ id: idGallery }).del();
+            res.json({ message: "Gallery deleted successfully", data: {} });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
-});
+);
 
 router.post("/gallery", authMiddleware, async (req, res) => {
     const title = req.body.title;
@@ -121,31 +128,38 @@ router.post("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {
     }
 });
 
-router.patch("/update-gallery", authMiddleware, async (req, res) => {
-    const id = req.body.id;
+router.patch(
+    "/update-gallery",
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        const id = req.body.id;
 
-    const title = req.body.title;
-    const text = req.body.text;
+        const title = req.body.title;
+        const text = req.body.text;
 
-    if (title.trim() === "" || text.trim() === "") {
-        res.status(400).json({ message: "Client error", data: {} });
+        if (title.trim() === "" || text.trim() === "") {
+            res.status(400).json({ message: "Client error", data: {} });
+        }
+
+        const galleryData = {
+            title: title,
+            text: text,
+        };
+
+        try {
+            await db("gallery").where({ id: id }).update(galleryData);
+            res.json({
+                message: "Gallery updated successfully",
+                data: {},
+            });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
-
-    const galleryData = {
-        title: title,
-        text: text,
-    };
-
-    try {
-        await db("gallery").where({ id: id }).update(galleryData);
-        res.json({
-            message: "Gallery updated successfully",
-            data: {},
-        });
-    } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
-    }
-});
+);
 
 module.exports = router;

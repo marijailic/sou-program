@@ -19,11 +19,17 @@
                     </span>
                 </p>
             </div>
-            <div class="image-container">
-                <div v-for="image in images" :key="image">
-                    <img class="gallery-pic" :src="image" />
+            <vue-masonry>
+                <div class="masonry-container">
+                    <div
+                        v-for="image in images"
+                        :key="image"
+                        class="masonry-item"
+                    >
+                        <img :src="image" class="masonry-image" />
+                    </div>
                 </div>
-            </div>
+            </vue-masonry>
         </div>
     </div>
 </template>
@@ -33,9 +39,11 @@ import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
 
 import { formatDistanceToNow } from "date-fns";
+import VueMasonry from "vue-masonry";
 
 export default {
     name: "showFullGallery",
+    components: { VueMasonry },
     data() {
         return {
             authorUsername: null,
@@ -114,14 +122,22 @@ export default {
 .row {
     padding: 0;
 }
-.image-container {
-    width: 100%;
+
+.masonry-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
-.gallery-pic {
-    max-width: 300px;
+
+.masonry-item {
+    width: calc(33.33% - 10px);
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.masonry-image {
+    width: 100%;
     height: auto;
-    margin: 1vw;
 }
 </style>

@@ -38,12 +38,14 @@
             </div>
             <div class="card-footer text-end">
                 <button
+                    v-if="isDemos"
                     @click="deleteGallery(galleryData.id)"
                     class="delete-btn btn btn-primary"
                 >
                     Izbriši
                 </button>
                 <button
+                    v-if="isDemos"
                     class="edit-btn btn btn-primary"
                     @click="openEditGallery"
                 >
@@ -67,10 +69,13 @@ import eventBus from "@/eventBus";
 
 import { formatDistanceToNow } from "date-fns";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "showGallery",
     data() {
         return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             image: "",
             authorUsername: null,
         };

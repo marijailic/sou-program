@@ -128,6 +128,15 @@ export const useStoreGallery = defineStore("storeGallery", {
             }
         },
         async createGallery(galleryData) {
+            const galleryItemIDs = await this.googleUploadImages(
+                galleryData.galleryItemData.images
+            );
+
+            if (galleryItemIDs.length === 0) {
+                window.location.href = "/error";
+                return;
+            }
+
             const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
                 method: "POST",
                 headers: {
@@ -144,15 +153,6 @@ export const useStoreGallery = defineStore("storeGallery", {
 
             const galleryObj = await res.json();
             const galleryID = galleryObj.data.galleryID.id;
-
-            const galleryItemIDs = await this.googleUploadImages(
-                galleryData.galleryItemData.images
-            );
-
-            if (galleryItemIDs.length === 0) {
-                window.location.href = "/error";
-                return;
-            }
 
             await this.createGalleryItem(galleryID, galleryItemIDs);
 
