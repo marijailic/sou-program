@@ -6,11 +6,11 @@
                 v-model="newTeamName"
                 class="form-control"
                 type="text"
-                placeholder="Ime tima"
+                placeholder="Upiši naziv tima..."
                 required
             />
             <button type="submit" class="btn btn-primary mt-2 mb-2">
-                Add Team
+                Dodaj
             </button>
         </form>
     </div>

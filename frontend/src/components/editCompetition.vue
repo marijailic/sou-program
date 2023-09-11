@@ -6,7 +6,7 @@ div
                 <div class="row">
                     <h3 class="headline">Uredi natjecanje</h3>
                     <div class="form-group text-start">
-                        <label for="name">Naziv</label>
+                        <label for="name">Naziv natjecanja</label>
                         <input
                             v-model="newCompetitionName"
                             type="text"
@@ -16,15 +16,7 @@ div
                         />
                     </div>
                     <div class="form-group text-start">
-                        <label for="description">Opis</label>
-                        <textarea
-                            v-model="newCompetitionDescription"
-                            class="form-control"
-                            id="description"
-                        ></textarea>
-                    </div>
-                    <div class="form-group text-start">
-                        <label for="startDate">Datum početka</label>
+                        <label for="startDate">Početak natjecanja</label>
                         <input
                             v-model="newCompetitionStartDate"
                             type="date"
@@ -32,6 +24,14 @@ div
                             id="startDate"
                             required
                         />
+                    </div>
+                    <div class="form-group text-start">
+                        <label for="description">Opis natjecanja</label>
+                        <textarea
+                            v-model="newCompetitionDescription"
+                            class="form-control"
+                            id="description"
+                        ></textarea>
                     </div>
                     <div>
                         <add-team :competitionId="competitionID" />

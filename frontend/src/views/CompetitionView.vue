@@ -3,7 +3,11 @@
         <div class="card">
             <div class="header">
                 <h1>Natjecanja</h1>
-                <button class="btn btn-primary" @click="openAddCompetition">
+                <button
+                    v-if="isDemos"
+                    class="btn btn-primary"
+                    @click="openAddCompetition"
+                >
                     Dodaj natjecanje
                 </button>
             </div>
@@ -44,10 +48,13 @@ import showCompetition from "@/components/showCompetition.vue";
 import addCompetition from "@/components/addCompetition.vue";
 import editCompetition from "@/components/editCompetition.vue";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "CompetitionView",
     data() {
         return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             competitions: [],
             closeAdd: () => {},
             closeEdit: () => {},

@@ -14,28 +14,30 @@
                                 required
                                 id="name"
                             />
-                            <h6 class="mt-2">Članovi tima:</h6>
                             <ul>
                                 <li
                                     v-for="member in teamData.team_members"
                                     :key="member.id"
-                                    class="mt-1"
                                 >
-                                    {{ member.username }}
-                                    <button
-                                        class="btn btn-danger ms-3"
-                                        @click="removeMember(member.id)"
-                                    >
-                                        Remove
-                                    </button>
+                                    <div class="team-user">
+                                        <span>
+                                            {{ member.username }}
+                                        </span>
+                                        <i
+                                            class="material-icons close-icon"
+                                            @click="removeMember(member.id)"
+                                            >close</i
+                                        >
+                                    </div>
                                 </li>
                             </ul>
+                            <label for="name">Dodaj člana tima</label>
                             <select
                                 v-model="selectedUserId"
                                 class="form-control"
                             >
                                 <option disabled value="">
-                                    Odaberi novog člana
+                                    Odaberi člana tima
                                 </option>
                                 <option
                                     v-for="user in allUsers"
@@ -49,14 +51,14 @@
                                 class="btn btn-primary mt-2"
                                 @click="addMember"
                             >
-                                Dodaj člana
+                                Dodaj
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer text-end">
                     <button type="submit" class="btn btn-primary">
-                        Spremi tim
+                        Uredi tim
                     </button>
                 </div>
             </div>
@@ -165,5 +167,14 @@ export default {
 }
 .escape-btn {
     margin-right: 1vw;
+}
+.team-user {
+    margin-top: 0.5vw;
+    display: flex;
+    align-items: center;
+}
+.close-icon {
+    cursor: pointer;
+    color: #dc3545;
 }
 </style>

@@ -1,49 +1,50 @@
 <template>
     <div>
         <div class="card">
-            <div class="competition">
+            <div class="row">
                 <div class="competition-info">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <div class="competition-name">
+                            <h5 class="competition-name">
                                 {{ competitionData.name }} -
                                 {{ formatDate(competitionData.start_date) }}
-                            </div>
-                            <div class="competition-description text-muted">
+                            </h5>
+                            <p class="card-text">
                                 {{ competitionData.description }}
-                            </div>
+                            </p>
                         </div>
-                    </div>
-                    <div class="teams-section">
-                        <ul class="p-0" v-if="competitionData.teams.length > 0">
-                            <li
-                                class="flex team-row mt-2"
-                                v-for="team in competitionData.teams"
-                                :key="team.id"
-                            >
-                                <div class="me-2">{{ team.name }}:</div>
-                                <div
-                                    v-if="team.team_members.length > 0"
-                                    class="team-members"
-                                >
-                                    <span
-                                        v-for="member in team.team_members"
-                                        :key="member.id"
-                                        class="bg-blue"
-                                    >
-                                        {{ member.username }}
-                                    </span>
-                                </div>
-                                <div v-else class="no-members">
-                                    Nema članova tima
-                                </div>
-                            </li>
-                        </ul>
-                        <div v-else>Nema timova</div>
                     </div>
                 </div>
             </div>
-            <div class="card-footer p-2 text-end">
+            <hr class="mt-0 mb-0" />
+            <div class="teams-section row mb-2">
+                <div v-if="competitionData.teams.length > 0">
+                    <div
+                        class="flex mt-2"
+                        v-for="team in competitionData.teams"
+                        :key="team.id"
+                    >
+                        <div class="me-2">{{ team.name }}:</div>
+                        <div
+                            v-if="team.team_members.length > 0"
+                            class="team-members"
+                        >
+                            <span
+                                v-for="member in team.team_members"
+                                :key="member.id"
+                                class="bg-blue"
+                            >
+                                {{ member.username }}
+                            </span>
+                        </div>
+                        <div v-else class="no-members text-muted">
+                            Nema članova tima...
+                        </div>
+                    </div>
+                </div>
+                <p v-else class="text-muted mt-1">Nema timova...</p>
+            </div>
+            <div v-if="isDemos" class="card-footer p-2 text-end">
                 <button
                     @click="deleteCompetition(competitionData.id)"
                     class="delete-btn btn btn-primary"
@@ -66,10 +67,13 @@ import { useStoreCompetition } from "@/stores/competition.store";
 import editCompetition from "./editCompetition.vue";
 import eventBus from "@/eventBus";
 
+import userTypeEnum from "@/enums/userTypeEnum";
+
 export default {
     name: "showCompetition",
     data() {
         return {
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             editingTeamId: null,
         };
     },
@@ -131,15 +135,10 @@ export default {
     border: none;
     margin-top: 1vw;
 }
-.competition {
+.row {
     display: flex;
-    padding: 1vw;
+    padding: 2vw;
     align-items: center;
-}
-.competition-profile-image {
-    width: 50px;
-    height: 50px;
-    margin-right: 1vw;
 }
 .competition-info {
     width: 100%;
@@ -147,10 +146,6 @@ export default {
 .competition-name {
     text-align: left;
     color: rgb(33, 37, 41);
-}
-.competition-description {
-    text-align: left;
-    font-size: 14px;
 }
 .competition-actions {
     width: 100%;
@@ -164,18 +159,14 @@ export default {
     border-radius: 99px;
     line-height: 1.3;
 }
-.team-row {
-    display: flex;
-    align-items: center;
-}
 
 .team-name {
     flex: 1;
 }
 
 .team-members {
-    flex: 2;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
 }
 
