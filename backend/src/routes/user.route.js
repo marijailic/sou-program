@@ -53,7 +53,7 @@ router.post(
             e_mail: req.body.email,
             username: req.body.username,
             password: passwordHash,
-            profile_picture_key: "",
+            profile_picture_key: req.body.profile_picture_key,
             bio: req.body.bio,
             type: req.body.type,
             join_date: timestamp,

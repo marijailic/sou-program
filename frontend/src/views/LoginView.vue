@@ -1,10 +1,10 @@
 <template>
     <div class="container">
-        <div class="about">
-            <h1>Tko si?</h1>
-            <div class="row">
-                <div class="col-sm">
-                    <form @submit="login">
+        <form @submit="login">
+            <div class="card">
+                <h1>Tko si?</h1>
+                <div class="row">
+                    <div class="col-sm">
                         <div class="form-group mt-4">
                             <label for="username">Korisničko ime</label>
                             <input
@@ -12,7 +12,7 @@
                                 type="text"
                                 class="form-control"
                                 id="username"
-                                placeholder="Upišite korisničko ime"
+                                placeholder="Upiši korisničko ime"
                             />
                         </div>
                         <div class="form-group mt-3">
@@ -22,16 +22,16 @@
                                 type="password"
                                 class="form-control"
                                 id="password"
-                                placeholder="Upišite lozinku"
+                                placeholder="Upiši lozinku"
                             />
                         </div>
-                        <button type="submit" class="btn btn-primary mt-3">
-                            Pusti me unutra!
-                        </button>
-                    </form>
+                    </div>
                 </div>
+                <button type="submit" class="btn btn-primary mt-3">
+                    Pusti me unutra!
+                </button>
             </div>
-        </div>
+        </form>
     </div>
 </template>
 
@@ -90,7 +90,11 @@ export default {
     align-items: center;
 }
 
-.about {
-    width: 40%;
+.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 2vw;
 }
 </style>

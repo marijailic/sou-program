@@ -32,10 +32,12 @@
             </div>
         </div>
         <div class="row" v-if="showFullGallery">
-            <show-full-gallery
-                :galleryID="showFullGalleryID"
-                :closeShow="closeShow"
-            />
+            <div class="col">
+                <show-full-gallery
+                    :galleryID="showFullGalleryID"
+                    :closeShow="closeShow"
+                />
+            </div>
         </div>
     </div>
 </template>

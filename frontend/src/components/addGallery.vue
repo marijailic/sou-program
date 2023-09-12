@@ -98,6 +98,7 @@ export default {
                 },
                 galleryItemData: {
                     images: selectedImages.value,
+                    folderName: "gallery",
                 },
             };
             await storeGallery.createGallery(newGalleryData);
