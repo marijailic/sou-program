@@ -87,7 +87,7 @@ router.post(
             e_mail: req.body.email,
             // username: req.body.username,
             // password: req.body.password,
-            profile_picture_key: "",
+            // profile_picture_key: "",
             bio: req.body.bio,
             type: req.body.type,
         };

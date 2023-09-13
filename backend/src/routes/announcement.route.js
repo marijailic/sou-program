@@ -6,6 +6,7 @@ const db = require("../db");
 
 const { authMiddleware, demosMiddleware } = require("../auth");
 const { getUserByUsername } = require("../services/user.service");
+const { sendAnnouncements } = require("../services/sendAnnouncement.service");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
@@ -76,6 +77,9 @@ router.post(
 
         try {
             await db("announcement").insert(announcementData);
+
+            await sendAnnouncements(text);
+
             res.json({
                 message: "Announcement created successfully",
                 data: {},
