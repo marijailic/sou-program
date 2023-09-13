@@ -4,7 +4,11 @@
             <h1>Naslovnica</h1>
         </div>
 
-        <add-announcement v-if="isDemos" :userData="currentUserData" />
+        <add-announcement
+            v-if="isDemos"
+            :userData="currentUserData"
+            :profilePictureKey="profilePictureKey"
+        />
 
         <div
             class="d-flex justify-content-center"
@@ -24,6 +28,7 @@
 <script>
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreAnnouncement } from "@/stores/announcement.store";
+import { useStoreGallery } from "@/stores/gallery.store";
 
 import eventBus from "@/eventBus";
 
@@ -39,6 +44,7 @@ export default {
             currentUserData: {},
             announcements: [],
             editingAnnouncementID: null,
+            profilePictureKey: "",
         };
     },
     components: {
@@ -50,13 +56,23 @@ export default {
         const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
         const storeUser = useStoreUser();
         const storeAnnouncement = useStoreAnnouncement();
+        const storeGallery = useStoreGallery();
 
-        return { storeUser, storeAnnouncement, currentUserUsername, isDemos };
+        return {
+            storeUser,
+            storeAnnouncement,
+            storeGallery,
+            currentUserUsername,
+            isDemos,
+        };
     },
-    created() {
-        this.getCurrentUser();
-        this.getAnnouncements();
+    async created() {
+        await this.getCurrentUser();
+        await this.getAnnouncements();
         this.getEditingAnnouncementID();
+
+        const profilePictureKey = this.currentUserData.profile_picture_key;
+        await this.displayImage(profilePictureKey);
     },
     methods: {
         async getCurrentUser() {
@@ -79,6 +95,10 @@ export default {
                     this.editingAnnouncementID = editingAnnouncementID;
                 }
             });
+        },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };
