@@ -1,12 +1,12 @@
 const express = require("express");
 const router = express.Router();
 
-const { getAuthUserData } = require("../auth");
+import { getAuthUserData } from "../middlewares/auth.middleware";
 
 router.post("/login", async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
+    const { username, password } = req.body;
 
+    console.log(username, password);
     try {
         const { token, refreshToken, type } = await getAuthUserData(
             username,

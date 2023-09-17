@@ -3,8 +3,7 @@ const router = express.Router();
 
 const { google } = require("googleapis");
 
-const { authMiddleware } = require("../auth");
-
+import { authMiddleware } from "../middlewares/auth.middleware";
 import { googleAuth } from "../services/googleAuth.service";
 import { uploadImage } from "../services/googleDrive.service";
 

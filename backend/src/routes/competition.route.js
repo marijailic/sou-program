@@ -2,18 +2,22 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-const db = require("../db");
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { demosMiddleware } from "../middlewares/demos.middleware";
+import {
+    Announcements,
+    Competitions,
+    TeamMembers,
+    Teams,
+} from "../models/models";
 
-const { authMiddleware, demosMiddleware } = require("../auth");
 const { getPopulatedCompetitions } = require("../services/competition.service");
 
 router.get("/competition", authMiddleware, async (req, res) => {
     try {
-        const competitions = await db
-            .select()
-            .from("competition")
-            .orderBy("timestamp", "desc")
-            .limit(10);
+        const competitions = Competitions.orderBy("timestamp", "desc").limit(
+            10
+        );
 
         res.json({
             message: "Competitions fetched successfully",
@@ -32,7 +36,7 @@ router.delete(
         const idCompetition = req.params.id;
 
         try {
-            await db("competition").where({ id: idCompetition }).del();
+            await Announcements.where({ id: idCompetition }).del();
             res.json({ message: "Competition deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -51,7 +55,7 @@ router.delete(
         const idTeam = req.params.id;
 
         try {
-            await db("team").where({ id: idTeam }).del();
+            await Teams.where({ id: idTeam }).del();
             res.json({ message: "Team deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -70,7 +74,7 @@ router.delete(
         const idTeamMember = req.params.id;
 
         try {
-            await db("team_member").where({ id: idTeamMember }).del();
+            await TeamMembers.where({ id: idTeamMember }).del();
             res.json({ message: "Team member deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -98,7 +102,7 @@ router.post(
         };
 
         try {
-            const teamId = await db("team_member").insert(teamMember, "id");
+            const teamId = await TeamMembers.insert(teamMember, "id");
             res.json({
                 message: "Team member created successfully",
                 data: {
@@ -124,11 +128,10 @@ router.post(
         const timezone = "Europe/Amsterdam";
         const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
 
-        const competition = await db
-            .select()
-            .from("competition")
-            .where("id", competition_id)
-            .first();
+        const competition = await Competitions.where(
+            "id",
+            competition_id
+        ).first();
 
         const team = {
             name: name,
@@ -137,7 +140,7 @@ router.post(
         };
 
         try {
-            const teamId = await db("team").insert(team, "id");
+            const teamId = await Teams.insert(team, "id");
             res.json({
                 message: "Team created successfully",
                 data: {
@@ -171,7 +174,7 @@ router.post(
         };
 
         try {
-            const competitionId = await db("competition").insert(
+            const competitionId = await Competitions.insert(
                 competitionData,
                 "id"
             );
@@ -199,7 +202,7 @@ router.patch(
         const { name } = req.body;
 
         try {
-            await db("team").where({ id: idTeam }).update({ name: name });
+            await Teams.where({ id: idTeam }).update({ name: name });
             res.json({
                 message: "Team updated successfully",
                 data: {},
@@ -222,7 +225,7 @@ router.patch(
         const { name, description, start_date } = req.body;
 
         try {
-            await db("competition").where({ id: idCompetition }).update({
+            await Competitions.where({ id: idCompetition }).update({
                 name: name,
                 description: description,
                 start_date: start_date,

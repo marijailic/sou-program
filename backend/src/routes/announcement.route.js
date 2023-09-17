@@ -2,18 +2,18 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-const db = require("../db");
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { demosMiddleware } from "../middlewares/demos.middleware";
+import { Announcements } from "../models/models";
 
-const { authMiddleware, demosMiddleware } = require("../auth");
 const { getUserByUsername } = require("../services/user.service");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
-        const announcement = await db
-            .select()
-            .from("announcement")
-            .orderBy("timestamp", "desc")
-            .limit(10);
+        const announcement = await Announcements.orderBy(
+            "timestamp",
+            "desc"
+        ).limit(10);
         // throw new Error();
         res.json({
             message: "Announcement fetched successfully",
@@ -36,9 +36,10 @@ router.delete(
         const idUser = (await getUserByUsername(req.headers["username"])).id;
 
         try {
-            await db("announcement")
-                .where({ id: idAnnouncement, author_id: idUser })
-                .del();
+            await Announcements.where({
+                id: idAnnouncement,
+                author_id: idUser,
+            }).del();
             res.json({
                 message: "Announcement deleted successfully",
                 data: {},
@@ -75,7 +76,7 @@ router.post(
         };
 
         try {
-            await db("announcement").insert(announcementData);
+            await Announcements.insert(announcementData);
             res.json({
                 message: "Announcement created successfully",
                 data: {},
@@ -103,9 +104,9 @@ router.post(
         }
 
         try {
-            await db("announcement")
-                .where({ id: id, author_id: idUser })
-                .update({ text: text });
+            await Announcements.where({ id: id, author_id: idUser }).update({
+                text: text,
+            });
             res.json({
                 message: "Announcement updated successfully",
                 data: {},
