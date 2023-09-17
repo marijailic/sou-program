@@ -1,5 +1,6 @@
+import { Users } from "../models/models";
+
 const bcrypt = require("bcrypt");
-const db = require("./db");
 const jwt = require("jsonwebtoken");
 
 async function hashPassword(passwordInput) {
@@ -8,8 +9,7 @@ async function hashPassword(passwordInput) {
 }
 
 async function getAuthUserData(username, password) {
-    const user = await db
-        .select()
+    const user = Users.select()
         .from("user")
         .where("username", username)
         .first();
@@ -97,20 +97,4 @@ function authMiddleware(req, res, next) {
     return res.status(401).json({ error: "Unauthorized" });
 }
 
-function demosMiddleware(req, res, next) {
-    const userType = req.headers["type"];
-
-    if (userType === "demonstrator") {
-        next();
-        return;
-    }
-
-    return res.status(401).json({ error: "Unauthorized" });
-}
-
-module.exports = {
-    hashPassword,
-    getAuthUserData,
-    authMiddleware,
-    demosMiddleware,
-};
+export { hashPassword, getAuthUserData, authMiddleware };
