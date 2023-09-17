@@ -14,11 +14,11 @@ const routes = [
                 name: "HomeView",
                 component: () => import("@/views/Web/HomeView.vue"),
             },
-            // {
-            //     path: "login",
-            //     name: "LoginView",
-            //     component: () => import("@/views/LoginView.vue"),
-            // },
+            {
+                path: "login",
+                name: "LoginView",
+                component: () => import("@/views/Web/LoginView.vue"),
+            },
             {
                 path: "about",
                 name: "AboutView",
@@ -86,11 +86,11 @@ const routes = [
         name: "MsgWrapper",
         component: () => import("@/MsgWrapper.vue"),
         children: [
-            {
-                path: "login",
-                name: "LoginView",
-                component: () => import("@/views/LoginView.vue"),
-            },
+            // {
+            //     path: "login",
+            //     name: "LoginView",
+            //     component: () => import("@/views/LoginView.vue"),
+            // },
             {
                 path: "error",
                 name: "Error",
