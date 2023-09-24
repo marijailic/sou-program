@@ -2,6 +2,12 @@
     <div class="side-navigation">
         <div class="card text-center">
             <img
+                v-if="image"
+                class="card-img-top rounded-circle mx-auto"
+                :src="image"
+            />
+            <img
+                v-else
                 class="card-img-top rounded-circle mx-auto"
                 src="@/assets/sp-icon.png"
             />
@@ -47,15 +53,28 @@
 </template>
 
 <script>
+import { useStoreGallery } from "@/stores/gallery.store";
+import { useStoreUser } from "@/stores/user.store";
+
 export default {
     name: "navigation",
     data() {
         return {
             username: "",
+            profilePictureKey: "",
+            image: "",
         };
     },
-    created() {
+    setup() {
+        const storeGallery = useStoreGallery();
+        const storeUser = useStoreUser();
+
+        return { storeGallery, storeUser };
+    },
+    async created() {
         this.getUsername();
+        await this.getAuthorUsername();
+        await this.displayImage();
     },
     methods: {
         logout() {
@@ -68,6 +87,17 @@ export default {
         getUsername() {
             const username = localStorage.getItem("username");
             this.username = username;
+        },
+        async getAuthorUsername() {
+            await this.storeUser.fetchUser();
+            const user = await this.storeUser.getCurrentUser(this.username);
+            this.profilePictureKey = user.profile_picture_key;
+        },
+        async displayImage() {
+            const image = await this.storeGallery.googleDisplayImage(
+                this.profilePictureKey
+            );
+            this.image = `data:image/jpeg;base64,${image}`;
         },
     },
 };

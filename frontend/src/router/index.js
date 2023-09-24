@@ -17,7 +17,7 @@ const routes = [
             {
                 path: "login",
                 name: "LoginView",
-                component: () => import("@/views/LoginView.vue"),
+                component: () => import("@/views/Web/LoginView.vue"),
             },
             {
                 path: "about",
@@ -86,6 +86,11 @@ const routes = [
         name: "MsgWrapper",
         component: () => import("@/MsgWrapper.vue"),
         children: [
+            // {
+            //     path: "login",
+            //     name: "LoginView",
+            //     component: () => import("@/views/LoginView.vue"),
+            // },
             {
                 path: "error",
                 name: "Error",

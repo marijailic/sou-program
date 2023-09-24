@@ -6,8 +6,14 @@
                     class="first-col card-body col-md-1 d-flex justify-content-center"
                 >
                     <img
-                        src="@/assets/sp-icon.png"
+                        v-if="profilePictureKey"
                         class="profile-pic rounded-circle"
+                        :src="profilePictureKey"
+                    />
+                    <img
+                        v-else
+                        class="profile-pic rounded-circle"
+                        src="@/assets/sp-icon.png"
                     />
                 </div>
                 <div
@@ -55,6 +61,7 @@
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from "@/stores/gallery.store";
 
 import eventBus from "@/eventBus";
 import { formatDistanceToNow } from "date-fns";
@@ -73,6 +80,7 @@ export default {
             postAuthor: {},
             closeEdit: () => {},
             editText: false,
+            profilePictureKey: "",
         };
     },
     props: {
@@ -84,15 +92,20 @@ export default {
     setup(props) {
         const storeAnnouncement = useStoreAnnouncement();
         const storeUser = useStoreUser();
+        const storeGallery = useStoreGallery();
+
         const authorID = props.announcementData.author_id;
 
-        return { storeAnnouncement, storeUser, authorID };
+        return { storeAnnouncement, storeUser, storeGallery, authorID };
     },
-    created() {
-        this.getPostAuthor();
+    async created() {
+        await this.getPostAuthor();
         this.closeEdit = () => {
             this.editText = false;
         };
+
+        const profilePictureKey = this.postAuthor.profile_picture_key;
+        await this.displayImage(profilePictureKey);
     },
     methods: {
         async getPostAuthor() {
@@ -123,6 +136,10 @@ export default {
             this.openedEditCheck();
             eventBus.emit("editingAnnouncementID", editingAnnouncementID);
             this.editText = true;
+        },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };

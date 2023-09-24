@@ -5,8 +5,18 @@
                 class="col-md-3 d-flex justify-content-center align-items-center"
             >
                 <img
-                    src="@/assets/sp-icon.png"
+                    v-if="profilePictureKey || userProfilePictureKey"
                     class="profile-pic rounded-circle"
+                    :src="
+                        parentComponent === 'MyProfileView'
+                            ? profilePictureKey
+                            : userProfilePictureKey
+                    "
+                />
+                <img
+                    v-else
+                    class="profile-pic rounded-circle"
+                    src="@/assets/sp-icon.png"
                 />
             </div>
             <div class="second-col col-md-9 d-flex align-items-center">
@@ -33,6 +43,18 @@ export default {
         userData: {
             type: Object,
             required: true,
+        },
+        parentComponent: {
+            type: String,
+            required: true,
+        },
+        profilePictureKey: {
+            type: String,
+            required: false,
+        },
+        userProfilePictureKey: {
+            type: String,
+            required: false,
         },
     },
 };

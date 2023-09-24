@@ -7,6 +7,7 @@ import { demosMiddleware } from "../middlewares/demos.middleware";
 import { Announcements } from "../models/models";
 
 const { getUserByUsername } = require("../services/user.service");
+const { sendAnnouncements } = require("../services/sendAnnouncement.service");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
@@ -77,6 +78,8 @@ router.post(
 
         try {
             await Announcements.insert(announcementData);
+            await sendAnnouncements(text);
+
             res.json({
                 message: "Announcement created successfully",
                 data: {},

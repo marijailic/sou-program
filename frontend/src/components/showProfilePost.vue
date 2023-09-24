@@ -6,8 +6,18 @@
                     class="first-col card-body col-md-1 d-flex justify-content-center"
                 >
                     <img
-                        src="@/assets/sp-icon.png"
+                        v-if="profilePictureKey || userProfilePictureKey"
                         class="profile-pic rounded-circle"
+                        :src="
+                            parentComponent === 'MyProfileView'
+                                ? profilePictureKey
+                                : userProfilePictureKey
+                        "
+                    />
+                    <img
+                        v-else
+                        class="profile-pic rounded-circle"
+                        src="@/assets/sp-icon.png"
                     />
                 </div>
                 <div
@@ -84,6 +94,14 @@ export default {
         parentComponent: {
             type: String,
             required: true,
+        },
+        profilePictureKey: {
+            type: String,
+            required: false,
+        },
+        userProfilePictureKey: {
+            type: String,
+            required: false,
         },
     },
     setup() {

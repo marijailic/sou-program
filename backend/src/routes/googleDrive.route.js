@@ -15,7 +15,7 @@ try {
     drive = null;
 }
 
-router.use(express.raw({ type: "text/plain" }));
+router.use(express.raw({ limit: "30MB", type: "text/plain" }));
 
 router.post(
     "/upload-image/:folder_name/:image_name",

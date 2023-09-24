@@ -3,8 +3,14 @@
         <div class="card">
             <div class="user-profile">
                 <img
-                    src="@/assets/sp-icon.png"
+                    v-if="profilePictureKey"
                     class="user-profile-image rounded-circle"
+                    :src="profilePictureKey"
+                />
+                <img
+                    v-else
+                    class="user-profile-image rounded-circle"
+                    src="@/assets/sp-icon.png"
                 />
                 <div class="user-info">
                     <router-link
@@ -41,6 +47,8 @@
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from "@/stores/gallery.store";
+
 import eventBus from "@/eventBus";
 
 import userTypeEnum from "@/enums/userTypeEnum";
@@ -50,6 +58,7 @@ export default {
     data() {
         return {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
+            profilePictureKey: "",
         };
     },
     props: {
@@ -58,9 +67,16 @@ export default {
             required: true,
         },
     },
-    setup() {
+    setup(props) {
+        const userProfilePictureKey = props.userData.profile_picture_key;
+
         const storeUser = useStoreUser();
-        return { storeUser };
+        const storeGallery = useStoreGallery();
+
+        return { storeUser, storeGallery, userProfilePictureKey };
+    },
+    async created() {
+        await this.displayImage(this.userProfilePictureKey);
     },
     methods: {
         async deleteUser(idUser) {
@@ -80,6 +96,10 @@ export default {
                 editUserID,
             };
             eventBus.emit("editUser", editObj);
+        },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };

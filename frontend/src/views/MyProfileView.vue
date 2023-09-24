@@ -1,7 +1,14 @@
 <template>
     <div>
-        <show-profile :userData="currentUserData" />
-        <add-profile-post :userData="currentUserData" />
+        <show-profile
+            :parentComponent="parentComponent"
+            :userData="currentUserData"
+            :profilePictureKey="profilePictureKey"
+        />
+        <add-profile-post
+            :userData="currentUserData"
+            :profilePictureKey="profilePictureKey"
+        />
 
         <div
             class="d-flex justify-content-center"
@@ -13,6 +20,7 @@
         <show-profile-post
             :parentComponent="parentComponent"
             :userData="currentUserData"
+            :profilePictureKey="profilePictureKey"
             v-for="post in currentUserPosts"
             :key="post.id"
             :postData="post"
@@ -22,6 +30,7 @@
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
 
 import eventBus from "@/eventBus";
@@ -39,19 +48,29 @@ export default {
             currentUserPosts: [],
             parentComponent: "MyProfileView",
             editingPostID: null,
+            profilePictureKey: "",
         };
     },
     setup() {
         const currentUserUsername = localStorage.getItem("username");
         const storeUser = useStoreUser();
+        const storeGallery = useStoreGallery();
         const storeProfilePost = useStoreProfilePost();
 
-        return { storeUser, storeProfilePost, currentUserUsername };
+        return {
+            storeUser,
+            storeGallery,
+            storeProfilePost,
+            currentUserUsername,
+        };
     },
     async created() {
         await this.getCurrentUser();
         await this.getCurrentUserPosts();
         this.getEditingPostID();
+
+        const profilePictureKey = this.currentUserData.profile_picture_key;
+        await this.displayImage(profilePictureKey);
     },
     methods: {
         async getCurrentUser() {
@@ -76,6 +95,10 @@ export default {
                     this.editingPostID = editingPostID;
                 }
             });
+        },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };

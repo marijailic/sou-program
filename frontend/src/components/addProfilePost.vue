@@ -7,8 +7,14 @@
                         class="first-col card-body col-md-1 d-flex justify-content-center"
                     >
                         <img
-                            src="@/assets/sp-icon.png"
+                            v-if="profilePictureKey"
                             class="profile-pic rounded-circle"
+                            :src="profilePictureKey"
+                        />
+                        <img
+                            v-else
+                            class="profile-pic rounded-circle"
+                            src="@/assets/sp-icon.png"
                         />
                     </div>
                     <div
@@ -44,6 +50,10 @@ export default {
     props: {
         userData: {
             type: Object,
+            required: true,
+        },
+        profilePictureKey: {
+            type: String,
             required: true,
         },
     },

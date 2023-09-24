@@ -19,17 +19,10 @@
                     </span>
                 </p>
             </div>
-            <vue-masonry>
-                <div class="masonry-container">
-                    <div
-                        v-for="image in images"
-                        :key="image"
-                        class="masonry-item"
-                    >
-                        <img :src="image" class="masonry-image" />
-                    </div>
-                </div>
-            </vue-masonry>
+
+            <div class="masonry-container">
+                <img v-for="image in images" :key="image" :src="image" />
+            </div>
         </div>
     </div>
 </template>
@@ -122,22 +115,7 @@ export default {
 .row {
     padding: 0;
 }
-
-.masonry-container {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.masonry-item {
-    width: calc(33.33% - 10px);
-    margin-bottom: 10px;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.masonry-image {
+.masonry-container > * {
     width: 100%;
-    height: auto;
 }
 </style>

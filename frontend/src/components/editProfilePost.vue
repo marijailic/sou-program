@@ -3,25 +3,13 @@
         <form @submit.prevent="updateProfilePost">
             <div class="card">
                 <div class="row">
-                    <div
-                        class="first-col card-body col-md-1 d-flex justify-content-center"
-                    >
-                        <img
-                            src="@/assets/sp-icon.png"
-                            class="profile-pic rounded-circle"
-                        />
-                    </div>
-                    <div
-                        class="second-col col-md-11 d-flex align-items-center text-start"
-                    >
-                        <div class="card-right card-body text-start">
-                            <textarea
-                                v-model="postText"
-                                class="form-control"
-                                rows="3"
-                                required
-                            ></textarea>
-                        </div>
+                    <div class="card-body text-start">
+                        <textarea
+                            v-model="postText"
+                            class="form-control"
+                            rows="3"
+                            required
+                        ></textarea>
                     </div>
                 </div>
                 <div class="card-footer text-end">
@@ -96,19 +84,9 @@ export default {
 .row {
     padding: 1vw;
 }
-.second-col {
-    padding-left: 0;
-}
-.card-right {
-    padding-left: 0;
-}
 .card-footer {
     padding: 0.7vw;
     background-color: #eaeaea;
-}
-.profile-pic {
-    width: 50px;
-    height: 50px;
 }
 .escape-btn {
     margin-right: 1vw;

@@ -55,6 +55,17 @@
                             required
                         />
                     </div>
+                    <div class="form-group">
+                        <label for="profilePicture">Slika profila</label>
+                        <input
+                            type="file"
+                            @change="addFile"
+                            id="profilePicture"
+                            class="picture-input form-control"
+                            accept="image/*"
+                            required
+                        />
+                    </div>
                     <!-- <div class="form-group">
                         <label for="profilePicture">Profilna slika</label>
                         <input
@@ -100,7 +111,9 @@
 </template>
 
 <script>
+import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
+
 import { ref } from "vue";
 
 export default {
@@ -113,6 +126,7 @@ export default {
         },
     },
     setup() {
+        const storeGallery = useStoreGallery();
         const storeUser = useStoreUser();
 
         const newUserName = ref("");
@@ -123,16 +137,25 @@ export default {
         const newUserBio = ref("");
         const newUserType = ref("");
 
+        const selectedImage = ref([]);
+
         const postUser = async () => {
+            const profilePictureKey = await storeGallery.googleUploadImages({
+                images: selectedImage.value,
+                folderName: "user",
+            });
+
             const newUserData = {
                 name: newUserName.value,
                 surname: newUserSurname.value,
                 email: newUserEmail.value,
                 username: newUserUsername.value,
                 password: newUserPassword.value,
+                profile_picture_key: profilePictureKey[0],
                 bio: newUserBio.value,
                 type: newUserType.value,
             };
+
             await storeUser.createUser(newUserData);
         };
 
@@ -146,9 +169,13 @@ export default {
             newUserPassword,
             newUserBio,
             newUserType,
+            selectedImage,
         };
     },
     methods: {
+        addFile(event) {
+            this.selectedImage.push(...event.target.files);
+        },
         closeAdd() {
             this.closeAdd();
         },

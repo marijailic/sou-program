@@ -71,12 +71,14 @@ export const useStoreGallery = defineStore("storeGallery", {
             }
             window.location.href = "/success";
         },
-        async googleUploadImages(images) {
+        async googleUploadImages(googleImageData) {
             const username = localStorage.getItem("username");
             let galleryItemIDs = [];
 
+            const images = googleImageData.images;
+
             for (const image of images) {
-                const folderName = "gallery";
+                const folderName = googleImageData.folderName;
                 const imageName =
                     username +
                     "-" +
@@ -129,7 +131,7 @@ export const useStoreGallery = defineStore("storeGallery", {
         },
         async createGallery(galleryData) {
             const galleryItemIDs = await this.googleUploadImages(
-                galleryData.galleryItemData.images
+                galleryData.galleryItemData
             );
 
             if (galleryItemIDs.length === 0) {

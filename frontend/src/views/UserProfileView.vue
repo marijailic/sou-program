@@ -1,6 +1,10 @@
 <template>
     <div>
-        <show-profile :userData="userData" />
+        <show-profile
+            :parentComponent="parentComponent"
+            :userData="userData"
+            :userProfilePictureKey="userProfilePictureKey"
+        />
 
         <div
             class="d-flex justify-content-center"
@@ -12,6 +16,7 @@
         <show-profile-post
             :parentComponent="parentComponent"
             :userData="userData"
+            :userProfilePictureKey="userProfilePictureKey"
             v-for="post in userPosts"
             :key="post.id"
             :postData="post"
@@ -22,6 +27,7 @@
 <script>
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
+import { useStoreGallery } from "@/stores/gallery.store";
 
 import { useRoute } from "vue-router";
 
@@ -36,21 +42,26 @@ export default {
             userData: {},
             userPosts: [],
             parentComponent: "UserProfileView",
+            userProfilePictureKey: "",
         };
     },
     setup() {
         const storeUser = useStoreUser();
         const storeProfilePost = useStoreProfilePost();
+        const storeGallery = useStoreGallery();
 
         // get user id from url
         const route = useRoute();
         const userID = route.params.id;
 
-        return { storeUser, storeProfilePost, userID };
+        return { storeUser, storeProfilePost, storeGallery, userID };
     },
     async created() {
         await this.getUser();
         await this.getUserPosts();
+
+        const profilePictureKey = this.userData.profile_picture_key;
+        await this.displayImage(profilePictureKey);
     },
     methods: {
         async getUser() {
@@ -63,6 +74,10 @@ export default {
                 this.userID
             );
             this.userPosts = userPosts;
+        },
+        async displayImage(imageID) {
+            const image = await this.storeGallery.googleDisplayImage(imageID);
+            this.userProfilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };
