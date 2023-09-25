@@ -177,7 +177,7 @@
 </template>
 
 <script>
-import EmailLink from "@/components/Web/EmailLink.vue";
+import EmailLink from "@/components/web/EmailLink.vue";
 
 export default {
     name: "About",

@@ -44,9 +44,9 @@
 import { useStoreCompetition } from "@/stores/competition.store";
 import eventBus from "@/eventBus";
 
-import showCompetition from "@/components/showCompetition.vue";
-import addCompetition from "@/components/addCompetition.vue";
-import editCompetition from "@/components/editCompetition.vue";
+import showCompetition from "@/components/app/showCompetition.vue";
+import addCompetition from "@/components/app/addCompetition.vue";
+import editCompetition from "@/components/app/editCompetition.vue";
 
 import userTypeEnum from "@/enums/userTypeEnum";
 

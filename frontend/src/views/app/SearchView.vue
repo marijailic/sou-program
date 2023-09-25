@@ -43,10 +43,10 @@
 import { useStoreUser } from "@/stores/user.store";
 import eventBus from "@/eventBus";
 
-import searchUser from "@/components/searchUser.vue";
-import showUser from "@/components/showUser.vue";
-import addUser from "@/components/addUser.vue";
-import editUser from "@/components/editUser.vue";
+import searchUser from "@/components/app/searchUser.vue";
+import showUser from "@/components/app/showUser.vue";
+import addUser from "@/components/app/addUser.vue";
+import editUser from "@/components/app/editUser.vue";
 
 import userTypeEnum from "@/enums/userTypeEnum";
 

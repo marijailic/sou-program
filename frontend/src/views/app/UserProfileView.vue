@@ -31,8 +31,8 @@ import { useStoreGallery } from "@/stores/gallery.store";
 
 import { useRoute } from "vue-router";
 
-import showProfile from "@/components/showProfile.vue";
-import showProfilePost from "@/components/showProfilePost.vue";
+import showProfile from "@/components/app/showProfile.vue";
+import showProfilePost from "@/components/app/showProfilePost.vue";
 
 export default {
     name: "UserProfileView",

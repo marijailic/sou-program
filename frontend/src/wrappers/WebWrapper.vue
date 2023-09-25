@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import Navigation from "@/components/Web/Navigation.vue";
-import SouFooter from "@/components/Web/SouFooter.vue";
+import Navigation from "@/components/web/Navigation.vue";
+import SouFooter from "@/components/web/SouFooter.vue";
 
 export default {
     name: "WebWrapper",

@@ -35,9 +35,9 @@ import { useStoreProfilePost } from "@/stores/profilepost.store";
 
 import eventBus from "@/eventBus";
 
-import showProfile from "@/components/showProfile.vue";
-import addProfilePost from "../components/addProfilePost.vue";
-import showProfilePost from "@/components/showProfilePost.vue";
+import showProfile from "@/components/app/showProfile.vue";
+import addProfilePost from "@/components/app/addProfilePost.vue";
+import showProfilePost from "@/components/app/showProfilePost.vue";
 
 export default {
     name: "MyProfileView",

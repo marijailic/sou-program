@@ -46,10 +46,10 @@
 import { useStoreGallery } from "@/stores/gallery.store";
 import eventBus from "@/eventBus";
 
-import showGallery from "@/components/showGallery.vue";
-import addGallery from "@/components/addGallery.vue";
-import editGallery from "@/components/editGallery.vue";
-import showFullGallery from "@/components/showFullGallery.vue";
+import showGallery from "@/components/app/showGallery.vue";
+import addGallery from "@/components/app/addGallery.vue";
+import editGallery from "@/components/app/editGallery.vue";
+import showFullGallery from "@/components/app/showFullGallery.vue";
 
 export default {
     name: "GalleryView",

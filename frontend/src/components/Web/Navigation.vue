@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import SouFooter from "@/components/Web/SouFooter.vue";
+import SouFooter from "@/components/web/SouFooter.vue";
 import Hamburger from "./Hamburger.vue";
 
 let nav, body, content, scrollThreshold, timeout, logo;

@@ -32,8 +32,8 @@ import { useStoreGallery } from "@/stores/gallery.store";
 
 import eventBus from "@/eventBus";
 
-import addAnnouncement from "@/components/addAnnouncement.vue";
-import showAnnouncement from "@/components/showAnnouncement.vue";
+import addAnnouncement from "@/components/app/addAnnouncement.vue";
+import showAnnouncement from "@/components/app/showAnnouncement.vue";
 
 import userTypeEnum from "@/enums/userTypeEnum";
 
