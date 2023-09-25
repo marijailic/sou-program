@@ -34,7 +34,7 @@
 import SouFooter from "@/components/web/SouFooter.vue";
 import Hamburger from "./Hamburger.vue";
 
-let nav, body, content, scrollThreshold, timeout, logo;
+let nav, body, content, scrollThreshold, timeout, logo, menuIcon;
 
 function toggleScroll() {
     if (document.body.style.overflow === "hidden") {
@@ -50,7 +50,7 @@ const scrolledDown = () => {
     nav.style.transform = "translateY(-100%)";
 
     nav.classList.add("fixed");
-    const mtop = (window.innerWidth < 1024 ? 1 : 1.333) * nav.offsetHeight;
+    const mtop = nav.offsetHeight;
     content.style.marginTop = `${mtop}px`;
 
     nav.style.transition = "transform 0.3s ease-out";
@@ -102,12 +102,11 @@ document.addEventListener("keypress", function (event) {
 export default {
     data() {
         const routes = [
-            { path: "/", label: "Home" },
-            { path: "/about", label: "About" },
-            { path: "/educators", label: "Educators" },
-            { path: "/podcast", label: "Podcast" },
-            { path: "/contact", label: "Contact" },
-            { path: "/login", label: "Login" },
+            { path: "/", label: "Početna" },
+            { path: "/educators", label: "Šou lab" },
+            { path: "/podcast", label: "Šou podkast" },
+            { path: "/contact", label: "Kontakt" },
+            // { path: "/login", label: "Prijava" },
         ];
         return {
             routes,
@@ -123,6 +122,7 @@ export default {
         body = document.getElementsByTagName("body")[0];
         content = document.getElementById("web-container");
         logo = document.getElementById("logo");
+        menuIcon = document.getElementsByClassName("menu-icon")[0];
         scrollThreshold = nav.offsetHeight;
     },
     methods: {
@@ -137,15 +137,10 @@ export default {
 </script>
 
 <style lang="scss">
-.debugger-border * {
-    box-shadow: 0 0 0 1px red;
-}
 nav.fixed {
     position: fixed;
     left: 0;
     right: 0;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
 }
 
 .menu-icon {
@@ -157,12 +152,13 @@ nav {
     z-index: 2;
     transition: padding-top 1s;
     transition: padding-bottom 1s;
-    padding: 2em 1em;
+    padding: 0.5em;
     background-color: var(--primary-color);
 
     #logo {
         height: 64px;
         width: 64px;
+        box-shadow: inset 0px 0px 0px 5px white;
         border: 3px solid white;
         border-radius: 50%;
         transition: scale 0.3s;
@@ -258,9 +254,6 @@ nav {
     top: 0;
 }
 
-@media (max-width: 1200px) {
-}
-
 @media (max-width: 1024px) {
     nav {
         padding: 0.5em;
@@ -279,8 +272,18 @@ nav {
             }
         }
     }
-}
 
-@media (max-width: 480px) {
+    nav {
+        padding: 0.1em;
+        #logo {
+            height: 40px;
+            width: 40px;
+            border: 2px solid white;
+        }
+
+        .menu-icon {
+            scale: 0.45;
+        }
+    }
 }
 </style>

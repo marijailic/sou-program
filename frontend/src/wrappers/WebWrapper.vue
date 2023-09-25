@@ -32,7 +32,7 @@ export default {
 
 <style lang="scss">
 :root {
-    --primary-color: rgb(100, 202, 255);
+    --primary-color: black;
 }
 body {
     background-color: var(--primary-color);
@@ -45,7 +45,7 @@ body {
 
 .filler {
     position: absolute;
-    height: 140px;
+    height: 96px;
     width: 100%;
     background-color: var(--primary-color);
     z-index: 1;
@@ -135,6 +135,10 @@ body {
     #web-container {
         padding: 2em 0em;
         line-height: 24px;
+    }
+
+    .filler {
+        height: 59px;
     }
 }
 
