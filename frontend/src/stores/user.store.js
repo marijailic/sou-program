@@ -1,4 +1,6 @@
 import { defineStore } from "pinia";
+import { getAuthHeaders } from "@/services/authService";
+import userTypeEnum from "@/enums/userTypeEnum";
 
 export const useStoreUser = defineStore("storeUser", {
     state: () => ({
@@ -7,14 +9,21 @@ export const useStoreUser = defineStore("storeUser", {
     getters: {
         getUsersExceptCurrent: (state) => () => {
             const currentUser = localStorage.getItem("username");
-            return state.user.filter((user) => {
-                return (
-                    user.username.toLowerCase() !== currentUser.toLowerCase()
-                );
-            });
+            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
+
+            return isDemos
+                ? state.user
+                : state.user.filter((user) => {
+                      return (
+                          user.username.toLowerCase() !==
+                          currentUser.toLowerCase()
+                      );
+                  });
         },
         getFilteredUsers: (state) => (searchText) => {
             const currentUser = localStorage.getItem("username");
+            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
+
             const filteredUsers = state.user.filter((user) => {
                 const fullName = `${user.name} ${user.surname}`;
                 const reversedFullName = `${user.surname} ${user.name}`;
@@ -23,11 +32,13 @@ export const useStoreUser = defineStore("storeUser", {
                 const reversedUserFullName = reversedFullName.toLowerCase();
                 const searchLowerCase = searchText.toLowerCase();
 
-                return (
-                    (userFullName.includes(searchLowerCase) ||
-                        reversedUserFullName.includes(searchLowerCase)) &&
-                    user.username.toLowerCase() !== currentUser.toLowerCase()
-                );
+                const userFound =
+                    userFullName.includes(searchLowerCase) ||
+                    reversedUserFullName.includes(searchLowerCase);
+
+                const isSelf =
+                    user.username.toLowerCase() === currentUser.toLowerCase();
+                return userFound && (!isSelf || isDemos);
             });
             return filteredUsers;
         },
@@ -46,16 +57,8 @@ export const useStoreUser = defineStore("storeUser", {
     },
     actions: {
         async fetchUser() {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/user`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
-                },
+                headers: getAuthHeaders(),
             });
 
             if (!res.ok) {
@@ -69,70 +72,40 @@ export const useStoreUser = defineStore("storeUser", {
             return resObj.data;
         },
         async deleteUser(idUser) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/delete-user`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify({ id: idUser }),
             });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async createUser(newUserData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/create-user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify(newUserData),
             });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async updateUser(updateData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/update-user`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
+                    ...getAuthHeaders(),
                 },
                 body: JSON.stringify(updateData),
             });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
     },
 });

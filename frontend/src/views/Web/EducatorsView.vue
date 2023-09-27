@@ -151,8 +151,8 @@
 </template>
 
 <script>
-import EducatorCalendar from "@/components/Web/EducatorCalendar.vue";
-import EmailLink from "@/components/Web/EmailLink.vue";
+import EducatorCalendar from "@/components/web/EducatorCalendar.vue";
+import EmailLink from "@/components/web/EmailLink.vue";
 
 export default {
     name: "Educators",

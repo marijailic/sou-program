@@ -1,42 +1,3 @@
-<!-- <template>
-    <nav id="nav" class="navbar fixed-top navbar-expand-lg">
-        <div class="d-flex justify-content-center collapse navbar-collapse">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="'/'"> Home </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="'about'">
-                        About
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="'educators'">
-                        Educators
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="'podcast'">
-                        Podcast
-                    </router-link>
-                </li>
-                <li class="nav-item">
-                    <router-link class="nav-link" :to="'contact'">
-                        Contact
-                    </router-link>
-                </li>
-            </ul>
-        </div>
-        <div class="text-start position-absolute">
-            <i>Debug navbar </i><br />
-            (<u><b>B</b></u
-            >) to toggle borders <br />
-            (<u><b>H</b></u
-            >) to toggle navbar
-        </div>
-    </nav>
-</template>
--->
 <template>
     <nav id="nav" class="d-flex justify-content-between">
         <a class="inline-block" href="/">
@@ -54,32 +15,26 @@
         </div>
     </nav>
     <div :class="navOpened ? 'opened' : ''" id="nav-content">
-        <div class="flex">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="/" class="nav-link"> Home </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/about" class="nav-link"> About </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/educators" class="nav-link"> Educators </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/podcast" class="nav-link"> Podcast </a>
-                </li>
-                <li class="nav-item">
-                    <a href="/contact" class="nav-link"> Contact </a>
+        <div class="d-flex h-100 flex-column justify-content-between">
+            <ul class="navbar-nav text-center">
+                <li v-for="route in routes" :key="route.path" class="nav-item">
+                    <a :href="route.path" class="nav-link">
+                        <div class="route-label">
+                            {{ route.label }}
+                        </div>
+                    </a>
                 </li>
             </ul>
+            <SouFooter />
         </div>
     </div>
 </template>
 
 <script>
+import SouFooter from "@/components/web/SouFooter.vue";
 import Hamburger from "./Hamburger.vue";
 
-let nav, body, content, scrollThreshold, navContent, timeout, logo;
+let nav, body, content, scrollThreshold, timeout, logo, menuIcon;
 
 function toggleScroll() {
     if (document.body.style.overflow === "hidden") {
@@ -89,33 +44,41 @@ function toggleScroll() {
     }
 }
 
+const scrolledDown = () => {
+    // When scrolled down
+    nav.style.transition = "transform 0s";
+    nav.style.transform = "translateY(-100%)";
+
+    nav.classList.add("fixed");
+    const mtop = nav.offsetHeight;
+    content.style.marginTop = `${mtop}px`;
+
+    nav.style.transition = "transform 0.3s ease-out";
+    nav.style.transform = "translateY(0%)";
+};
+const scrolledUp = () => {
+    // When on top
+    nav.classList.remove("fixed");
+    content.style.marginTop = 0;
+
+    nav.style.transition = "transform 0s";
+    nav.style.transform = "translateY(100%)";
+
+    setTimeout(() => {
+        nav.style.transition =
+            "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1.11)";
+        nav.style.transform = "translateY(0)";
+    }, 10);
+};
+
 function toggleNavOnScroll() {
     if (window.scrollY >= scrollThreshold && !nav.classList.contains("fixed")) {
-        // When scrolled down
-        nav.style.transition = "transform 0s";
-        nav.style.transform = "translateY(-100%)";
-
-        nav.classList.add("fixed");
-        content.style.marginTop = `${1.333 * nav.offsetHeight}px`;
-
-        nav.style.transition = "transform 0.3s ease-out";
-        nav.style.transform = "translateY(0%)";
+        scrolledDown();
     } else if (
         window.scrollY < scrollThreshold &&
         nav.classList.contains("fixed")
     ) {
-        // When on top
-        nav.classList.remove("fixed");
-        content.style.marginTop = 0;
-
-        nav.style.transition = "transform 0s";
-        nav.style.transform = "translateY(100%)";
-
-        setTimeout(() => {
-            nav.style.transition =
-                "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1.11)";
-            nav.style.transform = "translateY(0)";
-        }, 10);
+        scrolledUp();
     }
 }
 
@@ -138,18 +101,28 @@ document.addEventListener("keypress", function (event) {
 
 export default {
     data() {
+        const routes = [
+            { path: "/", label: "Početna" },
+            { path: "/educators", label: "Šou lab" },
+            { path: "/podcast", label: "Šou podkast" },
+            { path: "/contact", label: "Kontakt" },
+            // { path: "/login", label: "Prijava" },
+        ];
         return {
+            routes,
             navOpened: false,
         };
     },
     components: {
         Hamburger,
+        SouFooter,
     },
     mounted() {
         nav = document.getElementById("nav");
         body = document.getElementsByTagName("body")[0];
         content = document.getElementById("web-container");
         logo = document.getElementById("logo");
+        menuIcon = document.getElementsByClassName("menu-icon")[0];
         scrollThreshold = nav.offsetHeight;
     },
     methods: {
@@ -164,15 +137,10 @@ export default {
 </script>
 
 <style lang="scss">
-.debugger-border * {
-    box-shadow: 0 0 0 1px red;
-}
 nav.fixed {
     position: fixed;
     left: 0;
     right: 0;
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
 }
 
 .menu-icon {
@@ -184,12 +152,13 @@ nav {
     z-index: 2;
     transition: padding-top 1s;
     transition: padding-bottom 1s;
-    padding: 2em 1em;
+    padding: 0.5em;
     background-color: var(--primary-color);
 
     #logo {
         height: 64px;
         width: 64px;
+        box-shadow: inset 0px 0px 0px 5px white;
         border: 3px solid white;
         border-radius: 50%;
         transition: scale 0.3s;
@@ -235,9 +204,9 @@ nav {
     background-color: var(--primary-color);
     color: white;
     transition: top 0.5s;
-    height: 100vw;
+    height: 100vh;
     width: 100%;
-    padding: 12em;
+    padding: 12em 0em 0em 0em;
     z-index: 1;
 
     li {
@@ -245,31 +214,76 @@ nav {
         padding: 0.1em;
 
         a {
-            display: inline-block;
-            position: relative;
-            font-size: 24px;
-            border: 2px solid transparent;
-            overflow: hidden;
-        }
-
-        a::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: -100%;
             width: 100%;
-            height: 3px;
-            background-color: white;
-            transition: left 0.3s ease;
+            display: inline-block;
+            font-size: 30px;
+
+            .route-label {
+                position: relative;
+                display: inline-block;
+                border: 2px solid transparent;
+                width: fit-content;
+                overflow: hidden;
+            }
+
+            .route-label::after {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: -100%;
+                width: 100%;
+                height: 3px;
+                background-color: white;
+                transition: left 0.3s ease;
+            }
+
+            .route-label:hover::after {
+                left: 0;
+            }
         }
 
-        a:hover::after {
-            left: 0;
+        a:hover {
+            .route-label::after {
+                left: 0;
+            }
         }
     }
 }
 
 #nav-content.opened {
     top: 0;
+}
+
+@media (max-width: 1024px) {
+    nav {
+        padding: 0.5em;
+    }
+
+    #nav-content {
+        padding: 8em 0em 0em 0em;
+    }
+}
+
+@media (max-width: 768px) {
+    #nav-content {
+        li {
+            a {
+                font-size: 26px;
+            }
+        }
+    }
+
+    nav {
+        padding: 0.1em;
+        #logo {
+            height: 40px;
+            width: 40px;
+            border: 2px solid white;
+        }
+
+        .menu-icon {
+            scale: 0.45;
+        }
+    }
 }
 </style>

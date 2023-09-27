@@ -2,18 +2,16 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-const db = require("../db");
+import { authMiddleware } from "../middlewares/auth.middleware";
+import { ProfilePosts } from "../models/models";
 
-const { authMiddleware } = require("../auth");
+const { getUserByUsername } = require("../services/user.service");
 
 router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
     const authorId = req.params.authorid;
 
     try {
-        const profilePost = await db
-            .select()
-            .from("profile_post")
-            .where("author_id", authorId)
+        const profilePost = ProfilePosts.where("author_id", authorId)
             .orderBy("timestamp", "desc")
             .limit(10);
         // throw new Error();
@@ -29,7 +27,7 @@ router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
 
 router.post("/create-profile-post", authMiddleware, async (req, res) => {
     const text = req.body.text;
-    const authorId = req.body.authorId;
+    const idUser = (await getUserByUsername(req.headers["username"])).id;
 
     const timezone = "Europe/Amsterdam";
     const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
@@ -41,12 +39,12 @@ router.post("/create-profile-post", authMiddleware, async (req, res) => {
     const profilePostData = {
         text: text,
         picture_key: "",
-        author_id: authorId,
+        author_id: idUser,
         timestamp: timestamp,
     };
 
     try {
-        await db("profile_post").insert(profilePostData);
+        await ProfilePosts.insert(profilePostData);
         res.json({
             message: "Profile post created successfully",
             data: {},
@@ -59,9 +57,10 @@ router.post("/create-profile-post", authMiddleware, async (req, res) => {
 
 router.delete("/delete-profile-post", authMiddleware, async (req, res) => {
     const idPost = req.body.id;
+    const idUser = (await getUserByUsername(req.headers["username"])).id;
 
     try {
-        await db("profile_post").where({ id: idPost }).del();
+        await ProfilePosts.where({ id: idPost, author_id: idUser }).del();
         res.json({ message: "Profile post deleted successfully", data: {} });
     } catch (error) {
         console.log("Error:", error);
@@ -72,13 +71,16 @@ router.delete("/delete-profile-post", authMiddleware, async (req, res) => {
 router.post("/update-profile-post", authMiddleware, async (req, res) => {
     const id = req.body.id;
     const text = req.body.text;
+    const idUser = (await getUserByUsername(req.headers["username"])).id;
 
     if (text.trim() === "") {
         res.status(400).json({ message: "Client error", data: {} });
     }
 
     try {
-        await db("profile_post").where({ id: id }).update({ text: text });
+        await ProfilePosts.where({ id: id, author_id: idUser }).update({
+            text: text,
+        });
         res.json({
             message: "Profile post updated successfully",
             data: {},

@@ -1,27 +1,16 @@
 import { defineStore } from "pinia";
+import { getAuthHeaders } from "@/services/authService";
+import BackendApiService from "@/services/BackendApiService";
 
 export const useStoreAnnouncement = defineStore("storeAnnouncement", {
     state: () => ({
         announcement: [],
     }),
-    getters: {
-        // getAllAnnouncements: (state) => () => {
-        //   const announcements = state.announcement;
-        //   return announcements;
-        // },
-    },
+    getters: {},
     actions: {
         async fetchAnnouncement() {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(`${process.env.VUE_APP_URL}/announcement`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    RefreshToken: refreshToken,
-                    Username: username,
-                },
+                headers: getAuthHeaders(),
             });
 
             if (!res.ok) {
@@ -35,79 +24,53 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
             return resObj.data;
         },
         async deleteAnnouncement(idAnnouncement) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
+            const res = await BackendApiService.delete({
+                url: "/delete-announcement",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: idAnnouncement }),
+            });
 
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/delete-announcement`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
-                    },
-                    body: JSON.stringify({ id: idAnnouncement }),
-                }
-            );
+            /*
+            const res = await fetch(`${process.env.VUE_APP_URL}/`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...getAuthHeaders(),
+                },
+                body: JSON.stringify({ id: idAnnouncement }),
+            });*/
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async createAnnouncement(announcementData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/create-announcement`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
+                        ...getAuthHeaders(),
                     },
                     body: JSON.stringify(announcementData),
                 }
             );
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async updateAnnouncement(updateData) {
-            const token = localStorage.getItem("token");
-            const refreshToken = localStorage.getItem("refreshToken");
-            const username = localStorage.getItem("username");
-
             const res = await fetch(
                 `${process.env.VUE_APP_URL}/update-announcement`,
                 {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                        RefreshToken: refreshToken,
-                        Username: username,
+                        ...getAuthHeaders(),
                     },
                     body: JSON.stringify(updateData),
                 }
             );
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
     },
 });

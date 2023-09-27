@@ -1,28 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const { authUser } = require("../auth");
-
-// router.get("/", (req, res) => {
-//   res.json({ app_name: config.app_name });
-// });
+import { getAuthUserData } from "../middlewares/auth.middleware";
 
 router.post("/login", async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
+    const { username, password } = req.body;
 
-    // console.log(username);
-    // console.log(password);
-
-    // AUTENTIFIKACIJA KORISNIKA
+    console.log(username, password);
     try {
-        let result = await authUser(username, password);
-        if (result instanceof Error && result.message == "Unauthorized") {
-            res.status(401).json({ error: "Unauthorized" });
-        }
-        res.status(200).json(result);
+        const { token, refreshToken, type } = await getAuthUserData(
+            username,
+            password
+        );
+        res.status(200).json({ token, refreshToken, username, type });
     } catch (error) {
-        res.status(401).json({ error: "Unauthorized" });
+        res.status(401).json({
+            error: error.message,
+        });
     }
 });
 

@@ -4,7 +4,7 @@ const routes = [
     {
         path: "/",
         name: "WebWrapper",
-        component: () => import("@/WebWrapper.vue"),
+        component: () => import("@/wrappers/WebWrapper.vue"),
         meta: {
             authRequired: false,
         },
@@ -12,87 +12,89 @@ const routes = [
             {
                 path: "",
                 name: "HomeView",
-                component: () => import("@/views/Web/HomeView.vue"),
+                component: () => import("@/views/web/HomeView.vue"),
             },
             {
                 path: "login",
                 name: "LoginView",
-                component: () => import("../views/LoginView.vue"),
-            },
-            {
-                path: "about",
-                name: "AboutView",
-                component: () => import("@/views/Web/AboutView"),
+                component: () => import("@/views/web/LoginView.vue"),
             },
             {
                 path: "contact",
                 name: "ContactView",
-                component: () => import("@/views/Web/ContactView"),
+                component: () => import("@/views/web/ContactView"),
             },
             {
                 path: "educators",
                 name: "EducatorsView",
-                component: () => import("@/views/Web/EducatorsView"),
+                component: () => import("@/views/web/EducatorsView"),
             },
             {
                 path: "podcast",
                 name: "PodcastView",
-                component: () => import("@/views/Web/PodcastView"),
+                component: () => import("@/views/web/PodcastView"),
             },
         ],
     },
     {
         path: "/",
         name: "AppWrapper",
-        component: () => import("@/AppWrapper.vue"),
+        component: () => import("@/wrappers/AppWrapper.vue"),
         meta: {
             authRequired: true,
         },
         children: [
             {
-                path: "/newsfeed",
+                path: "newsfeed",
                 name: "NewsfeedView",
-                component: () => import("../views/NewsfeedView.vue"),
+                component: () => import("@/views/app/NewsfeedView.vue"),
             },
             {
-                path: "/search",
+                path: "search",
                 name: "SearchView",
-                component: () => import("../views/SearchView.vue"),
+                component: () => import("@/views/app/SearchView.vue"),
             },
             {
-                path: "/my-profile",
+                path: "my-profile",
                 name: "MyProfileView",
-                component: () => import("../views/MyProfileView.vue"),
+                component: () => import("@/views/app/MyProfileView.vue"),
             },
             {
-                path: "/user-profile/:id",
+                path: "user-profile/:id",
                 name: "UserProfileView",
-                component: () => import("../views/UserProfileView.vue"),
+                component: () => import("@/views/app/UserProfileView.vue"),
             },
             {
-                path: "/gallery",
+                path: "gallery",
                 name: "GalleryView",
-                component: () => import("../views/GalleryView.vue"),
+                component: () => import("@/views/app/GalleryView.vue"),
+            },
+            {
+                path: "competitions",
+                name: "CompetitionView",
+                component: () => import("@/views/app/CompetitionView.vue"),
             },
         ],
     },
     {
         path: "/",
         name: "MsgWrapper",
-        component: () => import("@/MsgWrapper.vue"),
-        meta: {
-            authRequired: true,
-        },
+        component: () => import("@/wrappers/MsgWrapper.vue"),
         children: [
+            // {
+            //     path: "login",
+            //     name: "LoginView",
+            //     component: () => import("@/views/LoginView.vue"),
+            // },
             {
-                path: "/error",
+                path: "error",
                 name: "Error",
-                component: () => import("../views/Error.vue"),
+                component: () => import("@/views/app/Error.vue"),
             },
             {
-                path: "/success",
+                path: "success",
                 name: "Success",
-                component: () => import("../views/Success.vue"),
+                component: () => import("@/views/app/Success.vue"),
             },
         ],
     },
