@@ -12,26 +12,36 @@ const routes = [
             {
                 path: "",
                 name: "HomeView",
+                meta: { title: "Početna" },
+
                 component: () => import("@/views/web/HomeView.vue"),
             },
             {
                 path: "login",
                 name: "LoginView",
+                meta: { title: "Prijava" },
+
                 component: () => import("@/views/web/LoginView.vue"),
             },
             {
                 path: "contact",
                 name: "ContactView",
+                meta: { title: "Kontakt" },
+
                 component: () => import("@/views/web/ContactView"),
             },
             {
                 path: "educators",
                 name: "EducatorsView",
+                meta: { title: "Šou lab" },
+
                 component: () => import("@/views/web/EducatorsView"),
             },
             {
                 path: "podcast",
                 name: "PodcastView",
+                meta: { title: "Šou podkast" },
+
                 component: () => import("@/views/web/PodcastView"),
             },
         ],
@@ -98,6 +108,16 @@ const routes = [
             },
         ],
     },
+    {
+        path: "/",
+        name: "WebWrapper all routes",
+        path: "/:catchAll(.*)",
+        redirect: "/",
+
+        meta: {
+            authRequired: false,
+        },
+    },
 ];
 
 const router = createRouter({
@@ -137,6 +157,11 @@ router.beforeEach((to, _from, next) => {
     }
 
     return next();
+});
+
+const DEFAULT_TITLE = "Šou program";
+router.afterEach((to, from) => {
+    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`;
 });
 
 export default router;

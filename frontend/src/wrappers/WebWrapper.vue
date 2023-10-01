@@ -37,7 +37,9 @@ export default {
 body {
     background-color: var(--primary-color);
 }
-
+a {
+    color: black;
+}
 #web-wrapper {
     background-color: white;
     min-height: 100vh;
@@ -45,21 +47,21 @@ body {
 
 .filler {
     position: absolute;
-    height: 96px;
+    height: 80px;
     width: 100%;
     background-color: var(--primary-color);
     z-index: 1;
 }
 
 #web-container {
-    padding: 2em 8em;
+    padding: 160px 8em;
     text-align: left;
     line-height: 20px;
     font-weight: 100;
 
     h1 {
         font-size: 4rem;
-        padding: 0px 32px 64px 32px;
+        padding: 0px 0px 53px 0px;
     }
 
     h2 {
@@ -95,7 +97,7 @@ body {
 
 @media (max-width: 1200px) {
     #web-container {
-        padding: 2em 4em;
+        padding: 160px 4em;
 
         h1 {
             font-size: 3.5rem;
@@ -105,7 +107,7 @@ body {
 
 @media (max-width: 1024px) {
     #web-container {
-        padding: 2em 2em;
+        padding: 160px 2em;
         font-size: 18px;
         line-height: 22px;
 
@@ -125,16 +127,20 @@ body {
             font-size: 2rem;
         }
     }
-
-    .filler {
-        height: 96px;
-    }
 }
 
 @media (max-width: 768px) {
     #web-container {
-        padding: 2em 0em;
+        padding: 130px 2em;
         line-height: 24px;
+        h1 {
+            padding: 0px 32px 32px 32px;
+        }
+    }
+
+    .mobile-justify {
+        text-align: justify;
+        text-justify: inter-word;
     }
 
     .filler {
@@ -144,11 +150,11 @@ body {
 
 @media (max-width: 480px) {
     #web-container {
-        padding: 0.5em 0em;
+        padding: 64px 1em;
 
         h1 {
             font-size: 2.5rem;
-            padding: 10px;
+            padding: 0px 0px 15px 0px;
         }
 
         h2 {
@@ -163,7 +169,7 @@ body {
             font-size: 1.66rem;
         }
         h6 {
-            margin-top: 1em;
+            margin-top: 0.5em;
         }
     }
 }
