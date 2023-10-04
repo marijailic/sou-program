@@ -27,7 +27,6 @@
 
 <script>
 import { useStoreProfilePost } from "@/stores/profilepost.store";
-import { ref } from "vue";
 
 export default {
     name: "editProfilePost",
@@ -41,15 +40,10 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeProfilePost = useStoreProfilePost();
-
-        const postText = ref(props.postData.text);
-
+    data() {
         return {
-            storeProfilePost,
-            updateProfilePost,
-            postText,
+            storeProfilePost: useStoreProfilePost(),
+            postText: this.postData.text,
         };
     },
     methods: {
@@ -58,11 +52,11 @@ export default {
         },
         async updateProfilePost() {
             const updateData = {
-                id: this.props.postData.id,
-                text: this.postText.value
+                id: this.postData.id,
+                text: this.postText
             };
 
-            if (text.trim() !== "") {
+            if (this.postText.trim() !== "") {
                 await this.storeProfilePost.updateProfilePost(updateData);
             }
         }

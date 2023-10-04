@@ -81,6 +81,10 @@ export default {
             closeEdit: () => {},
             editText: false,
             profilePictureKey: "",
+            storeAnnouncement: useStoreAnnouncement(),
+            storeUser: useStoreUser(),
+            storeGallery: useStoreGallery(),
+            authorID: this.announcementData.author_id,
         };
     },
     props: {
@@ -88,15 +92,6 @@ export default {
             type: Object,
             required: true,
         },
-    },
-    setup(props) {
-        const storeAnnouncement = useStoreAnnouncement();
-        const storeUser = useStoreUser();
-        const storeGallery = useStoreGallery();
-
-        const authorID = props.announcementData.author_id;
-
-        return { storeAnnouncement, storeUser, storeGallery, authorID };
     },
     async created() {
         await this.getPostAuthor();

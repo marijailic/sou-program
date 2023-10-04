@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card">
-            <div class="header">
+        <div class="card border-0">
+            <div class="d-flex justify-content-between align-items-center">
                 <h1>Natjecanja</h1>
                 <button
                     v-if="isDemos"
@@ -54,10 +54,9 @@ export default {
     name: "CompetitionView",
     data() {
         return {
+            storeCompetition: useStoreCompetition(),
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             competitions: [],
-            closeAdd: () => {},
-            closeEdit: () => {},
             addCompetition: false,
             editCompetition: false,
             editCompetitionID: null,
@@ -68,21 +67,17 @@ export default {
         addCompetition,
         editCompetition,
     },
-    setup() {
-        const storeCompetition = useStoreCompetition();
-        return { storeCompetition };
-    },
     created() {
         this.getCompetitions();
         this.openEditCompetition();
-        this.closeAdd = () => {
-            this.addCompetition = false;
-        };
-        this.closeEdit = () => {
-            this.editCompetition = false;
-        };
     },
     methods: {
+        closeAdd() {
+            this.addCompetition = false;
+        },
+        closeEdit() {
+            this.editCompetition = false;
+        },
         async getCompetitions() {
             this.competitions = await this.storeCompetition.fetchCompetition();
         },
@@ -106,15 +101,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-</style>

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card">
-            <div class="d-flex justify-between align-center">
+        <div class="card border-0">
+            <div class="d-flex justify-content-between align-items-center">
                 <h1>Stalkaonica</h1>
                 <button
                     v-if="isDemos"
@@ -57,8 +57,7 @@ export default {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             users: [],
             searchText: "",
-            closeAdd: () => {},
-            closeEdit: () => {},
+            storeUser: useStoreUser(),
             addUser: false,
             editUser: false,
             editUserID: null,
@@ -70,22 +69,18 @@ export default {
         addUser,
         editUser,
     },
-    setup() {
-        const storeUser = useStoreUser();
-        return { storeUser };
-    },
     created() {
         this.getUsers();
         this.filterUsers();
         this.openEditUser();
-        this.closeAdd = () => {
-            this.addUser = false;
-        };
-        this.closeEdit = () => {
-            this.editUser = false;
-        };
     },
     methods: {
+        closeAdd() {
+            this.addUser = false;
+        },
+        closeEdit() {
+            this.editUser = false;
+        },
         async getUsers() {
             await this.storeUser.fetchUser();
             const users = this.storeUser.getUsersExceptCurrent();
@@ -94,7 +89,6 @@ export default {
         filterUsers() {
             eventBus.on("searchText", (searchText) => {
                 this.searchText = searchText;
-
                 this.users = this.storeUser.getFilteredUsers(searchText);
             });
         },
@@ -118,15 +112,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-</style>

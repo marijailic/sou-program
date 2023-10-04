@@ -29,8 +29,6 @@ import { useStoreUser } from "@/stores/user.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
 import { useStoreGallery } from "@/stores/gallery.store";
 
-import { useRoute } from "vue-router";
-
 import showProfile from "@/components/app/showProfile.vue";
 import showProfilePost from "@/components/app/showProfilePost.vue";
 
@@ -39,22 +37,15 @@ export default {
     components: { showProfile, showProfilePost },
     data() {
         return {
+            storeUser: useStoreUser(),
+            storeProfilePost: useStoreProfilePost(),
+            storeGallery: useStoreGallery(),
             userData: {},
             userPosts: [],
             parentComponent: "UserProfileView",
             userProfilePictureKey: "",
+            userID: this.$route.params.id, // get user id from url
         };
-    },
-    setup() {
-        const storeUser = useStoreUser();
-        const storeProfilePost = useStoreProfilePost();
-        const storeGallery = useStoreGallery();
-
-        // get user id from url
-        const route = useRoute();
-        const userID = route.params.id;
-
-        return { storeUser, storeProfilePost, storeGallery, userID };
     },
     async created() {
         await this.getUser();

@@ -78,6 +78,7 @@ export default {
     },
     data() {
         return {
+            storeProfilePost: useStoreProfilePost(),
             closeEdit: () => {},
             editText: false,
         };
@@ -103,10 +104,6 @@ export default {
             type: String,
             required: false,
         },
-    },
-    setup() {
-        const storeProfilePost = useStoreProfilePost();
-        return { storeProfilePost };
     },
     created() {
         this.closeEdit = () => {

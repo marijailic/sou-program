@@ -58,4 +58,7 @@ body {
     padding-left: 2vw;
     padding-right: 2vw;
 }
+.card {
+    padding: 1vw;
+}
 </style>

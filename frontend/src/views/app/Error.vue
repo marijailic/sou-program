@@ -1,5 +1,5 @@
 <template>
-    <div class="error-msg">
+    <div class="error-msg d-flex flex-column justify-content-center align-items-center">
         <h1>NOPE! :(</h1>
         <button class="btn btn-primary mt-3" @click="goBack">
             Vrati me natrag
@@ -21,10 +21,6 @@ export default {
 
 <style scoped>
 .error-msg {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
 }
 </style>

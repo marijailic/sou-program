@@ -50,7 +50,6 @@ import { useStoreUser } from "@/stores/user.store";
 import { useStoreGallery } from "@/stores/gallery.store";
 
 import eventBus from "@/eventBus";
-
 import userTypeEnum from "@/enums/userTypeEnum";
 
 export default {
@@ -59,6 +58,9 @@ export default {
         return {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             profilePictureKey: "",
+            storeUser: useStoreUser(),
+            storeGallery: useStoreGallery(),
+            userProfilePictureKey: this.userData.profile_picture_key,
         };
     },
     props: {
@@ -66,14 +68,6 @@ export default {
             type: Object,
             required: true,
         },
-    },
-    setup(props) {
-        const userProfilePictureKey = props.userData.profile_picture_key;
-
-        const storeUser = useStoreUser();
-        const storeGallery = useStoreGallery();
-
-        return { storeUser, storeGallery, userProfilePictureKey };
     },
     async created() {
         await this.displayImage(this.userProfilePictureKey);

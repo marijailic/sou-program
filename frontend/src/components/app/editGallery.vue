@@ -63,19 +63,9 @@ export default {
         const newGalleryTitle = ref(galleryData.title);
         const newGalleryText = ref(galleryData.text);
 
-        const editGallery = async () => {
-            const id = galleryData.id;
-            const updateData = {
-                id: id,
-                title: newGalleryTitle.value,
-                text: newGalleryText.value,
-            };
-            await storeGallery.updateGallery(updateData);
-        };
-
         return {
+            galleryID,
             storeGallery,
-            editGallery,
             newGalleryTitle,
             newGalleryText,
         };
@@ -84,6 +74,14 @@ export default {
         closeEdit() {
             this.closeEdit();
         },
+        async editGallery() {
+            const updateData = {
+                id: this.galleryID,
+                title: this.newGalleryTitle.value,
+                text: this.newGalleryText.value,
+            };
+            await this.storeGallery.updateGallery(updateData);
+        }
     },
 };
 </script>

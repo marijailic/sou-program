@@ -31,7 +31,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-footer text-end">
+                <div class="card-footer bg-white text-end">
                     <button type="submit" class="btn btn-primary">
                         Objavi
                     </button>
@@ -43,7 +43,6 @@
 
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
-import { ref } from "vue";
 
 export default {
     name: "addAnnouncement",
@@ -57,33 +56,29 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeAnnouncement = useStoreAnnouncement();
-
-        const announcementText = ref("");
-
-        const postAnnouncement = async () => {
-            const text = announcementText.value;
-            const authorId = props.userData.id;
+    data() {
+        return {
+            storeAnnouncements: useStoreAnnouncement(),
+            announcementText: "",
+        };
+    },
+    methods: {
+        async postAnnouncement() {
+            const text = this.announcementText;
 
             const announcementData = {
-                text: text,
-                authorId: authorId,
+                text: this.announcementText,
+                authorId: this.userData.id,
             };
 
             if (text.trim() !== "") {
-                await storeAnnouncement.createAnnouncement(announcementData);
+                await this.storeAnnouncement.createAnnouncement(announcementData);
             }
-        };
-
-        return {
-            storeAnnouncement,
-            postAnnouncement,
-            announcementText,
-        };
+        }
     },
 };
 </script>
+
 
 <style scoped>
 .card {
@@ -96,7 +91,6 @@ export default {
 }
 .card-footer {
     padding: 0.7vw;
-    background-color: white;
 }
 .profile-pic {
     width: 50px;

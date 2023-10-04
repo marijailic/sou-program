@@ -40,10 +40,8 @@
         </form>
     </div>
 </template>
-
 <script>
 import { useStoreProfilePost } from "@/stores/profilepost.store";
-import { ref } from "vue";
 
 export default {
     name: "addProfilePost",
@@ -57,14 +55,16 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeProfilePost = useStoreProfilePost();
-
-        const postText = ref("");
-
-        const postProfilePost = async () => {
-            const text = postText.value;
-            const authorId = props.userData.id;
+    data() {
+        return {
+            storeProfilePost: useStoreProfilePost(),
+            postText: "",
+        };
+    },
+    methods: {
+        async postProfilePost() {
+            const text = this.postText;
+            const authorId = this.userData.id;
 
             const profilePostData = {
                 text: text,
@@ -72,15 +72,9 @@ export default {
             };
 
             if (text.trim() !== "") {
-                await storeProfilePost.createProfilePost(profilePostData);
+                await this.storeProfilePost.createProfilePost(profilePostData);
             }
-        };
-
-        return {
-            storeProfilePost,
-            postProfilePost,
-            postText,
-        };
+        }
     },
 };
 </script>

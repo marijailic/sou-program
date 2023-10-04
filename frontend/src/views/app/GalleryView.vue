@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card">
-            <div class="header">
+        <div class="card border-0">
+            <div class="d-flex justify-content-between align-items-center">
                 <h1>Galerija</h1>
                 <button class="btn btn-primary" @click="openAddGallery">
                     Dodaj galeriju
@@ -55,10 +55,8 @@ export default {
     name: "GalleryView",
     data() {
         return {
+            storeGallery: useStoreGallery(),
             galleries: [],
-            closeAdd: () => {},
-            closeEdit: () => {},
-            closeShow: () => {},
             addGallery: false,
             editGallery: false,
             editGalleryID: null,
@@ -72,27 +70,22 @@ export default {
         editGallery,
         showFullGallery,
     },
-    setup() {
-        const storeGallery = useStoreGallery();
-        return { storeGallery };
-    },
     async created() {
         await this.getGalleries();
 
         this.openEditGallery();
         this.openShowFullGallery();
-
-        this.closeAdd = () => {
-            this.addGallery = false;
-        };
-        this.closeEdit = () => {
-            this.editGallery = false;
-        };
-        this.closeShow = () => {
-            this.showFullGallery = false;
-        };
     },
     methods: {
+        closeAdd() {
+            this.addGallery = false;
+        },
+        closeEdit() {
+            this.editGallery = false;
+        },
+        closeShow() {
+            this.showFullGallery = false;
+        },
         async getGalleries() {
             const galleries = await this.storeGallery.fetchGallery();
             this.galleries = galleries;
@@ -127,15 +120,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-</style>

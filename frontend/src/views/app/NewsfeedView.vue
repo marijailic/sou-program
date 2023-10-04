@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card">
+        <div class="card border-0">
             <h1>Naslovnica</h1>
         </div>
 
@@ -45,26 +45,16 @@ export default {
             announcements: [],
             editingAnnouncementID: null,
             profilePictureKey: "",
+            storeUser: useStoreUser(),
+            storeAnnouncement: useStoreAnnouncement(),
+            storeGallery: useStoreGallery(),
+            currentUserUsername: localStorage.getItem("username"),
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
         };
     },
     components: {
         addAnnouncement,
         showAnnouncement,
-    },
-    setup() {
-        const currentUserUsername = localStorage.getItem("username");
-        const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
-        const storeUser = useStoreUser();
-        const storeAnnouncement = useStoreAnnouncement();
-        const storeGallery = useStoreGallery();
-
-        return {
-            storeUser,
-            storeAnnouncement,
-            storeGallery,
-            currentUserUsername,
-            isDemos,
-        };
     },
     async created() {
         await this.getCurrentUser();
@@ -103,10 +93,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-</style>

@@ -97,11 +97,9 @@
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
-import { ref } from "vue";
 
 export default {
     name: "editUser",
-    data() {},
     props: {
         userID: {
             type: Number,
@@ -112,30 +110,21 @@ export default {
             required: true,
         },
     },
-    setup(props) {
+    data() {
         const storeUser = useStoreUser();
         storeUser.fetchUser();
 
-        const userID = props.userID;
-        const userData = storeUser.getUserById(userID);
-
-        const newUserName = ref(userData.name);
-        const newUserSurname = ref(userData.surname);
-        const newUserEmail = ref(userData.e_mail);
-        // const newUserUsername = ref(userData.username);
-        // const newUserPassword = ref(userData.password);
-        const newUserBio = ref(userData.bio);
-        const newUserType = ref(userData.type);
+        const userData = storeUser.getUserById(this.userID);
 
         return {
-            storeUser,
-            newUserName,
-            newUserSurname,
-            newUserEmail,
-            //   newUserUsername,
-            //   newUserPassword,
-            newUserBio,
-            newUserType,
+            storeUser: storeUser,
+            newUserName: userData.name,
+            newUserSurname: userData.surname,
+            newUserEmail: userData.e_mail,
+            // newUserUsername: userData.username,
+            // newUserPassword: userData.password,
+            newUserBio: userData.bio,
+            newUserType: userData.type,
         };
     },
     methods: {
@@ -143,17 +132,17 @@ export default {
             this.closeEdit();
         },
         async editUser() {
-            const id = this.userData.id;
+            const id = this.userID;
 
             const updateData = {
                 id: id,
-                name: this.newUserName.value,
-                surname: this.newUserSurname.value,
-                email: this.newUserEmail.value,
-                // username: newUserUsername.value,
-                // password: newUserPassword.value,
-                bio: this.newUserBio.value,
-                type: this.newUserType.value,
+                name: this.newUserName,
+                surname: this.newUserSurname,
+                email: this.newUserEmail,
+                // username: this.newUserUsername,
+                // password: this.newUserPassword,
+                bio: this.newUserBio,
+                type: this.newUserType,
             };
             await this.storeUser.updateUser(updateData);
         }

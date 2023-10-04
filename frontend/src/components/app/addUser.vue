@@ -114,62 +114,26 @@
 import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
 
-import { ref } from "vue";
-
 export default {
     name: "addUser",
-    data() {},
     props: {
         closeAdd: {
             type: Function,
             required: true,
         },
     },
-    setup() {
-        const storeGallery = useStoreGallery();
-        const storeUser = useStoreUser();
-
-        const newUserName = ref("");
-        const newUserSurname = ref("");
-        const newUserEmail = ref("");
-        const newUserUsername = ref("");
-        const newUserPassword = ref("");
-        const newUserBio = ref("");
-        const newUserType = ref("");
-
-        const selectedImage = ref([]);
-
-        const postUser = async () => {
-            const profilePictureKey = await storeGallery.googleUploadImages({
-                images: selectedImage.value,
-                folderName: "user",
-            });
-
-            const newUserData = {
-                name: newUserName.value,
-                surname: newUserSurname.value,
-                email: newUserEmail.value,
-                username: newUserUsername.value,
-                password: newUserPassword.value,
-                profile_picture_key: profilePictureKey[0],
-                bio: newUserBio.value,
-                type: newUserType.value,
-            };
-
-            await storeUser.createUser(newUserData);
-        };
-
+    data() {
         return {
-            storeUser,
-            postUser,
-            newUserName,
-            newUserSurname,
-            newUserEmail,
-            newUserUsername,
-            newUserPassword,
-            newUserBio,
-            newUserType,
-            selectedImage,
+            storeGallery: useStoreGallery(),
+            storeUser: useStoreUser(),
+            newUserName: "",
+            newUserSurname: "",
+            newUserEmail: "",
+            newUserUsername: "",
+            newUserPassword: "",
+            newUserBio: "",
+            newUserType: "",
+            selectedImage: [],
         };
     },
     methods: {
@@ -179,6 +143,25 @@ export default {
         closeAdd() {
             this.closeAdd();
         },
+        async postUser() {
+            const profilePictureKey = await this.storeGallery.googleUploadImages({
+                images: this.selectedImage,
+                folderName: "user",
+            });
+
+            const newUserData = {
+                name: this.newUserName,
+                surname: this.newUserSurname,
+                email: this.newUserEmail,
+                username: this.newUserUsername,
+                password: this.newUserPassword,
+                profile_picture_key: profilePictureKey[0],
+                bio: this.newUserBio,
+                type: this.newUserType,
+            };
+
+            await this.storeUser.createUser(newUserData);
+        }
     },
 };
 </script>

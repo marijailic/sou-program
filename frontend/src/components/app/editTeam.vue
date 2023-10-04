@@ -99,7 +99,7 @@ export default {
             selectedUserId,
         };
     },
-    async onMounted() {
+    async mounted() {
         this.allUsers.value = await this.storeUser.fetchUser();
     },
     methods: {

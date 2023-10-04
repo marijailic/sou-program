@@ -27,7 +27,6 @@
 
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
-import { ref } from "vue";
 
 export default {
     name: "editAnnouncement",
@@ -41,14 +40,19 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeAnnouncement = useStoreAnnouncement();
-
-        const announcementText = ref(props.announcementData.text);
-
-        const updateAnnouncement = async () => {
-            const id = props.announcementData.id;
-            const text = announcementText.value;
+    data() {
+        return {
+            storeAnnouncement: useStoreAnnouncement(),
+            announcementText: this.announcementData.text,
+        };
+    },
+    methods: {
+        closeEdit() {
+            this.closeEdit();
+        },
+        async updateAnnouncement() {
+            const id = this.announcementData.id;
+            const text = this.announcementText;
 
             const updateData = {
                 id: id,
@@ -56,20 +60,9 @@ export default {
             };
 
             if (text.trim() !== "") {
-                await storeAnnouncement.updateAnnouncement(updateData);
+                await this.storeAnnouncement.updateAnnouncement(updateData);
             }
-        };
-
-        return {
-            storeAnnouncement,
-            updateAnnouncement,
-            announcementText,
-        };
-    },
-    methods: {
-        closeEdit() {
-            this.closeEdit();
-        },
+        }
     },
 };
 </script>

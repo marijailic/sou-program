@@ -49,19 +49,10 @@ export default {
             parentComponent: "MyProfileView",
             editingPostID: null,
             profilePictureKey: "",
-        };
-    },
-    setup() {
-        const currentUserUsername = localStorage.getItem("username");
-        const storeUser = useStoreUser();
-        const storeGallery = useStoreGallery();
-        const storeProfilePost = useStoreProfilePost();
-
-        return {
-            storeUser,
-            storeGallery,
-            storeProfilePost,
-            currentUserUsername,
+            storeUser: useStoreUser(),
+            storeGallery: useStoreGallery(),
+            storeProfilePost: useStoreProfilePost(),
+            currentUserUsername: localStorage.getItem("username"),
         };
     },
     async created() {

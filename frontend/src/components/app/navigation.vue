@@ -63,13 +63,9 @@ export default {
             username: "",
             profilePictureKey: "",
             image: "",
+            storeGallery: useStoreGallery(),
+            storeUser: useStoreUser(),
         };
-    },
-    setup() {
-        const storeGallery = useStoreGallery();
-        const storeUser = useStoreUser();
-
-        return { storeGallery, storeUser };
     },
     async created() {
         this.getUsername();
