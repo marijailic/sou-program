@@ -16,7 +16,8 @@
     </nav>
     <div :class="navOpened ? 'opened' : ''" id="nav-content">
         <div class="d-flex h-100 flex-column justify-content-between">
-            <ul class="navbar-nav text-center">
+            <span></span>
+            <ul class="navbar-nav container">
                 <li v-for="route in routes" :key="route.path" class="nav-item">
                     <a :href="route.path" class="nav-link">
                         <div class="route-label">
@@ -144,7 +145,7 @@ nav.fixed {
 }
 
 .menu-icon {
-    scale: 0.7;
+    scale: 0.6;
 }
 
 nav {
@@ -152,12 +153,12 @@ nav {
     z-index: 2;
     transition: padding-top 1s;
     transition: padding-bottom 1s;
-    padding: 0.5em;
+    padding: 0.2em;
     background-color: var(--primary-color);
 
     #logo {
-        height: 64px;
-        width: 64px;
+        height: 58px;
+        width: 58px;
         box-shadow: inset 0px 0px 0px 5px white;
         border: 3px solid white;
         border-radius: 50%;
@@ -206,7 +207,7 @@ nav {
     transition: top 0.5s;
     height: 100vh;
     width: 100%;
-    padding: 12em 0em 0em 0em;
+    padding: 0em 1em;
     z-index: 1;
 
     li {
@@ -217,29 +218,8 @@ nav {
             width: 100%;
             display: inline-block;
             font-size: 30px;
-
-            .route-label {
-                position: relative;
-                display: inline-block;
-                border: 2px solid transparent;
-                width: fit-content;
-                overflow: hidden;
-            }
-
-            .route-label::after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: -100%;
-                width: 100%;
-                height: 3px;
-                background-color: white;
-                transition: left 0.3s ease;
-            }
-
-            .route-label:hover::after {
-                left: 0;
-            }
+            border-bottom: 2px solid white;
+            margin-top: 1em;
         }
 
         a:hover {
@@ -252,16 +232,6 @@ nav {
 
 #nav-content.opened {
     top: 0;
-}
-
-@media (max-width: 1024px) {
-    nav {
-        padding: 0.5em;
-    }
-
-    #nav-content {
-        padding: 8em 0em 0em 0em;
-    }
 }
 
 @media (max-width: 768px) {

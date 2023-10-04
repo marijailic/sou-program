@@ -4,8 +4,7 @@
         <div class="row">
             <div class="col">
                 <h1 class="title">
-                    Lorem <u>ipsum</u> dolor sit amet,
-                    <u>consect adipiscing</u> elit ased
+                    Lorem ipsum dolor sit amet, consect adipiscing elit ased
                 </h1>
             </div>
         </div>
@@ -25,16 +24,16 @@
         </div>
 
         <!-- Who are we -->
-        <div class="row about-container">
+        <div class="row about-container g-0">
             <div class="col-12 col-md-2 col-xl-3 text-muted">Tko Smo Mi</div>
             <div class="col-12 col-md-10 col-xl-9">
                 <div class="row">
                     <div class="col">
-                        <h4>
+                        <h2>
                             We have completed over 150 projects for digital
                             companies from all over the world — from Australia
                             to California, from Sweden to South Africa.
-                        </h4>
+                        </h2>
                     </div>
                 </div>
                 <div class="row">
@@ -63,7 +62,7 @@
         </div>
 
         <!-- Teams -->
-        <div class="row teams-container">
+        <div class="row teams-container g-0">
             <div class="col-12 col-md-2 col-xl-3 text-muted">Timovi</div>
             <div class="col-12 col-md-10 col-xl-9">
                 <div class="row">
@@ -89,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="row teams">
+                <div class="row teams g-0">
                     <div class="col-12 col-lg-6">
                         <div class="row">
                             <div class="col text-muted">01</div>
@@ -152,7 +151,7 @@
         </div>
 
         <!-- CTA Join us -->
-        <div class="row join-container">
+        <div class="row join-container g-0">
             <div class="col-12 col-md-2 col-xl-3 text-muted">Pridruži se</div>
             <div class="col-12 col-md-10 col-xl-9">
                 <div class="row">
@@ -192,13 +191,14 @@ img {
     width: 100%;
 }
 
-.about-container,
-.join-container {
-    margin: 128px 32px;
+.about-container {
+    margin: 128px 32px 64px 32px;
 }
-
+.join-container {
+    margin: 128px 32px 0px 32px;
+}
 .teams-container {
-    margin: 196px 32px;
+    margin: 128px 32px;
 }
 
 h1,
@@ -217,34 +217,26 @@ h1,
 }
 
 @media (max-width: 1200px) {
-    .about-container,
-    .join-container,
-    .teams-container {
-        margin: 100px 32px;
-    }
-
     .teams > * {
         padding-right: 80px;
     }
 }
 
 @media (max-width: 1024px) {
-    .about-container,
-    .join-container,
+    .about-container {
+        margin: 80px 0px 40px 0px;
+    }
+    .join-container {
+        margin: 80px 0px 0px 0px;
+    }
     .teams-container {
-        margin: 80px 28px;
+        margin: 80px 0px;
     }
 }
 
 @media (max-width: 768px) {
-    .about-container,
-    .join-container,
-    .teams-container {
-        margin: 50px 24px;
-    }
-
     .teams {
-        margin-top: 50px;
+        margin: 50px 0px;
     }
     .teams > * {
         padding: 0.5em;
@@ -259,17 +251,24 @@ h1,
 }
 
 @media (max-width: 480px) {
-    .about-container,
-    .join-container,
+    .about-container {
+        margin: 50px 0px 20px 0px;
+    }
+    .join-container {
+        margin: 50px 0px 0px 0px;
+    }
     .teams-container {
-        margin: 10px 10px;
+        margin: 50px 0px;
     }
 
     .teams {
         margin-top: 20px;
     }
-    .teams > * {
-        padding: 0.5em;
+    .teams > *:nth-child(1) {
+        padding: 1em 0em 0em 0em;
+    }
+    .teams > *:nth-child(2) {
+        padding: 1.5em 0em 0em 0em;
     }
     .mobile-justify {
         text-align: justify;
