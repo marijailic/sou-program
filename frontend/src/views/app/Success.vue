@@ -1,5 +1,5 @@
 <template>
-    <div class="success-msg">
+    <div class="success-msg d-flex flex-column justify-center align-center">
         <h1>YAS! :)</h1>
         <button class="btn btn-primary mt-3" @click="goBack">
             Vrati me natrag
@@ -21,10 +21,10 @@ export default {
 
 <style scoped>
 .success-msg {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
     height: 100vh;
 }
 </style>

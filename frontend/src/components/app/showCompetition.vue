@@ -147,9 +147,6 @@ export default {
     text-align: left;
     color: rgb(33, 37, 41);
 }
-.competition-actions {
-    width: 100%;
-}
 .delete-btn {
     margin-right: 1vw;
 }
@@ -159,31 +156,16 @@ export default {
     border-radius: 99px;
     line-height: 1.3;
 }
-
-.team-name {
-    flex: 1;
-}
-
 .team-members {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
-
 .no-members {
     flex: 2;
 }
-
 .card-footer {
     padding: 0.7vw;
     background-color: white;
-}
-
-.delete-team-btn {
-    background-color: #ff5353;
-}
-
-.delete-team-btn:hover {
-    background-color: #eb5f5f;
 }
 </style>

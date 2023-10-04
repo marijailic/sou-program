@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getAuthHeaders } from "@/services/authService";
+import backendApiService from "@/services/backendApiService";
 import userTypeEnum from "@/enums/userTypeEnum";
 
 export const useStoreUser = defineStore("storeUser", {
@@ -14,11 +14,11 @@ export const useStoreUser = defineStore("storeUser", {
             return isDemos
                 ? state.user
                 : state.user.filter((user) => {
-                      return (
-                          user.username.toLowerCase() !==
-                          currentUser.toLowerCase()
-                      );
-                  });
+                    return (
+                        user.username.toLowerCase() !==
+                        currentUser.toLowerCase()
+                    );
+                });
         },
         getFilteredUsers: (state) => (searchText) => {
             const currentUser = localStorage.getItem("username");
@@ -57,12 +57,13 @@ export const useStoreUser = defineStore("storeUser", {
     },
     actions: {
         async fetchUser() {
-            const res = await fetch(`${process.env.VUE_APP_URL}/user`, {
-                headers: getAuthHeaders(),
+            const res = await backendApiService.get({
+                url: "/user",
             });
 
+            console.log(res)
             if (!res.ok) {
-                window.location.href = "/error";
+                //window.location.href = "/error";
                 return;
             }
 
@@ -72,36 +73,27 @@ export const useStoreUser = defineStore("storeUser", {
             return resObj.data;
         },
         async deleteUser(idUser) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/delete-user`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.delete({
+                url: "/delete-user",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: idUser }),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
         async createUser(newUserData) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/create-user`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.post({
+                url: "/create-user",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newUserData),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
         async updateUser(updateData) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/update-user`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.post({
+                url: "/update-user",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updateData),
             });
 

@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="card">
-            <div class="header">
+            <div class="d-flex justify-between align-center">
                 <h1>Stalkaonica</h1>
                 <button
                     v-if="isDemos"

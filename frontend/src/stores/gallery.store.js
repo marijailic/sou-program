@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getAuthHeaders } from "@/services/authService";
+import backendApiService from "@/services/backendApiService";
 
 export const useStoreGallery = defineStore("storeGallery", {
     state: () => ({
@@ -15,12 +16,9 @@ export const useStoreGallery = defineStore("storeGallery", {
     },
     actions: {
         async fetchGalleryItem(galleryID) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/gallery-item/${galleryID}`,
-                {
-                    headers: getAuthHeaders(),
-                }
-            );
+            const res = await backendApiService.get({
+                url: `/gallery-item/${galleryID}`,
+            });
 
             if (!res.ok) {
                 window.location.href = "/error";
@@ -32,8 +30,8 @@ export const useStoreGallery = defineStore("storeGallery", {
             return resObj.data;
         },
         async fetchGallery() {
-            const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
-                headers: getAuthHeaders(),
+            const res = await backendApiService.get({
+                url: "/gallery",
             });
 
             if (!res.ok) {
@@ -56,20 +54,13 @@ export const useStoreGallery = defineStore("storeGallery", {
             return galleries;
         },
         async deleteGallery(idGallery) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.delete({
+                url: "/gallery",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: idGallery }),
             });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async googleUploadImages(googleImageData) {
             const username = localStorage.getItem("username");
@@ -86,17 +77,11 @@ export const useStoreGallery = defineStore("storeGallery", {
                     "-" +
                     Math.floor(Math.random() * 101);
 
-                const res = await fetch(
-                    `${process.env.VUE_APP_URL}/upload-image/${folderName}/${imageName}`,
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "text/plain",
-                            ...getAuthHeaders(),
-                        },
-                        body: image,
-                    }
-                );
+                const res = await backendApiService.post({
+                    url: `/upload-image/${folderName}/${imageName}`,
+                    headers: { "Content-Type": "text/plain" },
+                    body: image,
+                });
 
                 if (!res.ok) {
                     window.location.href = "/error";
@@ -110,23 +95,14 @@ export const useStoreGallery = defineStore("storeGallery", {
             return galleryItemIDs;
         },
         async createGalleryItem(galleryID, galleryItemIDs) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/gallery-item/${galleryID}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify({
-                        galleryItemIDs,
-                    }),
-                }
-            );
+            const res = await backendApiService.post({
+                url: `/gallery-item/${galleryID}`,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ galleryItemIDs }),
+            });
 
             if (!res.ok) {
                 window.location.href = "/error";
-                return;
             }
         },
         async createGallery(galleryData) {
@@ -139,12 +115,9 @@ export const useStoreGallery = defineStore("storeGallery", {
                 return;
             }
 
-            const res = await fetch(`${process.env.VUE_APP_URL}/gallery`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.post({
+                url: "/gallery",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(galleryData.galleryData),
             });
 
@@ -161,12 +134,9 @@ export const useStoreGallery = defineStore("storeGallery", {
             window.location.href = "/success";
         },
         async googleDisplayImage(imageID) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/image/${imageID}`,
-                {
-                    headers: getAuthHeaders(),
-                }
-            );
+            const res = await backendApiService.get({
+                url: `/image/${imageID}`,
+            });
 
             if (!res.ok) {
                 window.location.href = "/error";
@@ -174,21 +144,14 @@ export const useStoreGallery = defineStore("storeGallery", {
             }
 
             const resObj = await res.json();
-
             return resObj.data;
         },
         async updateGallery(updateData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/update-gallery`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(updateData),
-                }
-            );
+            const res = await backendApiService.patch({
+                url: "/update-gallery",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updateData),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
