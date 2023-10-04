@@ -46,7 +46,6 @@ export default {
         });
     },
     get: async ({ url, headers }) => {
-        console.log(trimUrl(url));
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "GET",
             headers: {

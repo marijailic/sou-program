@@ -61,9 +61,8 @@ export const useStoreUser = defineStore("storeUser", {
                 url: "/user",
             });
 
-            console.log(res)
             if (!res.ok) {
-                //window.location.href = "/error";
+                window.location.href = "/error";
                 return;
             }
 
