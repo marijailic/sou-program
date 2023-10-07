@@ -1,18 +1,12 @@
 <template>
     <div>
         <div class="card">
-            <div class="user-profile">
+            <div class="d-flex align-items-center">
                 <img
-                    v-if="profilePictureKey"
                     class="user-profile-image rounded-circle"
-                    :src="profilePictureKey"
+                    :src="profilePictureKey || '@/assets/sp-icon.png'"
                 />
-                <img
-                    v-else
-                    class="user-profile-image rounded-circle"
-                    src="@/assets/sp-icon.png"
-                />
-                <div class="user-info">
+                <div class="flex-grow-1">
                     <router-link
                         :to="'/user-profile/' + userData.id"
                         class="user-name"
@@ -25,10 +19,10 @@
                 </div>
                 <div
                     v-if="isDemos"
-                    class="user-actions d-flex justify-content-end"
+                    class="d-flex justify-content-end"
                 >
                     <button
-                        class="delete-btn btn btn-primary"
+                        class="btn btn-primary me-2"
                         @click="deleteUser(userData.id)"
                     >
                         Izbriši
@@ -47,8 +41,8 @@
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
-import { useStoreGallery } from "@/stores/gallery.store";
 
+import { displayImage } from "@/services/displayImageService";
 import eventBus from "@/eventBus";
 import userTypeEnum from "@/enums/userTypeEnum";
 
@@ -59,8 +53,6 @@ export default {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             profilePictureKey: "",
             storeUser: useStoreUser(),
-            storeGallery: useStoreGallery(),
-            userProfilePictureKey: this.userData.profile_picture_key,
         };
     },
     props: {
@@ -70,7 +62,7 @@ export default {
         },
     },
     async created() {
-        await this.displayImage(this.userProfilePictureKey);
+        this.profilePictureKey = await displayImage(this.userData.profile_picture_key);
     },
     methods: {
         async deleteUser(idUser) {
@@ -83,18 +75,12 @@ export default {
             }
         },
         openEditUser() {
-            const editUser = true;
-            const editUserID = this.userData.id;
             const editObj = {
-                editUser,
-                editUserID,
+                editUser: true,
+                editUserID: this.userData.id,
             };
             eventBus.emit("editUser", editObj);
-        },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
-        },
+        }
     },
 };
 </script>
@@ -102,20 +88,13 @@ export default {
 <style scoped>
 .card {
     border: none;
-    padding: 1vw;
-    margin-top: 1vw;
-}
-.user-profile {
-    display: flex;
-    align-items: center;
+    padding: 0.5rem;
+    margin-top: 1rem;
 }
 .user-profile-image {
     width: 50px;
     height: 50px;
-    margin-right: 1vw;
-}
-.user-info {
-    width: 100%;
+    margin-right: 1rem;
 }
 .user-name {
     text-align: left;
@@ -123,12 +102,6 @@ export default {
 }
 .username {
     text-align: left;
-    font-size: 14px;
-}
-.user-actions {
-    width: 100%;
-}
-.delete-btn {
-    margin-right: 1vw;
+    font-size: 1rem;
 }
 </style>

@@ -71,7 +71,7 @@ export default {
         showFullGallery,
     },
     async created() {
-        await this.getGalleries();
+        this.galleries = await this.storeGallery.fetchGallery();
 
         this.openEditGallery();
         this.openShowFullGallery();
@@ -85,10 +85,6 @@ export default {
         },
         closeShow() {
             this.showFullGallery = false;
-        },
-        async getGalleries() {
-            const galleries = await this.storeGallery.fetchGallery();
-            this.galleries = galleries;
         },
         rightColActiveCheck() {
             this.addGallery = false;

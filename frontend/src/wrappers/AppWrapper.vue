@@ -1,22 +1,40 @@
 <template>
-    <div class="main-container row">
-        <div class="nav-container col">
-            <navigation />
+    <div>
+        <div class="main-container d-flex gap-3 p-3">
+            <navigation
+                :class="{ 'slide-in': menuOpen }"
+                :toggleNav=toggleNav
+            />
+            <div class="w-100">
+                <router-view></router-view>
+            </div>
         </div>
-        <div class="content-container col">
-            <router-view></router-view>
+        <div class="menu-footer">
+            <i id="menu-button" class="material-icons p-3 text-white" @click="toggleNav">menu</i>
         </div>
     </div>
 </template>
 
 <script>
 import navigation from "@/components/app/navigation.vue";
+import eventBus from "@/eventBus";
 
 export default {
     name: "AppWrapper",
     components: {
         navigation,
     },
+    data: () => ({
+        menuOpen: false,
+    }),
+    created() {
+        eventBus.on("navClicked", this.toggleNav);
+    },
+    methods: {
+        toggleNav(){
+            this.menuOpen = !this.menuOpen;
+        }
+    }
 };
 </script>
 
@@ -38,27 +56,24 @@ body {
         background-color: #66ccff;
     }
 }
-.main-container {
-    margin-left: 0;
-    margin-right: 0;
-}
-.nav-container {
-    width: 20vw;
-    height: 100vh;
-    position: fixed;
-    padding-top: 2vw;
-    padding-bottom: 2vw;
-    padding-left: 2vw;
-    padding-right: 0;
-}
-.content-container {
-    margin-left: 20vw;
-    padding-top: 2vw;
-    padding-bottom: 2vw;
-    padding-left: 2vw;
-    padding-right: 2vw;
-}
 .card {
-    padding: 1vw;
+    padding: 1rem;
+}
+.main-container {
+    min-height: 100vh;
+}
+.menu-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: #66ccff;
+    display: none;
+    z-index: 2;
+
+    @media (max-width: 768px)  {
+        display: block;
+    }
+}
+#menu-button {
+    cursor: pointer;
 }
 </style>

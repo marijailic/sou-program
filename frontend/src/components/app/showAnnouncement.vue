@@ -1,26 +1,29 @@
 <template>
     <div>
-        <div class="card">
-            <div class="row">
-                <div
-                    class="first-col card-body col-md-1 d-flex justify-content-center"
-                >
+        <div class="card border-0 mt-3 p-0">
+            <div class="d-flex gap-3 p-3">
+                <div class="my-auto">
                     <img
-                        v-if="profilePictureKey"
-                        class="profile-pic rounded-circle"
-                        :src="profilePictureKey"
-                    />
-                    <img
-                        v-else
                         class="profile-pic rounded-circle"
                         src="@/assets/sp-icon.png"
                     />
                 </div>
-                <div
-                    class="second-col col-md-11 d-flex align-items-center text-start"
-                >
-                    <div class="card-right card-body text-start">
-                        <h5 class="card-title d-inline m-0">
+                <div class="flex-grow-1">
+                    <!-- <div class="card-right card-body">
+                        <h5 class="card-title d-inline">
+                            {{ announcement.author.name }}
+                            {{ announcement.author.surname }}
+                        </h5>
+                        <span class="text-muted">
+                            • {{ announcement.postedAt }} ago
+                        </span>
+                        <p class="card-text mt-2">
+                            {{ announcement.text }}
+                        </p>
+                    </div> -->
+
+                    <div class="card-right card-body">
+                        <h5 class="card-title d-inline">
                             {{ postAuthor.name }}
                             {{ postAuthor.surname }}
                         </h5>
@@ -34,15 +37,15 @@
                 </div>
             </div>
 
-            <div v-if="isDemos" class="card-footer text-end">
+            <div v-if="isDemos" class="card-footer bg-white text-end">
                 <button
                     @click="deleteAnnouncement(announcementData.id)"
-                    class="delete-btn btn btn-primary"
+                    class="btn btn-primary me-2"
                 >
                     Izbriši
                 </button>
                 <button
-                    class="edit-btn btn btn-primary"
+                    class="btn btn-primary"
                     @click="openEdit(announcementData.id)"
                 >
                     Uredi
@@ -53,7 +56,7 @@
         <edit-announcement
             :announcementData="announcementData"
             :closeEdit="closeEdit"
-            v-if="editText"
+            v-if="isEditActive"
         />
     </div>
 </template>
@@ -61,8 +64,8 @@
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 import { useStoreUser } from "@/stores/user.store";
-import { useStoreGallery } from "@/stores/gallery.store";
 
+import { displayImage } from "@/services/displayImageService";
 import eventBus from "@/eventBus";
 import { formatDistanceToNow } from "date-fns";
 
@@ -78,13 +81,10 @@ export default {
         return {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
             postAuthor: {},
-            closeEdit: () => {},
-            editText: false,
+            isEditActive: false,
             profilePictureKey: "",
             storeAnnouncement: useStoreAnnouncement(),
             storeUser: useStoreUser(),
-            storeGallery: useStoreGallery(),
-            authorID: this.announcementData.author_id,
         };
     },
     props: {
@@ -92,78 +92,55 @@ export default {
             type: Object,
             required: true,
         },
+        setEditingAnnouncementID: {
+            type: Function,
+            required: true,
+        }
     },
     async created() {
-        await this.getPostAuthor();
-        this.closeEdit = () => {
-            this.editText = false;
-        };
+        await this.storeUser.fetchUser();
+        this.postAuthor = await this.storeUser.getUserById(
+            this.announcementData.author_id
+        );
 
-        const profilePictureKey = this.postAuthor.profile_picture_key;
-        await this.displayImage(profilePictureKey);
+        this.profilePictureKey = await displayImage(
+            this.postAuthor.profile_picture_key
+        );
     },
     methods: {
-        async getPostAuthor() {
-            await this.storeUser.fetchUser();
-            const postAuthor = await this.storeUser.getUserById(this.authorID);
-            this.postAuthor = postAuthor;
+        closeEdit() {
+            this.isEditActive = false;
         },
         formatDate(strDate) {
             const objDate = new Date(strDate);
-            const timeAgo = formatDistanceToNow(objDate);
-            return timeAgo;
+            return formatDistanceToNow(objDate);
         },
-        async deleteAnnouncement(idObjava) {
+        async deleteAnnouncement(announcementID) {
             const isConfirmed = window.confirm(
                 "Jeste li sigurni da želite izbrisati objavu?"
             );
 
             if (isConfirmed) {
-                await this.storeAnnouncement.deleteAnnouncement(idObjava);
+                await this.storeAnnouncement.deleteAnnouncement(announcementID);
             }
         },
         openedEditCheck() {
-            eventBus.on("closeOpenedAnnouncementEdit", (editText) => {
-                this.editText = editText;
+            eventBus.on("closeOpenedAnnouncementEdit", (isEditActive) => {
+                this.isEditActive = isEditActive;
             });
         },
         openEdit(editingAnnouncementID) {
             this.openedEditCheck();
-            eventBus.emit("editingAnnouncementID", editingAnnouncementID);
-            this.editText = true;
-        },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
-        },
+            this.setEditingAnnouncementID(editingAnnouncementID);
+            this.isEditActive = true;
+        }
     },
 };
 </script>
 
 <style scoped>
-.card {
-    border: none;
-    padding: 0;
-    margin-top: 1vw;
-}
-.row {
-    padding: 1vw;
-}
-.second-col {
-    padding-left: 0;
-}
-.card-right {
-    padding-left: 0;
-}
-.card-footer {
-    padding: 0.7vw;
-    background-color: white;
-}
 .profile-pic {
     width: 50px;
     height: 50px;
-}
-.delete-btn {
-    margin-right: 1vw;
 }
 </style>

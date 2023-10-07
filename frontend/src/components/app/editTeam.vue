@@ -69,7 +69,6 @@
 <script>
 import { useStoreCompetition } from "@/stores/competition.store";
 import { useStoreUser } from "@/stores/user.store";
-import { ref, onMounted } from "vue";
 
 export default {
     name: "EditTeam",
@@ -83,39 +82,29 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeCompetition = useStoreCompetition();
-        const storeUser = useStoreUser();
-
-        const teamName = ref(props.teamData.name);
-        const selectedUserId = ref(""); // To store the selected user's ID
-        const allUsers = ref([]); // To store all the users
-
+    data() {
         return {
-            teamData: props.teamData,
-            storeCompetition,
-            teamName,
-            allUsers,
-            selectedUserId,
+            storeCompetition: useStoreCompetition(),
+            storeUser: useStoreUser(),
+            teamName: this.teamData.name,
+            selectedUserId: "", // To store the selected user's ID
+            allUsers: [], // To store all the users
         };
     },
     async mounted() {
-        this.allUsers.value = await this.storeUser.fetchUser();
+        this.allUsers = await this.storeUser.fetchUser();
     },
     methods: {
         closeEdit() {
             this.closeEdit();
         },
         async updateTeam() {
-            const id = this.teamData.id;
-            const name = this.teamName;
-
             const updateData = {
-                id,
-                name,
+                id: this.teamData.id,
+                name: this.teamName,
             };
 
-            if (name.trim() !== "") {
+            if (this.teamName.trim() !== "") {
                 await this.storeCompetition.updateTeam(updateData);
             }
         },

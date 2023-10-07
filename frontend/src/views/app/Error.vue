@@ -1,5 +1,5 @@
 <template>
-    <div class="error-msg d-flex flex-column justify-content-center align-items-center">
+    <div class="w-full d-flex flex-column justify-content-center align-items-center">
         <h1>NOPE! :(</h1>
         <button class="btn btn-primary mt-3" @click="goBack">
             Vrati me natrag
@@ -18,9 +18,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.error-msg {
-    height: 100vh;
-}
-</style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card">
+        <div class="card border-0">
             <div class="input-group">
                 <input
                     type="text"
@@ -32,7 +32,6 @@ export default {
 
 <style scoped>
 .card {
-    border: none;
     padding: 1vw;
     margin-top: 1vw;
 }

@@ -83,8 +83,7 @@ export default {
         },
         async getUsers() {
             await this.storeUser.fetchUser();
-            const users = this.storeUser.getUsersExceptCurrent();
-            this.users = users;
+            this.users = this.storeUser.getUsersExceptCurrent();
         },
         filterUsers() {
             eventBus.on("searchText", (searchText) => {

@@ -30,9 +30,9 @@
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
-import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
 
+import { displayImage } from "@/services/displayImageService";
 import eventBus from "@/eventBus";
 
 import showProfile from "@/components/app/showProfile.vue";
@@ -50,34 +50,19 @@ export default {
             editingPostID: null,
             profilePictureKey: "",
             storeUser: useStoreUser(),
-            storeGallery: useStoreGallery(),
             storeProfilePost: useStoreProfilePost(),
-            currentUserUsername: localStorage.getItem("username"),
         };
     },
     async created() {
-        await this.getCurrentUser();
-        await this.getCurrentUserPosts();
+        await this.storeUser.fetchUser();
+        this.currentUserData = await this.storeUser.getCurrentUser();
+        this.currentUserPosts = await this.storeProfilePost.fetchProfilePost(this.currentUserData.id);
+
         this.getEditingPostID();
 
-        const profilePictureKey = this.currentUserData.profile_picture_key;
-        await this.displayImage(profilePictureKey);
+        this.profilePictureKey = await displayImage(this.currentUserData.profile_picture_key);
     },
     methods: {
-        async getCurrentUser() {
-            await this.storeUser.fetchUser();
-            const currentUserData = await this.storeUser.getCurrentUser(
-                this.currentUserUsername
-            );
-            this.currentUserData = currentUserData;
-        },
-        async getCurrentUserPosts() {
-            const currentUserPosts =
-                await this.storeProfilePost.fetchProfilePost(
-                    this.currentUserData.id
-                );
-            this.currentUserPosts = currentUserPosts;
-        },
         getEditingPostID() {
             eventBus.on("editingPostID", (editingPostID) => {
                 if (this.editingPostID !== editingPostID) {
@@ -86,10 +71,6 @@ export default {
                     this.editingPostID = editingPostID;
                 }
             });
-        },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
         },
     },
 };

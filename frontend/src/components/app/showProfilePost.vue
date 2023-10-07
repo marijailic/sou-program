@@ -79,7 +79,6 @@ export default {
     data() {
         return {
             storeProfilePost: useStoreProfilePost(),
-            closeEdit: () => {},
             editText: false,
         };
     },
@@ -105,16 +104,13 @@ export default {
             required: false,
         },
     },
-    created() {
-        this.closeEdit = () => {
-            this.editText = false;
-        };
-    },
     methods: {
+        closeEdit() {
+            this.editText = false;
+        },
         formatDate(strDate) {
             const objDate = new Date(strDate);
-            const timeAgo = formatDistanceToNow(objDate);
-            return timeAgo;
+            return formatDistanceToNow(objDate);
         },
         async deleteProfilePost(idPost) {
             const isConfirmed = window.confirm(

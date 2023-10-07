@@ -2,23 +2,13 @@
     <div>
         <form @submit.prevent="postProfilePost">
             <div class="card">
-                <div class="row">
-                    <div
-                        class="first-col card-body col-md-1 d-flex justify-content-center"
-                    >
+                <div class="d-flex">
                         <img
-                            v-if="profilePictureKey"
-                            class="profile-pic rounded-circle"
-                            :src="profilePictureKey"
+                            class="card-img-top rounded-circle mx-sm-auto mx-2"
+                            :src="profilePictureKey || '@/assets/sp-icon.png'"
                         />
-                        <img
-                            v-else
-                            class="profile-pic rounded-circle"
-                            src="@/assets/sp-icon.png"
-                        />
-                    </div>
                     <div
-                        class="second-col col-md-11 d-flex align-items-center text-start"
+                        class="align-items-center text-start"
                     >
                         <div class="card-right card-body text-start">
                             <textarea
@@ -63,15 +53,12 @@ export default {
     },
     methods: {
         async postProfilePost() {
-            const text = this.postText;
-            const authorId = this.userData.id;
-
             const profilePostData = {
-                text: text,
-                authorId: authorId,
+                text: this.postText,
+                authorId: this.userData.id,
             };
 
-            if (text.trim() !== "") {
+            if (this.postText.trim() !== "") {
                 await this.storeProfilePost.createProfilePost(profilePostData);
             }
         }
@@ -83,10 +70,10 @@ export default {
 .card {
     border: none;
     padding: 0;
-    margin-top: 1vw;
+    margin-top: 1rem;
 }
 .row {
-    padding: 1vw;
+    padding: 1rem;
 }
 .second-col {
     padding-left: 0;
@@ -95,7 +82,7 @@ export default {
     padding-left: 0;
 }
 .card-footer {
-    padding: 0.7vw;
+    padding: 0.7rem;
     background-color: white;
 }
 .profile-pic {

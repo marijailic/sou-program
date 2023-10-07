@@ -28,4 +28,7 @@ body {
         background-color: #66ccff;
     }
 }
+.w-full {
+    min-height: 100vh;
+}
 </style>

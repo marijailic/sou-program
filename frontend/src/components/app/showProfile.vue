@@ -1,5 +1,5 @@
 <template>
-    <div class="card">
+    <div class="card border-0">
         <div class="row">
             <div
                 class="col-md-3 d-flex justify-content-center align-items-center"
@@ -19,8 +19,8 @@
                     src="@/assets/sp-icon.png"
                 />
             </div>
-            <div class="second-col col-md-9 d-flex align-items-center">
-                <div class="card-body text-start">
+            <div class="ps-0 col-md-9 d-flex align-items-center">
+                <div class="ps-0 text-start">
                     <h1 class="card-title">
                         {{ userData.name }} {{ userData.surname }}
                     </h1>
@@ -62,17 +62,10 @@ export default {
 
 <style scoped>
 .card {
-    border: none;
     padding: 1vw;
 }
 .profile-pic {
     width: 10vw;
     height: 10vw;
-}
-.second-col {
-    padding-left: 0;
-}
-.card-body {
-    padding-left: 0;
 }
 </style>

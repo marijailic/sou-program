@@ -1,10 +1,10 @@
 <template>
     <div>
-        <show-profile
+        <!-- <show-profile
             :parentComponent="parentComponent"
-            :userData="userData"
-            :userProfilePictureKey="userProfilePictureKey"
-        />
+            :userData="user"
+            :userImageSrc="userImageSrc"
+        /> -->
 
         <div
             class="d-flex justify-content-center"
@@ -12,23 +12,23 @@
         >
             <h1 class="mt-5">Nema objava...</h1>
         </div>
-
+<!-- 
         <show-profile-post
             :parentComponent="parentComponent"
-            :userData="userData"
-            :userProfilePictureKey="userProfilePictureKey"
+            :userData="user"
+            :userImageSrc="userImageSrc"
             v-for="post in userPosts"
             :key="post.id"
             :postData="post"
-        />
+        /> -->
     </div>
 </template>
 
 <script>
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreProfilePost } from "@/stores/profilepost.store";
-import { useStoreGallery } from "@/stores/gallery.store";
 
+import { displayImage } from "@/services/displayImageService";
 import showProfile from "@/components/app/showProfile.vue";
 import showProfilePost from "@/components/app/showProfilePost.vue";
 
@@ -39,37 +39,20 @@ export default {
         return {
             storeUser: useStoreUser(),
             storeProfilePost: useStoreProfilePost(),
-            storeGallery: useStoreGallery(),
-            userData: {},
+            user: {},
             userPosts: [],
             parentComponent: "UserProfileView",
-            userProfilePictureKey: "",
-            userID: this.$route.params.id, // get user id from url
+            userImageSrc: "",
         };
     },
     async created() {
-        await this.getUser();
-        await this.getUserPosts();
+        const userID = this.$route.params.id;
 
-        const profilePictureKey = this.userData.profile_picture_key;
-        await this.displayImage(profilePictureKey);
-    },
-    methods: {
-        async getUser() {
-            await this.storeUser.fetchUser();
-            const userData = await this.storeUser.getUserById(this.userID);
-            this.userData = userData;
-        },
-        async getUserPosts() {
-            const userPosts = await this.storeProfilePost.fetchProfilePost(
-                this.userID
-            );
-            this.userPosts = userPosts;
-        },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.userProfilePictureKey = `data:image/jpeg;base64,${image}`;
-        },
-    },
+        await this.storeUser.fetchUser();
+        this.user = await this.storeUser.getUserById(userID);
+        this.userPosts = await this.storeProfilePost.fetchProfilePost(userID);
+        
+        this.userImageSrc = await displayImage(this.user.profile_picture_key);
+    }
 };
 </script>

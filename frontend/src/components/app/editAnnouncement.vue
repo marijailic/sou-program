@@ -1,19 +1,17 @@
 <template>
     <div>
         <form @submit.prevent="updateAnnouncement">
-            <div class="card">
-                <div class="row">
-                    <div class="card-body text-start">
-                        <textarea
-                            v-model="announcementText"
-                            class="form-control"
-                            rows="3"
-                            required
-                        ></textarea>
-                    </div>
+            <div class="card border-0 p-0 mt-2">
+                <div class="card-body text-start">
+                    <textarea
+                        v-model="announcementData.text"
+                        class="form-control"
+                        rows="3"
+                        required
+                    ></textarea>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeEdit">
+                    <a class="btn btn-primary me-2" @click="() => {this.closeEdit()}">
                         Odustani
                     </a>
                     <button type="submit" class="btn btn-primary">
@@ -28,38 +26,31 @@
 <script>
 import { useStoreAnnouncement } from "@/stores/announcement.store";
 
+const props = {
+    announcementData: {
+        type: Object,
+        required: true,
+    },
+    closeEdit: {
+        type: Function,
+        required: true,
+    },
+}
+
 export default {
     name: "editAnnouncement",
-    props: {
-        announcementData: {
-            type: Object,
-            required: true,
-        },
-        closeEdit: {
-            type: Function,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            storeAnnouncement: useStoreAnnouncement(),
-            announcementText: this.announcementData.text,
-        };
-    },
+    props,
+    data: () => ({
+        storeAnnouncement: useStoreAnnouncement(),
+    }),
     methods: {
-        closeEdit() {
-            this.closeEdit();
-        },
         async updateAnnouncement() {
-            const id = this.announcementData.id;
-            const text = this.announcementText;
-
             const updateData = {
-                id: id,
-                text: text,
+                id: this.announcementData.id,
+                text: this.announcementData.text.trim(),
             };
 
-            if (text.trim() !== "") {
+            if (updateData.text !== "") {
                 await this.storeAnnouncement.updateAnnouncement(updateData);
             }
         }
@@ -69,19 +60,9 @@ export default {
 
 <style scoped>
 .card {
-    border: none;
-    padding: 0;
     background-color: #eaeaea;
-    margin-top: 1vw;
-}
-.row {
-    padding: 1vw;
 }
 .card-footer {
-    padding: 0.7vw;
     background-color: #eaeaea;
-}
-.escape-btn {
-    margin-right: 1vw;
 }
 </style>

@@ -21,6 +21,7 @@
             v-for="announcement in announcements"
             :key="announcement.id"
             :announcementData="announcement"
+            :setEditingAnnouncementID="setEditingAnnouncementID"
         />
     </div>
 </template>
@@ -28,8 +29,8 @@
 <script>
 import { useStoreUser } from "@/stores/user.store";
 import { useStoreAnnouncement } from "@/stores/announcement.store";
-import { useStoreGallery } from "@/stores/gallery.store";
 
+import { displayImage } from "@/services/displayImageService";
 import eventBus from "@/eventBus";
 
 import addAnnouncement from "@/components/app/addAnnouncement.vue";
@@ -47,8 +48,6 @@ export default {
             profilePictureKey: "",
             storeUser: useStoreUser(),
             storeAnnouncement: useStoreAnnouncement(),
-            storeGallery: useStoreGallery(),
-            currentUserUsername: localStorage.getItem("username"),
             isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
         };
     },
@@ -57,39 +56,22 @@ export default {
         showAnnouncement,
     },
     async created() {
-        await this.getCurrentUser();
-        await this.getAnnouncements();
-        this.getEditingAnnouncementID();
+        await this.storeUser.fetchUser();
+        this.currentUserData = await this.storeUser.getCurrentUser();
+        this.announcements = await this.storeAnnouncement.fetchAnnouncement();
 
-        const profilePictureKey = this.currentUserData.profile_picture_key;
-        await this.displayImage(profilePictureKey);
+        this.profilePictureKey = await displayImage(this.currentUserData.profile_picture_key);
     },
     methods: {
-        async getCurrentUser() {
-            await this.storeUser.fetchUser();
-            const currentUserData = await this.storeUser.getCurrentUser(
-                this.currentUserUsername
-            );
-            this.currentUserData = currentUserData;
-        },
-        async getAnnouncements() {
-            const announcements =
-                await this.storeAnnouncement.fetchAnnouncement();
-            this.announcements = announcements;
-        },
-        getEditingAnnouncementID() {
-            eventBus.on("editingAnnouncementID", (editingAnnouncementID) => {
-                if (this.editingAnnouncementID !== editingAnnouncementID) {
-                    const editText = false;
-                    eventBus.emit("closeOpenedAnnouncementEdit", editText);
-                    this.editingAnnouncementID = editingAnnouncementID;
-                }
-            });
-        },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
-        },
+        setEditingAnnouncementID(editingAnnouncementID) {
+            if (this.editingAnnouncementID === editingAnnouncementID) {
+               return;
+            }
+
+            const isEditActive = false;
+            eventBus.emit("closeOpenedAnnouncementEdit", isEditActive);
+            this.editingAnnouncementID = editingAnnouncementID;
+        }
     },
 };
 </script>

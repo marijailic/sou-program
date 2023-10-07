@@ -42,7 +42,9 @@ export const useStoreUser = defineStore("storeUser", {
             });
             return filteredUsers;
         },
-        getCurrentUser: (state) => (username) => {
+        getCurrentUser: (state) => () => {
+            const username = localStorage.getItem("username");
+
             const currentUser = state.user.find((user) => {
                 return user.username.toLowerCase() === username.toLowerCase();
             });

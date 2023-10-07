@@ -1,10 +1,9 @@
 <template>
     <div>
         <form @submit.prevent="postUser">
-            <div class="card">
+            <div class="card border-0 p-0 mt-3">
                 <div class="row">
                     <h3 class="headline">Dodaj korisnika</h3>
-
                     <div class="form-group">
                         <label for="name">Ime</label>
                         <input
@@ -100,7 +99,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeAdd"
+                    <a class="btn btn-primary me-2" @click="closeAdd"
                         >Odustani</a
                     >
                     <button type="submit" class="btn btn-primary">Dodaj</button>
@@ -168,24 +167,18 @@ export default {
 
 <style scoped>
 .card {
-    border: none;
-    padding: 0;
-    margin-top: 1vw;
+    min-width: 15rem;
 }
 .row {
-    padding: 1vw;
+    padding: 1em;
 }
 .headline {
-    margin-bottom: 1vw;
+    margin-bottom: 1em;
 }
 .form-group {
-    margin-bottom: 1vw;
+    margin-bottom: .5em;
 }
 .card-footer {
-    padding: 0.7vw;
     background-color: white;
-}
-.escape-btn {
-    margin-right: 1vw;
 }
 </style>

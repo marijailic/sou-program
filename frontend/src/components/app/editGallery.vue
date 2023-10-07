@@ -39,7 +39,6 @@
 
 <script>
 import { useStoreGallery } from "@/stores/gallery.store";
-import { ref } from "vue";
 
 export default {
     name: "editGallery",
@@ -53,21 +52,15 @@ export default {
             required: true,
         },
     },
-    setup(props) {
+    async data() {
         const storeGallery = useStoreGallery();
-        storeGallery.fetchGallery();
-
-        const galleryID = props.galleryID;
-        const galleryData = storeGallery.getGalleryById(galleryID);
-
-        const newGalleryTitle = ref(galleryData.title);
-        const newGalleryText = ref(galleryData.text);
+        await storeGallery.fetchGallery();
+        const galleryData = storeGallery.getGalleryById(this.galleryID);
 
         return {
-            galleryID,
             storeGallery,
-            newGalleryTitle,
-            newGalleryText,
+            newGalleryTitle: galleryData.title,
+            newGalleryText: galleryData.text,
         };
     },
     methods: {
@@ -77,8 +70,8 @@ export default {
         async editGallery() {
             const updateData = {
                 id: this.galleryID,
-                title: this.newGalleryTitle.value,
-                text: this.newGalleryText.value,
+                title: this.newGalleryTitle,
+                text: this.newGalleryText,
             };
             await this.storeGallery.updateGallery(updateData);
         }

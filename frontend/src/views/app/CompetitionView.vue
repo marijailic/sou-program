@@ -67,8 +67,8 @@ export default {
         addCompetition,
         editCompetition,
     },
-    created() {
-        this.getCompetitions();
+    async created() {
+        this.competitions = await this.storeCompetition.fetchCompetition();
         this.openEditCompetition();
     },
     methods: {
@@ -77,9 +77,6 @@ export default {
         },
         closeEdit() {
             this.editCompetition = false;
-        },
-        async getCompetitions() {
-            this.competitions = await this.storeCompetition.fetchCompetition();
         },
         rightColActiveCheck() {
             this.addCompetition = false;

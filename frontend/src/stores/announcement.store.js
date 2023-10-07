@@ -13,7 +13,7 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
             });
 
             if (!res.ok) {
-                //window.location.href = "/error";
+                window.location.href = "/error";
                 return;
             }
 
