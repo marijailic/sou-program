@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
-import { getAuthHeaders } from "@/services/authService";
-import BackendApiService from "@/services/BackendApiService";
+import backendApiService from "@/services/backendApiService";
 
 export const useStoreAnnouncement = defineStore("storeAnnouncement", {
     state: () => ({
@@ -9,10 +8,11 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
     getters: {},
     actions: {
         async fetchAnnouncement() {
-            const res = await fetch(`${process.env.VUE_APP_URL}/announcement`, {
-                headers: getAuthHeaders(),
+            const res = await backendApiService.get({
+                url: "/announcement",
             });
 
+            console.log(res)
             if (!res.ok) {
                 window.location.href = "/error";
                 return;
@@ -24,51 +24,29 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
             return resObj.data;
         },
         async deleteAnnouncement(idAnnouncement) {
-            const res = await BackendApiService.delete({
+            const res = await backendApiService.delete({
                 url: "/delete-announcement",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id: idAnnouncement }),
             });
 
-            /*
-            const res = await fetch(`${process.env.VUE_APP_URL}/`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
-                body: JSON.stringify({ id: idAnnouncement }),
-            });*/
-
             window.location.href = res.ok ? "/success" : "/error";
         },
         async createAnnouncement(announcementData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/create-announcement`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(announcementData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: "/create-announcement",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(announcementData),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
         async updateAnnouncement(updateData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/update-announcement`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(updateData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: "/update-announcement",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updateData),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },

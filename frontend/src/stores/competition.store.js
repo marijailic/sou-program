@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { getAuthHeaders } from "@/services/authService";
+import backendApiService from "@/services/backendApiService";
 
 export const useStoreCompetition = defineStore("storeCompetition", {
     state: () => ({
@@ -25,8 +25,8 @@ export const useStoreCompetition = defineStore("storeCompetition", {
     },
     actions: {
         async fetchCompetition() {
-            const res = await fetch(`${process.env.VUE_APP_URL}/competition`, {
-                headers: getAuthHeaders(),
+            const res = await backendApiService.get({
+                url: "/competition",
             });
 
             if (!res.ok) {
@@ -40,46 +40,25 @@ export const useStoreCompetition = defineStore("storeCompetition", {
             return resObj.data;
         },
         async deleteCompetition(idCompetition) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/${idCompetition}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                }
-            );
+            const res = await backendApiService.delete({
+                url: `/competition/${idCompetition}`,
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async createCompetition(competitionData) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/competition`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.post({
+                url: "/competition",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(competitionData),
             });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
         async updateCompetition(updateData) {
-            const res = await fetch(`${process.env.VUE_APP_URL}/competition`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    ...getAuthHeaders(),
-                },
+            const res = await backendApiService.patch({
+                url: "/competition",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(updateData),
             });
 
@@ -90,101 +69,45 @@ export const useStoreCompetition = defineStore("storeCompetition", {
             window.location.href = "/success";
         },
         async updateTeam(updateData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/team/${updateData.id}`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify({ name: updateData.name }),
-                }
-            );
+            const res = await backendApiService.patch({
+                url: `/competition/team/${updateData.id}`,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name: updateData.name }),
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
-
         async createTeam(teamData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/team`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(teamData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: "/competition/team",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(teamData),
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
-
         async deleteTeam(teamId) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/team/${teamId}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                }
-            );
+            const res = await backendApiService.delete({
+                url: `/competition/team/${teamId}`,
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
-
         async deleteMember(memberId) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/team/member/${memberId}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                }
-            );
+            const res = await backendApiService.delete({
+                url: `/competition/team/member/${memberId}`,
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
-
         async createMember(memberData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/competition/team/member`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(memberData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: `/competition/team/member`,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(memberData),
+            });
 
-            if (!res.ok) {
-                window.location.href = "/error";
-                return;
-            }
-            window.location.href = "/success";
+            window.location.href = res.ok ? "/success" : "/error";
         },
     },
 });

@@ -18,9 +18,9 @@
                         />
                     </div>
                     <div
-                        class="second-col col-md-11 d-flex align-items-center text-start"
+                        class="ps-0 col-md-11 d-flex align-items-center text-start"
                     >
-                        <div class="card-right card-body text-start">
+                        <div class="ps-0 card-body text-start">
                             <textarea
                                 v-model="announcementText"
                                 class="form-control"
@@ -93,12 +93,6 @@ export default {
 }
 .row {
     padding: 1vw;
-}
-.second-col {
-    padding-left: 0;
-}
-.card-right {
-    padding-left: 0;
 }
 .card-footer {
     padding: 0.7vw;

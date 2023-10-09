@@ -104,9 +104,6 @@ export default {
 .form-group {
     margin-bottom: 1vw;
 }
-.picture-input {
-    margin-bottom: 1vw;
-}
 .card-footer {
     padding: 0.7vw;
     background-color: #eaeaea;

@@ -127,25 +127,8 @@ export default {
         const newUserBio = ref(userData.bio);
         const newUserType = ref(userData.type);
 
-        const editUser = async () => {
-            const id = userData.id;
-
-            const updateData = {
-                id: id,
-                name: newUserName.value,
-                surname: newUserSurname.value,
-                email: newUserEmail.value,
-                // username: newUserUsername.value,
-                // password: newUserPassword.value,
-                bio: newUserBio.value,
-                type: newUserType.value,
-            };
-            await storeUser.updateUser(updateData);
-        };
-
         return {
             storeUser,
-            editUser,
             newUserName,
             newUserSurname,
             newUserEmail,
@@ -159,6 +142,21 @@ export default {
         closeEdit() {
             this.closeEdit();
         },
+        async editUser() {
+            const id = this.userData.id;
+
+            const updateData = {
+                id: id,
+                name: this.newUserName.value,
+                surname: this.newUserSurname.value,
+                email: this.newUserEmail.value,
+                // username: newUserUsername.value,
+                // password: newUserPassword.value,
+                bio: this.newUserBio.value,
+                type: this.newUserType.value,
+            };
+            await this.storeUser.updateUser(updateData);
+        }
     },
 };
 </script>

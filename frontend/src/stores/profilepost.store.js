@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { getAuthHeaders } from "@/services/authService";
+import backendApiService from "@/services/backendApiService";
 
 export const useStoreProfilePost = defineStore("storeProfilePost", {
     state: () => ({
@@ -7,12 +8,9 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
     }),
     actions: {
         async fetchProfilePost(authorId) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/profile-post/${authorId}`,
-                {
-                    headers: getAuthHeaders(),
-                }
-            );
+            const res = await backendApiService.get({
+                url: `/profile-post/${authorId}`,
+            });
 
             if (!res.ok) {
                 window.location.href = "/error";
@@ -25,47 +23,29 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
             return resObj.data;
         },
         async createProfilePost(profilePostData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/create-profile-post`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(profilePostData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: "/create-profile-post",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(profilePostData),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
         async deleteProfilePost(idPost) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/delete-profile-post`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify({ id: idPost }),
-                }
-            );
+            const res = await backendApiService.delete({
+                url: "/delete-profile-post",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: idPost }),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
         async updateProfilePost(updateData) {
-            const res = await fetch(
-                `${process.env.VUE_APP_URL}/update-profile-post`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...getAuthHeaders(),
-                    },
-                    body: JSON.stringify(updateData),
-                }
-            );
+            const res = await backendApiService.post({
+                url: "/update-profile-post",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updateData),
+            });
 
             window.location.href = res.ok ? "/success" : "/error";
         },

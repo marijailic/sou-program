@@ -9,10 +9,7 @@ async function hashPassword(passwordInput) {
 }
 
 async function getAuthUserData(username, password) {
-    const user = Users.select()
-        .from("user")
-        .where("username", username)
-        .first();
+    const user = await Users.select().where("username", username).first();
 
     if (!user) {
         throw new Error("No user");

@@ -46,20 +46,6 @@ export default {
 
         const postText = ref(props.postData.text);
 
-        const updateProfilePost = async () => {
-            const id = props.postData.id;
-            const text = postText.value;
-
-            const updateData = {
-                id: id,
-                text: text,
-            };
-
-            if (text.trim() !== "") {
-                await storeProfilePost.updateProfilePost(updateData);
-            }
-        };
-
         return {
             storeProfilePost,
             updateProfilePost,
@@ -70,6 +56,16 @@ export default {
         closeEdit() {
             this.closeEdit();
         },
+        async updateProfilePost() {
+            const updateData = {
+                id: this.props.postData.id,
+                text: this.postText.value
+            };
+
+            if (text.trim() !== "") {
+                await this.storeProfilePost.updateProfilePost(updateData);
+            }
+        }
     },
 };
 </script>

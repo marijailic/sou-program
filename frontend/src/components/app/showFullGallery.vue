@@ -7,7 +7,7 @@
                     Zatvori
                 </button>
             </div>
-            <div class="row">
+            <div class="p-0">
                 <p class="card-text mt-2">
                     {{ galleryData.text }}
                 </p>
@@ -32,11 +32,11 @@ import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
 
 import { formatDistanceToNow } from "date-fns";
-import VueMasonry from "vue-masonry";
+//import VueMasonry from "vue-masonry";
 
 export default {
     name: "showFullGallery",
-    components: { VueMasonry },
+    //components: { VueMasonry },
     data() {
         return {
             authorUsername: null,
@@ -111,9 +111,6 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-.row {
-    padding: 0;
 }
 .masonry-container > * {
     width: 100%;

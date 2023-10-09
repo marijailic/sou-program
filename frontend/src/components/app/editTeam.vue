@@ -91,10 +91,6 @@ export default {
         const selectedUserId = ref(""); // To store the selected user's ID
         const allUsers = ref([]); // To store all the users
 
-        onMounted(async () => {
-            allUsers.value = await storeUser.fetchUser();
-        });
-
         return {
             teamData: props.teamData,
             storeCompetition,
@@ -102,6 +98,9 @@ export default {
             allUsers,
             selectedUserId,
         };
+    },
+    async onMounted() {
+        this.allUsers.value = await this.storeUser.fetchUser();
     },
     methods: {
         closeEdit() {
@@ -151,22 +150,12 @@ export default {
 .row {
     padding: 1vw;
 }
-.second-col {
-    padding-left: 0;
-}
 .card-right {
     padding-left: 0;
 }
 .card-footer {
     padding: 0.7vw;
     background-color: #f3f2f2;
-}
-.profile-pic {
-    width: 50px;
-    height: 50px;
-}
-.escape-btn {
-    margin-right: 1vw;
 }
 .team-user {
     margin-top: 0.5vw;

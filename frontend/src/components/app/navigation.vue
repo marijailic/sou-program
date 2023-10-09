@@ -129,9 +129,6 @@ export default {
 .nav-link:hover {
   background-color: #f5f5f5;
 }
-.router-link-active {
-  background-color: #f5f5f5;
-}
 .material-icons {
   margin-left: 1.2vw;
   margin-right: 0.5vw;
