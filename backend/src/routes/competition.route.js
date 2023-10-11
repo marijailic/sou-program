@@ -2,22 +2,17 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
+import db from "../db";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { demosMiddleware } from "../middlewares/demos.middleware";
-import {
-    Announcements,
-    Competitions,
-    TeamMembers,
-    Teams,
-} from "../models/models";
 
 const { getPopulatedCompetitions } = require("../services/competition.service");
 
 router.get("/competition", authMiddleware, async (req, res) => {
     try {
-        const competitions = Competitions.orderBy("timestamp", "desc").limit(
-            10
-        );
+        const competitions = await db("competition")
+            .orderBy("timestamp", "desc")
+            .limit(10);
 
         res.json({
             message: "Competitions fetched successfully",
@@ -36,7 +31,7 @@ router.delete(
         const idCompetition = req.params.id;
 
         try {
-            await Announcements.where({ id: idCompetition }).del();
+            await db("competition").where({ id: idCompetition }).del();
             res.json({ message: "Competition deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -55,7 +50,7 @@ router.delete(
         const idTeam = req.params.id;
 
         try {
-            await Teams.where({ id: idTeam }).del();
+            await db("team").where({ id: idTeam }).del();
             res.json({ message: "Team deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -74,7 +69,7 @@ router.delete(
         const idTeamMember = req.params.id;
 
         try {
-            await TeamMembers.where({ id: idTeamMember }).del();
+            await db("team_member").where({ id: idTeamMember }).del();
             res.json({ message: "Team member deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -102,7 +97,7 @@ router.post(
         };
 
         try {
-            const teamId = await TeamMembers.insert(teamMember, "id");
+            const teamId = await db("team_member").insert(teamMember, "id");
             res.json({
                 message: "Team member created successfully",
                 data: {
@@ -128,10 +123,9 @@ router.post(
         const timezone = "Europe/Amsterdam";
         const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
 
-        const competition = await Competitions.where(
-            "id",
-            competition_id
-        ).first();
+        const competition = await db("competition")
+            .where("id", competition_id)
+            .first();
 
         const team = {
             name: name,
@@ -140,7 +134,7 @@ router.post(
         };
 
         try {
-            const teamId = await Teams.insert(team, "id");
+            const teamId = await db("team").insert(team, "id");
             res.json({
                 message: "Team created successfully",
                 data: {
@@ -174,7 +168,7 @@ router.post(
         };
 
         try {
-            const competitionId = await Competitions.insert(
+            const competitionId = await db("competition").insert(
                 competitionData,
                 "id"
             );
@@ -202,7 +196,7 @@ router.patch(
         const { name } = req.body;
 
         try {
-            await Teams.where({ id: idTeam }).update({ name: name });
+            await db("team").where({ id: idTeam }).update({ name: name });
             res.json({
                 message: "Team updated successfully",
                 data: {},
@@ -225,7 +219,7 @@ router.patch(
         const { name, description, start_date } = req.body;
 
         try {
-            await Competitions.where({ id: idCompetition }).update({
+            await db("competition").where({ id: idCompetition }).update({
                 name: name,
                 description: description,
                 start_date: start_date,

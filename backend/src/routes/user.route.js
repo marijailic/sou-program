@@ -2,21 +2,18 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-import { Users } from "../models/models";
-
 import { demosMiddleware } from "../middlewares/demos.middleware";
 import { hashPassword, authMiddleware } from "../middlewares/auth.middleware";
 import db from "../db";
 
 router.get("/user", [authMiddleware], async (req, res, next) => {
     try {
-        const users = await db.select().from("user").orderBy("id", "desc");
+        const users = await db("user").orderBy("id", "desc");
         res.json({
             message: "User fetched successfully",
             data: users,
         });
     } catch (error) {
-        console.log("Error:", error);
         res.status(500).json({ message: "Internal server error", data: {} });
     }
 });
@@ -26,7 +23,7 @@ router.delete(
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
         try {
-            await Users.where({ id: req.body.id }).del();
+            await db("user").where({ id: req.body.id }).del();
             res.json({
                 message: "User deleted successfully",
                 data: {},
@@ -63,12 +60,14 @@ router.post(
         };
 
         try {
-            await Users.insert(userData).then(() =>
-                res.json({
-                    message: "User created successfully",
-                    data: {},
-                })
-            );
+            await db("user")
+                .insert(userData)
+                .then(() =>
+                    res.json({
+                        message: "User created successfully",
+                        data: {},
+                    })
+                );
         } catch (error) {
             console.log("Error:", error);
             res.status(500).json({
@@ -97,7 +96,7 @@ router.post(
         };
 
         try {
-            await Users.where({ id: id }).update(userData);
+            await db("user").where({ id: id }).update(userData);
             res.json({
                 message: "User updated successfully",
                 data: {},

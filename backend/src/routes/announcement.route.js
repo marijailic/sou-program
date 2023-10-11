@@ -2,20 +2,18 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
+import db from "../db";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { demosMiddleware } from "../middlewares/demos.middleware";
-import { Announcements } from "../models/models";
 
 const { getUserByUsername } = require("../services/user.service");
 const { sendAnnouncements } = require("../services/sendAnnouncement.service");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
-        const announcement = await Announcements.orderBy(
-            "timestamp",
-            "desc"
-        ).limit(10);
-        // throw new Error();
+        const announcement = await db("announcement")
+            .orderBy("timestamp", "desc")
+            .limit(10);
         res.json({
             message: "Announcement fetched successfully",
             data: announcement,
@@ -37,10 +35,12 @@ router.delete(
         const idUser = (await getUserByUsername(req.headers["username"])).id;
 
         try {
-            await Announcements.where({
-                id: idAnnouncement,
-                author_id: idUser,
-            }).del();
+            await db("announcement")
+                .where({
+                    id: idAnnouncement,
+                    author_id: idUser,
+                })
+                .del();
             res.json({
                 message: "Announcement deleted successfully",
                 data: {},
@@ -77,7 +77,7 @@ router.post(
         };
 
         try {
-            await Announcements.insert(announcementData);
+            await db("announcement").insert(announcementData);
             await sendAnnouncements(text);
 
             res.json({
@@ -107,9 +107,11 @@ router.post(
         }
 
         try {
-            await Announcements.where({ id: id, author_id: idUser }).update({
-                text: text,
-            });
+            await db("announcement")
+                .where({ id: id, author_id: idUser })
+                .update({
+                    text: text,
+                });
             res.json({
                 message: "Announcement updated successfully",
                 data: {},
