@@ -59,6 +59,7 @@ router.post(
     "/create-announcement",
     [authMiddleware, demosMiddleware],
     async (req, res) => {
+        console.log("Create");
         const text = req.body.text;
         const idUser = (await getUserByUsername(req.headers["username"])).id;
 
@@ -104,6 +105,7 @@ router.post(
 
         if (text.trim() === "") {
             res.status(400).json({ message: "Client error", data: {} });
+            return;
         }
 
         try {
@@ -112,6 +114,7 @@ router.post(
                 .update({
                     text: text,
                 });
+
             res.json({
                 message: "Announcement updated successfully",
                 data: {},

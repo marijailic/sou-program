@@ -60,14 +60,11 @@ router.post(
         };
 
         try {
-            await db("user")
-                .insert(userData)
-                .then(() =>
-                    res.json({
-                        message: "User created successfully",
-                        data: {},
-                    })
-                );
+            await db("user").insert(userData);
+            res.json({
+                message: "User created successfully",
+                data: {},
+            });
         } catch (error) {
             console.log("Error:", error);
             res.status(500).json({

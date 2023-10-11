@@ -16,7 +16,6 @@ router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
             .orderBy("timestamp", "desc")
             .limit(10);
 
-        console.log(profilePost);
         res.json({
             message: "Profile post fetched successfully",
             data: profilePost,

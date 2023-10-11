@@ -12,7 +12,6 @@ export const useStoreAnnouncement = defineStore("storeAnnouncement", {
                 url: "/announcement",
             });
 
-            console.log(res)
             if (!res.ok) {
                 window.location.href = "/error";
                 return;
