@@ -14,11 +14,11 @@ export const useStoreUser = defineStore("storeUser", {
             return isDemos
                 ? state.user
                 : state.user.filter((user) => {
-                    return (
-                        user.username.toLowerCase() !==
-                        currentUser.toLowerCase()
-                    );
-                });
+                      return (
+                          user.username.toLowerCase() !==
+                          currentUser.toLowerCase()
+                      );
+                  });
         },
         getFilteredUsers: (state) => (searchText) => {
             const currentUser = localStorage.getItem("username");
@@ -67,8 +67,8 @@ export const useStoreUser = defineStore("storeUser", {
             }
 
             const resObj = await res.json();
-            this.user = resObj.data;
 
+            this.user = resObj.data;
             return resObj.data;
         },
         async deleteUser(idUser) {

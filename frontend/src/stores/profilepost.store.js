@@ -20,6 +20,7 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
             const resObj = await res.json();
             this.profilePost = resObj.data;
 
+            console.log(this.profilePost);
             return resObj.data;
         },
         async createProfilePost(profilePostData) {

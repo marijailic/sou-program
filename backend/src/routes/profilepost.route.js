@@ -11,10 +11,11 @@ router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
     const authorId = req.params.authorid;
 
     try {
-        const profilePost = ProfilePosts.where("author_id", authorId)
+        const profilePost = await ProfilePosts.where("author_id", authorId)
             .orderBy("timestamp", "desc")
             .limit(10);
-        // throw new Error();
+
+        console.log(profilePost);
         res.json({
             message: "Profile post fetched successfully",
             data: profilePost,
