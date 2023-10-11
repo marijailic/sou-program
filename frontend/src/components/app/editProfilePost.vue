@@ -48,7 +48,6 @@ export default {
 
         return {
             storeProfilePost,
-            updateProfilePost,
             postText,
         };
     },
@@ -57,15 +56,16 @@ export default {
             this.closeEdit();
         },
         async updateProfilePost() {
+            console.log(this.storeProfilePost);
             const updateData = {
                 id: this.props.postData.id,
-                text: this.postText.value
+                text: this.postText.value,
             };
 
             if (text.trim() !== "") {
                 await this.storeProfilePost.updateProfilePost(updateData);
             }
-        }
+        },
     },
 };
 </script>
