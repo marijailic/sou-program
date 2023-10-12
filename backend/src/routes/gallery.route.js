@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
+import db from "../db";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { demosMiddleware } from "../middlewares/demos.middleware";
 import { Galleries, GalleryItems } from "../models/models";
@@ -10,9 +11,11 @@ router.get("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {
     const galleryID = req.params.gallery_id;
 
     try {
-        const galleryItem = await GalleryItems.where({
-            gallery_id: galleryID,
-        }).orderBy("timestamp", "asc");
+        const galleryItem = await db("gallery_item")
+            .where({
+                gallery_id: galleryID,
+            })
+            .orderBy("timestamp", "asc");
 
         res.json({
             message: "Gallery item fetched successfully",
@@ -26,7 +29,9 @@ router.get("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {
 
 router.get("/gallery", authMiddleware, async (req, res) => {
     try {
-        const gallery = await Galleries.orderBy("timestamp", "desc").limit(10);
+        const gallery = await db("gallery")
+            .orderBy("timestamp", "desc")
+            .limit(10);
 
         res.json({
             message: "Gallery fetched successfully",
@@ -45,7 +50,7 @@ router.delete(
         const idGallery = req.body.id;
 
         try {
-            await Galleries.where({ id: idGallery }).del();
+            await db("gallery").where({ id: idGallery }).del();
             res.json({ message: "Gallery deleted successfully", data: {} });
         } catch (error) {
             console.log("Error:", error);
@@ -76,7 +81,7 @@ router.post("/gallery", authMiddleware, async (req, res) => {
     };
 
     try {
-        const gallery = await Galleries.returning("id").insert(galleryData);
+        const gallery = await db("gallery").returning("id").insert(galleryData);
         const galleryID = gallery[0];
 
         res.json({
@@ -107,7 +112,7 @@ router.post("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {
                 timestamp: timestamp,
             };
 
-            await GalleryItems.insert(galleryItemData);
+            await db("gallery_item").insert(galleryItemData);
         }
 
         res.json({
@@ -136,7 +141,7 @@ router.patch(
         };
 
         try {
-            await Galleries.where({ id: id }).update(galleryData);
+            await db("gallery").where({ id: id }).update(galleryData);
             res.json({
                 message: "Gallery updated successfully",
                 data: {},

@@ -12,16 +12,16 @@ const GalleryItems = db("gallery_item");
 const ProfilePosts = db("profile_post");
 const Comments = db("comment");
 
-export {
-    Users,
-    Competitions,
-    Teams,
-    TeamMembers,
-    Announcements,
-    TodoLists,
-    TodoListItems,
-    Galleries,
-    GalleryItems,
-    ProfilePosts,
-    Comments,
-};
+// export {
+//     Users,
+//     Competitions,
+//     Teams,
+//     TeamMembers,
+//     Announcements,
+//     TodoLists,
+//     TodoListItems,
+//     Galleries,
+//     GalleryItems,
+//     ProfilePosts,
+//     Comments,
+// };

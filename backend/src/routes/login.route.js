@@ -6,7 +6,6 @@ import { getAuthUserData } from "../middlewares/auth.middleware";
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
-    console.log(username, password);
     try {
         const { token, refreshToken, type } = await getAuthUserData(
             username,
