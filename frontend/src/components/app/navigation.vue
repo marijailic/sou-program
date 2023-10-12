@@ -4,7 +4,7 @@
             <img
                 id="profile-image"
                 class="card-img-top rounded-circle mx-sm-auto mx-2"
-                :src="imageSrc || '@/assets/sp-icon.png'"
+                :src="userImageSrc || require('@/assets/sp-icon.png')"
             />
             <div class="card-body px-0">
                 <h5 class="card-title mt-1">
@@ -13,16 +13,34 @@
                     >
                 </h5>
                 <nav class="nav flex-column">
-                    <router-link to="/newsfeed" class="nav-link" data-text="Naslovnica" @click="this.toggleNav"
+                    <router-link
+                        to="/newsfeed"
+                        class="nav-link"
+                        data-text="Naslovnica"
+                        @click="toggleNav"
                         ><i class="material-icons">article</i></router-link
                     >
-                    <router-link to="/search" class="nav-link" data-text="Stalkaonica" @click="this.toggleNav"
+                    <router-link
+                        to="/search"
+                        class="nav-link"
+                        data-text="Stalkaonica"
+                        @click="toggleNav"
                         ><i class="material-icons">people</i></router-link
                     >
-                    <router-link to="/gallery" class="nav-link" data-text="Galerija" @click="this.toggleNav"
-                        ><i class="material-icons">photo_library</i></router-link
+                    <router-link
+                        to="/gallery"
+                        class="nav-link"
+                        data-text="Galerija"
+                        @click="toggleNav"
+                        ><i class="material-icons"
+                            >photo_library</i
+                        ></router-link
                     >
-                    <router-link to="/competitions" class="nav-link" data-text="Natjecanja" @click="this.toggleNav"
+                    <router-link
+                        to="/competitions"
+                        class="nav-link"
+                        data-text="Natjecanja"
+                        @click="toggleNav"
                         ><i class="material-icons">emoji_events</i></router-link
                     >
                 </nav>
@@ -42,41 +60,43 @@
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import { displayImage } from "@/services/displayImageService";
+import { useStoreUser } from '@/stores/user.store'
+import imageService from '@/services/imageService'
 
 const props = {
     toggleNav: {
         type: Function,
         required: true,
-    }
+    },
 }
 
 export default {
-    name: "navigation",
+    name: 'navigation',
     props,
     data: () => ({
-        username: "",
-        imageSrc: "",
+        username: '',
+        userImageSrc: '',
         storeUser: useStoreUser(),
     }),
     async created() {
-        await this.storeUser.fetchUser();
-        const currentUser = await this.storeUser.getCurrentUser();
+        await this.storeUser.fetchUser()
+        const currentUser = await this.storeUser.getCurrentUser()
 
-        this.username = currentUser.username;
-        this.imageSrc = await displayImage(currentUser.profile_picture_key);
+        this.username = currentUser.username
+        this.userImageSrc = await imageService.getImageSrc(
+            currentUser.profile_picture_key
+        )
     },
     methods: {
         logout() {
-            localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("username");
-            localStorage.removeItem("type");
-            window.location.href = "/login";
-        }
-    }
-};
+            localStorage.removeItem('token')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('username')
+            localStorage.removeItem('type')
+            window.location.href = '/login'
+        },
+    },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -90,7 +110,6 @@ export default {
     display: block;
     position: fixed;
     z-index: 1;
-
     &.slide-in {
         transform: translateX(0);
     }
@@ -108,7 +127,7 @@ export default {
     padding: 1rem 0;
 }
 .custom-link {
-    color: rgb(33, 37, 41);
+    color: #212529;
 }
 .nav {
     margin-top: 3rem;
@@ -116,7 +135,7 @@ export default {
 .nav-link {
     display: flex;
     align-items: center;
-    color: rgb(33, 37, 41);
+    color: #212529;
     padding: 0;
     height: 3rem;
 
@@ -135,7 +154,7 @@ export default {
     margin-right: 0.5rem;
 }
 .info-btn {
-    color: rgb(33, 37, 41);
+    color: #212529;
 }
 .btn {
     width: 100%;

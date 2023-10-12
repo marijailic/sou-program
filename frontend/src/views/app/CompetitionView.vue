@@ -41,26 +41,26 @@
 </template>
 
 <script>
-import { useStoreCompetition } from "@/stores/competition.store";
-import eventBus from "@/eventBus";
+import { useStoreCompetition } from '@/stores/competition.store'
+import eventBus from '@/eventBus'
 
-import showCompetition from "@/components/app/showCompetition.vue";
-import addCompetition from "@/components/app/addCompetition.vue";
-import editCompetition from "@/components/app/editCompetition.vue";
+import showCompetition from '@/components/app/showCompetition.vue'
+import addCompetition from '@/components/app/addCompetition.vue'
+import editCompetition from '@/components/app/editCompetition.vue'
 
-import userTypeEnum from "@/enums/userTypeEnum";
+import userTypeEnum from '@/enums/userTypeEnum'
 
 export default {
-    name: "CompetitionView",
+    name: 'CompetitionView',
     data() {
         return {
             storeCompetition: useStoreCompetition(),
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
             competitions: [],
             addCompetition: false,
             editCompetition: false,
             editCompetitionID: null,
-        };
+        }
     },
     components: {
         showCompetition,
@@ -68,33 +68,33 @@ export default {
         editCompetition,
     },
     async created() {
-        this.competitions = await this.storeCompetition.fetchCompetition();
-        this.openEditCompetition();
+        this.competitions = await this.storeCompetition.fetchCompetition()
+        this.openEditCompetition()
     },
     methods: {
         closeAdd() {
-            this.addCompetition = false;
+            this.addCompetition = false
         },
         closeEdit() {
-            this.editCompetition = false;
+            this.editCompetition = false
         },
         rightColActiveCheck() {
-            this.addCompetition = false;
-            this.editCompetition = false;
+            this.addCompetition = false
+            this.editCompetition = false
         },
         openAddCompetition() {
-            this.rightColActiveCheck();
-            this.addCompetition = true;
+            this.rightColActiveCheck()
+            this.addCompetition = true
         },
         openEditCompetition() {
-            eventBus.on("editCompetition", (editObj) => {
-                this.rightColActiveCheck();
-                this.editCompetitionID = editObj.editCompetitionID;
+            eventBus.on('editCompetition', (editObj) => {
+                this.rightColActiveCheck()
+                this.editCompetitionID = editObj.editCompetitionID
                 this.$nextTick(() => {
-                    this.editCompetition = editObj.editCompetition;
-                });
-            });
+                    this.editCompetition = editObj.editCompetition
+                })
+            })
         },
     },
-};
+}
 </script>

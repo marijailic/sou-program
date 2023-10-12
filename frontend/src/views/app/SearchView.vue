@@ -4,9 +4,9 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h1>Stalkaonica</h1>
                 <button
-                    v-if="isDemos"
+                    v-if="storeUser.isCurrentUserDemos"
                     class="btn btn-primary"
-                    @click="openAddUser"
+                    @click="openAddingUser"
                 >
                     Dodaj korisnika
                 </button>
@@ -14,11 +14,17 @@
         </div>
         <div class="row">
             <div class="col">
-                <search-user />
+                <add-user
+                    :closeAddingUser="closeAddingUser"
+                    v-if="storeUser.isCurrentUserDemos && isAddingUser"
+                />
+                <search-user :filterUsers="filterUsers" />
                 <show-user
                     v-for="user in users"
                     :key="user.id"
-                    :userData="user"
+                    :user="user"
+                    :getEditingUserID="getEditingUserID"
+                    :setEditingUserID="setEditingUserID"
                 />
                 <div
                     class="d-flex justify-content-center"
@@ -27,87 +33,50 @@
                     <h1 class="mt-5">Nema korisnika...</h1>
                 </div>
             </div>
-            <div class="col" v-if="addUser || editUser">
-                <add-user :closeAdd="closeAdd" v-if="addUser" />
-                <edit-user
-                    :userID="editUserID"
-                    :closeEdit="closeEdit"
-                    v-if="editUser"
-                />
-            </div>
         </div>
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import eventBus from "@/eventBus";
+import { useStoreUser } from '@/stores/user.store'
 
-import searchUser from "@/components/app/searchUser.vue";
-import showUser from "@/components/app/showUser.vue";
-import addUser from "@/components/app/addUser.vue";
-import editUser from "@/components/app/editUser.vue";
-
-import userTypeEnum from "@/enums/userTypeEnum";
+import searchUser from '@/components/app/searchUser.vue'
+import showUser from '@/components/app/showUser.vue'
+import addUser from '@/components/app/addUser.vue'
 
 export default {
-    name: "SearchView",
-    data() {
-        return {
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
-            users: [],
-            searchText: "",
-            storeUser: useStoreUser(),
-            addUser: false,
-            editUser: false,
-            editUserID: null,
-        };
-    },
+    name: 'SearchView',
     components: {
         searchUser,
         showUser,
         addUser,
-        editUser,
     },
-    created() {
-        this.getUsers();
-        this.filterUsers();
-        this.openEditUser();
+    data: () => ({
+        users: [],
+        isAddingUser: false,
+        activeEditingUserID: 0,
+        storeUser: useStoreUser(),
+    }),
+    async created() {
+        await this.storeUser.fetchUser()
+        this.users = this.storeUser.getUsersExceptCurrent()
     },
     methods: {
-        closeAdd() {
-            this.addUser = false;
+        openAddingUser() {
+            this.isAddingUser = true
         },
-        closeEdit() {
-            this.editUser = false;
+        closeAddingUser() {
+            this.isAddingUser = false
         },
-        async getUsers() {
-            await this.storeUser.fetchUser();
-            this.users = this.storeUser.getUsersExceptCurrent();
+        filterUsers(searchText) {
+            this.users = this.storeUser.getFilteredUsers(searchText)
         },
-        filterUsers() {
-            eventBus.on("searchText", (searchText) => {
-                this.searchText = searchText;
-                this.users = this.storeUser.getFilteredUsers(searchText);
-            });
+        getEditingUserID() {
+            return this.activeEditingUserID
         },
-        rightColActiveCheck() {
-            this.addUser = false;
-            this.editUser = false;
-        },
-        openAddUser() {
-            this.rightColActiveCheck();
-            this.addUser = true;
-        },
-        openEditUser() {
-            eventBus.on("editUser", (editObj) => {
-                this.rightColActiveCheck();
-                this.editUserID = editObj.editUserID;
-                this.$nextTick(() => {
-                    this.editUser = editObj.editUser;
-                });
-            });
+        setEditingUserID(editingUserID) {
+            this.activeEditingUserID = editingUserID
         },
     },
-};
+}
 </script>

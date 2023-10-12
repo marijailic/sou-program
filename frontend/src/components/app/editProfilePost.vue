@@ -2,21 +2,23 @@
     <div>
         <form @submit.prevent="updateProfilePost">
             <div class="card">
-                <div class="row">
-                    <div class="card-body text-start">
-                        <textarea
-                            v-model="postText"
-                            class="form-control"
-                            rows="3"
-                            required
-                        ></textarea>
-                    </div>
+                <div class="card-body text-start">
+                    <textarea
+                        v-model.trim="profilePost.text"
+                        class="form-control"
+                        rows="3"
+                        required
+                    ></textarea>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeEdit">
+                    <a class="escape-btn btn btn-primary" @click="closeEditing">
                         Odustani
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="!profilePost.text"
+                    >
                         Spremi promjenu
                     </button>
                 </div>
@@ -26,59 +28,47 @@
 </template>
 
 <script>
-import { useStoreProfilePost } from "@/stores/profilepost.store";
+import { useStoreProfilePost } from '@/stores/profilepost.store'
+
+const props = {
+    profilePost: {
+        type: Object,
+        required: true,
+    },
+    closeEditing: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "editProfilePost",
-    props: {
-        postData: {
-            type: Object,
-            required: true,
-        },
-        closeEdit: {
-            type: Function,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            storeProfilePost: useStoreProfilePost(),
-            postText: this.postData.text,
-        };
-    },
+    name: 'editProfilePost',
+    props,
+    data: () => ({
+        storeProfilePost: useStoreProfilePost(),
+    }),
     methods: {
-        closeEdit() {
-            this.closeEdit();
-        },
         async updateProfilePost() {
-            const updateData = {
-                id: this.postData.id,
-                text: this.postText
-            };
-
-            if (this.postText.trim() !== "") {
-                await this.storeProfilePost.updateProfilePost(updateData);
-            }
-        }
+            await this.storeProfilePost.updateProfilePost(this.profilePost)
+        },
     },
-};
+}
 </script>
 
 <style scoped>
+.card,
+.card-footer {
+    background-color: #eaeaea;
+}
 .card {
     border: none;
     padding: 0;
-    background-color: #eaeaea;
-    margin-top: 1vw;
-}
-.row {
-    padding: 1vw;
+    margin-top: 1em;
 }
 .card-footer {
-    padding: 0.7vw;
-    background-color: #eaeaea;
+    padding: 0.7em;
 }
 .escape-btn {
-    margin-right: 1vw;
+    margin-right: 1em;
 }
 </style>

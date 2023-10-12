@@ -1,54 +1,35 @@
 <template>
     <div>
         <div class="card">
-            <div class="row">
-                <div
-                    class="first-col card-body col-md-1 d-flex justify-content-center"
-                >
-                    <img
-                        v-if="profilePictureKey || userProfilePictureKey"
-                        class="profile-pic rounded-circle"
-                        :src="
-                            parentComponent === 'MyProfileView'
-                                ? profilePictureKey
-                                : userProfilePictureKey
-                        "
-                    />
-                    <img
-                        v-else
-                        class="profile-pic rounded-circle"
-                        src="@/assets/sp-icon.png"
-                    />
-                </div>
-                <div
-                    class="second-col col-md-11 d-flex align-items-center text-start"
-                >
-                    <div class="card-right card-body text-start">
-                        <h5 class="card-title d-inline m-0">
-                            {{ userData.name }}
-                            {{ userData.surname }}
-                        </h5>
+            <div class="d-flex justify-content-center gap-3">
+                <img
+                    class="profile-pic rounded-circle"
+                    :src="user.imageSrc || require('@/assets/sp-icon.png')"
+                />
+                <div class="flex-grow-1 d-flex align-items-center text-start">
+                    <div class="text-start">
+                        <h6 class="d-inline m-0">
+                            {{ userFullName }}
+                        </h6>
                         <span class="text-muted">
-                            • {{ formatDate(postData.timestamp) }} ago
+                            •
+                            {{ profilePost.posted_at }} ago
                         </span>
-                        <p class="card-text mt-2">{{ postData.text }}</p>
+                        <p class="card-text mt-2">{{ profilePost.text }}</p>
                     </div>
                 </div>
             </div>
 
-            <div
-                class="card-footer text-end"
-                v-if="parentComponent === 'MyProfileView'"
-            >
+            <div class="card-footer text-end" v-if="canEdit">
                 <button
-                    @click="deleteProfilePost(postData.id)"
-                    class="delete-btn btn btn-primary"
+                    @click="deleteProfilePost(profilePost.id)"
+                    class="btn btn-primary me-2"
                 >
                     Izbriši
                 </button>
                 <button
-                    class="edit-btn btn btn-primary"
-                    @click="openEdit(postData.id)"
+                    class="btn btn-primary"
+                    @click="openEditing(profilePost.id)"
                 >
                     Uredi
                 </button>
@@ -56,93 +37,92 @@
         </div>
 
         <edit-profile-post
-            :postData="postData"
-            :closeEdit="closeEdit"
-            v-if="editText"
+            :profilePost="profilePost"
+            :closeEditing="closeEditing"
+            v-if="canEdit && isEditingActive"
         />
     </div>
 </template>
 
 <script>
-import { useStoreProfilePost } from "@/stores/profilepost.store";
+import { useStoreProfilePost } from '@/stores/profilepost.store'
 
-import eventBus from "@/eventBus";
-import { formatDistanceToNow } from "date-fns";
+import editProfilePost from './editProfilePost.vue'
 
-import editProfilePost from "./editProfilePost.vue";
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+    profilePost: {
+        type: Object,
+        required: true,
+    },
+    setEditingProfilePostID: {
+        type: Function,
+        required: false,
+        default: null,
+    },
+    getEditingProfilePostID: {
+        type: Function,
+        required: false,
+        default: null,
+    },
+}
 
 export default {
-    name: "showProfilePost",
+    name: 'showProfilePost',
+    props,
     components: {
         editProfilePost,
     },
-    data() {
-        return {
-            storeProfilePost: useStoreProfilePost(),
-            editText: false,
-        };
+    data: () => ({
+        storeProfilePost: useStoreProfilePost(),
+        isEditingActive: false,
+        canEdit: false,
+    }),
+    async created() {
+        this.canEdit =
+            this.setEditingProfilePostID && this.getEditingProfilePostID
     },
-    props: {
-        userData: {
-            type: Object,
-            required: true,
+    computed: {
+        isEditingActive() {
+            return (
+                this.getEditingProfilePostID !== null &&
+                this.profilePost.id === this.getEditingProfilePostID()
+            )
         },
-        postData: {
-            type: Object,
-            required: true,
-        },
-        parentComponent: {
-            type: String,
-            required: true,
-        },
-        profilePictureKey: {
-            type: String,
-            required: false,
-        },
-        userProfilePictureKey: {
-            type: String,
-            required: false,
+        userFullName() {
+            return `${this.user.name} ${this.user.surname}`
         },
     },
     methods: {
-        closeEdit() {
-            this.editText = false;
-        },
-        formatDate(strDate) {
-            const objDate = new Date(strDate);
-            return formatDistanceToNow(objDate);
-        },
-        async deleteProfilePost(idPost) {
+        async deleteProfilePost(profilePostID) {
             const isConfirmed = window.confirm(
-                "Jeste li sigurni da želite izbrisati objavu?"
-            );
+                'Jeste li sigurni da želite izbrisati objavu?'
+            )
 
             if (isConfirmed) {
-                await this.storeProfilePost.deleteProfilePost(idPost);
+                await this.storeProfilePost.deleteProfilePost(profilePostID)
             }
         },
-        openedEditCheck() {
-            eventBus.on("closeOpenedPostEdit", (editText) => {
-                this.editText = editText;
-            });
+        openEditing(editingProfilePostID) {
+            this.setEditingProfilePostID(editingProfilePostID)
         },
-        openEdit(editingPostID) {
-            this.openedEditCheck();
-            eventBus.emit("editingPostID", editingPostID);
-            this.editText = true;
+        closeEditing() {
+            this.setEditingProfilePostID(0)
         },
     },
-};
+}
 </script>
 
 <style scoped>
 .card {
     border: none;
-    padding: 0;
-    margin-top: 1vw;
+    margin-top: 1em;
 }
 .row {
-    padding: 1vw;
+    padding: 1em;
 }
 .second-col {
     padding-left: 0;
@@ -151,14 +131,11 @@ export default {
     padding-left: 0;
 }
 .card-footer {
-    padding: 0.7vw;
+    padding: 0.7em;
     background-color: white;
 }
 .profile-pic {
     width: 50px;
     height: 50px;
-}
-.delete-btn {
-    margin-right: 1vw;
 }
 </style>

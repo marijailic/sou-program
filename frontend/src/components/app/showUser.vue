@@ -4,85 +4,103 @@
             <div class="d-flex align-items-center">
                 <img
                     class="user-profile-image rounded-circle"
-                    :src="profilePictureKey || '@/assets/sp-icon.png'"
+                    :src="userImageSrc"
                 />
                 <div class="flex-grow-1">
                     <router-link
-                        :to="'/user-profile/' + userData.id"
+                        :to="'/user-profile/' + user.id"
                         class="user-name"
                     >
-                        {{ userData.name }} {{ userData.surname }}
+                        {{ fullName }}
                     </router-link>
-                    <div class="username text-muted">
-                        {{ userData.username }}
+                    <div class="text-muted">
+                        {{ user.username }}
                     </div>
                 </div>
-                <div
-                    v-if="isDemos"
-                    class="d-flex justify-content-end"
-                >
+                <div v-if="isDemos" class="d-flex justify-content-end">
                     <button
                         class="btn btn-primary me-2"
-                        @click="deleteUser(userData.id)"
+                        @click="deleteUser(user.id)"
                     >
                         Izbriši
                     </button>
                     <button
                         class="edit-btn btn btn-primary"
-                        @click="openEditUser"
+                        @click="openEditing(user.id)"
                     >
                         Uredi
                     </button>
                 </div>
             </div>
         </div>
+        <edit-user
+            v-if="isDemos && isEditingActive && user"
+            :user="user"
+            :closeEditing="closeEditing"
+        />
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreUser } from '@/stores/user.store'
+import userTypeEnum from '@/enums/userTypeEnum'
 
-import { displayImage } from "@/services/displayImageService";
-import eventBus from "@/eventBus";
-import userTypeEnum from "@/enums/userTypeEnum";
+import editUser from '@/components/app/editUser.vue'
+
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+    getEditingUserID: {
+        type: Function,
+        required: true,
+    },
+    setEditingUserID: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "showUser",
-    data() {
-        return {
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
-            profilePictureKey: "",
-            storeUser: useStoreUser(),
-        };
-    },
-    props: {
-        userData: {
-            type: Object,
-            required: true,
-        },
-    },
+    name: 'showUser',
+    props,
+    components: { editUser },
+    data: () => ({
+        isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
+        userImageSrc: require('@/assets/sp-icon.png'),
+        storeUser: useStoreUser(),
+        isEditingUser: false,
+    }),
     async created() {
-        this.profilePictureKey = await displayImage(this.userData.profile_picture_key);
+        this.userImageSrc = await this.user.getProfilePictureSrc()
+    },
+    computed: {
+        fullName() {
+            return `${this.user.name} ${this.user.surname}`
+        },
+        isEditingActive() {
+            return this.user.id === this.getEditingUserID()
+        },
     },
     methods: {
-        async deleteUser(idUser) {
+        async deleteUser(userID) {
             const isConfirmed = window.confirm(
-                "Jeste li sigurni da želite izbrisati korisnika?"
-            );
+                'Jeste li sigurni da želite izbrisati korisnika?'
+            )
 
             if (isConfirmed) {
-                await this.storeUser.deleteUser(idUser);
+                await this.storeUser.deleteUser(userID)
             }
         },
-        openEditUser() {
-            const editObj = {
-                editUser: true,
-                editUserID: this.userData.id,
-            };
-            eventBus.emit("editUser", editObj);
-        }
+        openEditing(editingUserID) {
+            this.setEditingUserID(editingUserID)
+        },
+        closeEditing() {
+            this.setEditingUserID(0)
+        },
     },
-};
+}
 </script>
 
 <style scoped>
@@ -97,11 +115,6 @@ export default {
     margin-right: 1rem;
 }
 .user-name {
-    text-align: left;
-    color: rgb(33, 37, 41);
-}
-.username {
-    text-align: left;
-    font-size: 1rem;
+    color: #212529;
 }
 </style>

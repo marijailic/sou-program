@@ -1,35 +1,23 @@
 <template>
-    <div class="card border-0">
-        <div class="row">
-            <div
-                class="col-md-3 d-flex justify-content-center align-items-center"
-            >
-                <img
-                    v-if="profilePictureKey || userProfilePictureKey"
-                    class="profile-pic rounded-circle"
-                    :src="
-                        parentComponent === 'MyProfileView'
-                            ? profilePictureKey
-                            : userProfilePictureKey
-                    "
-                />
-                <img
-                    v-else
-                    class="profile-pic rounded-circle"
-                    src="@/assets/sp-icon.png"
-                />
-            </div>
-            <div class="ps-0 col-md-9 d-flex align-items-center">
-                <div class="ps-0 text-start">
+    <div class="card p-3 border-0">
+        <div
+            class="d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3"
+        >
+            <img
+                class="profile-pic rounded-circle"
+                :src="user.imageSrc || require('@/assets/sp-icon.png')"
+            />
+            <div class="flex-grow-1 d-flex align-items-center">
+                <div class="text-start">
                     <h1 class="card-title">
-                        {{ userData.name }} {{ userData.surname }}
+                        {{ fullName }}
                     </h1>
                     <p class="card-text">
-                        {{ userData.username }} -
-                        {{ userData.type }}
+                        {{ user.username }} -
+                        {{ user.type }}
                     </p>
-                    <p class="card-text">{{ userData.e_mail }}</p>
-                    <p class="card-text">{{ userData.bio }}</p>
+                    <p class="card-text">{{ user.email }}</p>
+                    <p class="card-text">{{ user.bio }}</p>
                 </div>
             </div>
         </div>
@@ -37,35 +25,27 @@
 </template>
 
 <script>
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+}
+
 export default {
-    name: "showProfile",
-    props: {
-        userData: {
-            type: Object,
-            required: true,
-        },
-        parentComponent: {
-            type: String,
-            required: true,
-        },
-        profilePictureKey: {
-            type: String,
-            required: false,
-        },
-        userProfilePictureKey: {
-            type: String,
-            required: false,
+    name: 'showProfile',
+    props,
+    computed: {
+        fullName() {
+            return `${this.user.name} ${this.user.surname}`
         },
     },
-};
+}
 </script>
 
 <style scoped>
-.card {
-    padding: 1vw;
-}
 .profile-pic {
-    width: 10vw;
-    height: 10vw;
+    width: 10rem;
+    height: 10rem;
 }
 </style>

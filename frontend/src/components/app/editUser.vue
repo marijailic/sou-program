@@ -1,43 +1,43 @@
 <template>
     <div>
-        <form @submit.prevent="editUser">
-            <div class="card border-0 p-0 mt-3">
+        <form @submit.prevent="updateUser">
+            <div class="card p-0 border-0 mt-3">
                 <div class="row">
-                    <h3 class="headline">Uredi korisnika</h3>
-                    <div class="form-group text-start">
+                    <h3>Uredi korisnika</h3>
+                    <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="name">Ime</label>
                         <input
-                            v-model="newUserName"
+                            v-model.trim="user.name"
                             type="text"
                             class="form-control"
                             id="name"
                             required
                         />
                     </div>
-                    <div class="form-group text-start">
+                    <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="surname">Prezime</label>
                         <input
-                            v-model="newUserSurname"
+                            v-model.trim="user.surname"
                             type="text"
                             class="form-control"
                             id="surname"
                             required
                         />
                     </div>
-                    <div class="form-group text-start">
-                        <label for="e_mail">E-mail</label>
+                    <div class="form-group col-lg-3 col-sm-6 text-start">
+                        <label for="email">E-mail</label>
                         <input
-                            v-model="newUserEmail"
+                            v-model.trim="user.email"
                             type="email"
                             class="form-control"
-                            id="e_mail"
+                            id="email"
                             required
                         />
                     </div>
                     <!-- <div class="form-group text-start">
                         <label for="username">Korisničko ime</label>
                         <input
-                            v-model="newUserUsername"
+                            v-model.trim="user.username"
                             type="text"
                             class="form-control"
                             id="username"
@@ -47,7 +47,7 @@
                     <!-- <div class="form-group text-start">
                         <label for="password">Lozinka</label>
                         <input
-                            v-model="newUserPassword"
+                            v-model.trim="user.password"
                             type="password"
                             class="form-control"
                             id="password"
@@ -64,18 +64,18 @@
                             @change="handleProfilePictureChange"
                         />
                     </div> -->
-                    <div class="form-group text-start">
+                    <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="bio">Opis</label>
                         <textarea
-                            v-model="newUserBio"
+                            v-model.trim="user.bio"
                             class="form-control"
                             id="bio"
                         ></textarea>
                     </div>
-                    <div class="form-group text-start">
+                    <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="type">Tip korisnika</label>
                         <select
-                            v-model="newUserType"
+                            v-model="user.type"
                             class="form-control"
                             id="type"
                         >
@@ -85,10 +85,21 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="closeEdit"
+                    <a class="btn btn-primary me-2" @click="closeEditing"
                         >Odustani</a
                     >
-                    <button type="submit" class="btn btn-primary">Uredi</button>
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="
+                            !user.name ||
+                            !user.surname ||
+                            !user.email ||
+                            !user.type
+                        "
+                    >
+                        Spremi promjenu
+                    </button>
                 </div>
             </div>
         </form>
@@ -96,72 +107,41 @@
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreUser } from '@/stores/user.store'
+
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+    closeEditing: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "editUser",
-    props: {
-        userID: {
-            type: Number,
-            required: true,
-        },
-        closeEdit: {
-            type: Function,
-            required: true,
-        },
-    },
-    data() {
-        const storeUser = useStoreUser();
-        storeUser.fetchUser();
-
-        const userData = storeUser.getUserById(this.userID);
-
-        return {
-            storeUser: storeUser,
-            newUserName: userData.name,
-            newUserSurname: userData.surname,
-            newUserEmail: userData.e_mail,
-            // newUserUsername: userData.username,
-            // newUserPassword: userData.password,
-            newUserBio: userData.bio,
-            newUserType: userData.type,
-        };
-    },
+    name: 'editUser',
+    props,
+    data: () => ({
+        storeUser: useStoreUser(),
+    }),
     methods: {
-        closeEdit() {
-            this.closeEdit();
+        async updateUser() {
+            await this.storeUser.updateUser(this.user)
         },
-        async editUser() {
-            const updateData = {
-                id: this.userID,
-                name: this.newUserName,
-                surname: this.newUserSurname,
-                email: this.newUserEmail,
-                // username: this.newUserUsername,
-                // password: this.newUserPassword,
-                bio: this.newUserBio,
-                type: this.newUserType,
-            };
-            await this.storeUser.updateUser(updateData);
-        }
     },
-};
+}
 </script>
 
 <style scoped>
 .card {
-    background-color: #eaeaea;
     min-width: 15rem;
 }
 .row {
     padding: 1em;
 }
-.headline {
-    margin-bottom: 1em;
-}
-.form-group {
-    margin-bottom: .5em;
-}
+.card,
 .card-footer {
     background-color: #eaeaea;
 }

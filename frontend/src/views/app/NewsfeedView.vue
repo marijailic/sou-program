@@ -5,9 +5,8 @@
         </div>
 
         <add-announcement
-            v-if="isDemos"
-            :userData="currentUserData"
-            :profilePictureKey="profilePictureKey"
+            v-if="storeUser.isCurrentUserDemos && currentUser"
+            :userImageSrc="userImageSrc"
         />
 
         <div
@@ -20,58 +19,49 @@
         <show-announcement
             v-for="announcement in announcements"
             :key="announcement.id"
-            :announcementData="announcement"
+            :announcement="announcement"
+            :getEditingAnnouncementID="getEditingAnnouncementID"
             :setEditingAnnouncementID="setEditingAnnouncementID"
         />
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import { useStoreAnnouncement } from "@/stores/announcement.store";
+import { useStoreUser } from '@/stores/user.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store'
 
-import { displayImage } from "@/services/displayImageService";
-import eventBus from "@/eventBus";
-
-import addAnnouncement from "@/components/app/addAnnouncement.vue";
-import showAnnouncement from "@/components/app/showAnnouncement.vue";
-
-import userTypeEnum from "@/enums/userTypeEnum";
+import addAnnouncement from '@/components/app/addAnnouncement.vue'
+import showAnnouncement from '@/components/app/showAnnouncement.vue'
 
 export default {
-    name: "NewsfeedView",
-    data() {
-        return {
-            currentUserData: {},
-            announcements: [],
-            editingAnnouncementID: null,
-            profilePictureKey: "",
-            storeUser: useStoreUser(),
-            storeAnnouncement: useStoreAnnouncement(),
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
-        };
-    },
+    name: 'NewsfeedView',
     components: {
         addAnnouncement,
         showAnnouncement,
     },
+    data: () => ({
+        currentUser: {},
+        userImageSrc: '',
+        announcements: [],
+        activeEditingAnnouncementID: 0,
+        storeUser: useStoreUser(),
+        storeAnnouncement: useStoreAnnouncement(),
+    }),
     async created() {
-        await this.storeUser.fetchUser();
-        this.currentUserData = await this.storeUser.getCurrentUser();
-        this.announcements = await this.storeAnnouncement.fetchAnnouncement();
+        await this.storeUser.fetchUser()
+        this.currentUser = await this.storeUser.getCurrentUser()
 
-        this.profilePictureKey = await displayImage(this.currentUserData.profile_picture_key);
+        this.announcements = await this.storeAnnouncement.fetchAnnouncement()
+
+        this.userImageSrc = await this.currentUser.getProfilePictureSrc()
     },
     methods: {
+        getEditingAnnouncementID() {
+            return this.activeEditingAnnouncementID
+        },
         setEditingAnnouncementID(editingAnnouncementID) {
-            if (this.editingAnnouncementID === editingAnnouncementID) {
-               return;
-            }
-
-            const isEditActive = false;
-            eventBus.emit("closeOpenedAnnouncementEdit", isEditActive);
-            this.editingAnnouncementID = editingAnnouncementID;
-        }
+            this.activeEditingAnnouncementID = editingAnnouncementID
+        },
     },
-};
+}
 </script>

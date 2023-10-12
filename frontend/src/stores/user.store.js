@@ -1,61 +1,36 @@
 import { defineStore } from "pinia";
 import backendApiService from "@/services/backendApiService";
 import userTypeEnum from "@/enums/userTypeEnum";
+import imageService from "@/services/imageService";
 
 export const useStoreUser = defineStore("storeUser", {
     state: () => ({
-        user: [],
+        users: [],
     }),
     getters: {
-        getUsersExceptCurrent: (state) => () => {
-            const currentUser = localStorage.getItem("username");
-            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
-
-            return isDemos
-                ? state.user
-                : state.user.filter((user) => {
-                    return (
-                        user.username.toLowerCase() !==
-                        currentUser.toLowerCase()
-                    );
-                });
-        },
+        currentUserUsername: () => localStorage.getItem("username"),
+        isCurrentUserDemos: () => userTypeEnum.DEMOS === localStorage.getItem("type"),
+        getUsersExceptCurrent: (state) => () => state.users.filter((user) =>
+            state.isCurrentUserDemos ||
+            user.username.toLowerCase() !== state.currentUserUsername.toLowerCase()
+        ),
         getFilteredUsers: (state) => (searchText) => {
-            const currentUser = localStorage.getItem("username");
-            const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
+            const searchLowerCase = searchText.toLowerCase();
 
-            const filteredUsers = state.user.filter((user) => {
-                const fullName = `${user.name} ${user.surname}`;
-                const reversedFullName = `${user.surname} ${user.name}`;
+            return state.users.filter((user) => {
+                const fullName = `${user.name} ${user.surname}`.toLowerCase();
+                const reversedFullName = `${user.surname} ${user.name}`.toLowerCase();
 
-                const userFullName = fullName.toLowerCase();
-                const reversedUserFullName = reversedFullName.toLowerCase();
-                const searchLowerCase = searchText.toLowerCase();
-
-                const userFound =
-                    userFullName.includes(searchLowerCase) ||
-                    reversedUserFullName.includes(searchLowerCase);
-
-                const isSelf =
-                    user.username.toLowerCase() === currentUser.toLowerCase();
-                return userFound && (!isSelf || isDemos);
+                return (
+                    state.isCurrentUserDemos &&
+                    (fullName.includes(searchLowerCase) || reversedFullName.includes(searchLowerCase))
+                );
             });
-            return filteredUsers;
         },
-        getCurrentUser: (state) => () => {
-            const username = localStorage.getItem("username");
-
-            const currentUser = state.user.find((user) => {
-                return user.username.toLowerCase() === username.toLowerCase();
-            });
-            return currentUser;
-        },
-        getUserById: (state) => (userID) => {
-            const user = state.user.find((user) => {
-                return user.id === Number(userID);
-            });
-            return user;
-        },
+        getCurrentUser: (state) => () => state.users.find((user) =>
+            user.username.toLowerCase() === state.currentUserUsername.toLowerCase()
+        ),
+        getUserByID: (state) => (userID) => state.users.find((user) => user.id === Number(userID)),
     },
     actions: {
         async fetchUser() {
@@ -64,38 +39,45 @@ export const useStoreUser = defineStore("storeUser", {
             });
 
             if (!res.ok) {
-                //window.location.href = "/error";
+                window.location.href = "/error";
                 return;
             }
 
             const resObj = await res.json();
-            this.user = resObj.data;
+            this.users = await Promise.all(
+                resObj.data.map(async (user) => {
+                    return {
+                        ...user,
+                        getProfilePictureSrc: async () => await imageService.getImageSrc(user.profile_picture_key),
+                    }
+                })
+            );
 
-            return resObj.data;
+            return this.users;
         },
-        async deleteUser(idUser) {
+        async deleteUser(userID) {
             const res = await backendApiService.delete({
                 url: "/delete-user",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: idUser }),
+                body: JSON.stringify({ id: userID }),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async createUser(newUserData) {
+        async createUser(user) {
             const res = await backendApiService.post({
                 url: "/create-user",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(newUserData),
+                body: JSON.stringify(user),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async updateUser(updateData) {
+        async updateUser(user) {
             const res = await backendApiService.post({
                 url: "/update-user",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updateData),
+                body: JSON.stringify(user),
             });
 
             window.location.href = res.ok ? "/success" : "/error";

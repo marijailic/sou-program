@@ -1,58 +1,50 @@
 <template>
     <div>
-        <!-- <show-profile
-            :parentComponent="parentComponent"
-            :userData="user"
-            :userImageSrc="userImageSrc"
-        /> -->
-
+        <show-profile :user="user" />
         <div
             class="d-flex justify-content-center"
-            v-if="userPosts.length === 0"
+            v-if="profilePosts.length === 0"
         >
             <h1 class="mt-5">Nema objava...</h1>
         </div>
-<!-- 
+
         <show-profile-post
-            :parentComponent="parentComponent"
-            :userData="user"
-            :userImageSrc="userImageSrc"
-            v-for="post in userPosts"
-            :key="post.id"
-            :postData="post"
-        /> -->
+            v-for="profilePost in profilePosts"
+            :key="profilePost.id"
+            :user="user"
+            :profilePost="profilePost"
+        />
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import { useStoreProfilePost } from "@/stores/profilepost.store";
+import { useStoreUser } from '@/stores/user.store'
+import { useStoreProfilePost } from '@/stores/profilepost.store'
 
-import { displayImage } from "@/services/displayImageService";
-import showProfile from "@/components/app/showProfile.vue";
-import showProfilePost from "@/components/app/showProfilePost.vue";
+import showProfile from '@/components/app/showProfile.vue'
+import showProfilePost from '@/components/app/showProfilePost.vue'
 
 export default {
-    name: "UserProfileView",
+    name: 'UserProfileView',
     components: { showProfile, showProfilePost },
-    data() {
-        return {
-            storeUser: useStoreUser(),
-            storeProfilePost: useStoreProfilePost(),
-            user: {},
-            userPosts: [],
-            parentComponent: "UserProfileView",
-            userImageSrc: "",
-        };
-    },
+    data: () => ({
+        user: {},
+        profilePosts: [],
+        storeProfilePost: useStoreProfilePost(),
+    }),
     async created() {
-        const userID = this.$route.params.id;
+        const storeUser = useStoreUser()
+        const userID = this.$route.params.id
 
-        await this.storeUser.fetchUser();
-        this.user = await this.storeUser.getUserById(userID);
-        this.userPosts = await this.storeProfilePost.fetchProfilePost(userID);
-        
-        this.userImageSrc = await displayImage(this.user.profile_picture_key);
-    }
-};
+        await storeUser.fetchUser()
+
+        this.user = await storeUser.getUserByID(userID)
+
+        this.user.profilePosts = await this.storeProfilePost.fetchProfilePost(
+            userID
+        )
+
+        this.user.imageSrc = await this.user.getProfilePictureSrc()
+    },
+}
 </script>

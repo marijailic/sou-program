@@ -1,79 +1,90 @@
 <template>
-    <div>
-        <div class="main-container d-flex gap-3 p-3">
+    <div @click="closeNav">
+        <div class="w-full d-flex gap-3 p-3">
             <navigation
-                :class="{ 'slide-in': menuOpen }"
-                :toggleNav=toggleNav
+                :class="{ 'slide-in': isNavOpened }"
+                :toggleNav="toggleNav"
+                @click.stop
             />
             <div class="w-100">
                 <router-view></router-view>
             </div>
         </div>
         <div class="menu-footer">
-            <i id="menu-button" class="material-icons p-3 text-white" @click="toggleNav">menu</i>
+            <img
+                id="menu-button"
+                class="icon p-3 rounded-circle"
+                :src="require('@/assets/sp-icon.png')"
+                @click.stop="toggleNav"
+            />
         </div>
     </div>
 </template>
 
 <script>
-import navigation from "@/components/app/navigation.vue";
-import eventBus from "@/eventBus";
+import navigation from '@/components/app/navigation.vue'
 
 export default {
-    name: "AppWrapper",
+    name: 'AppWrapper',
     components: {
         navigation,
     },
     data: () => ({
-        menuOpen: false,
+        isNavOpened: false,
     }),
-    created() {
-        eventBus.on("navClicked", this.toggleNav);
-    },
     methods: {
-        toggleNav(){
-            this.menuOpen = !this.menuOpen;
-        }
-    }
-};
+        toggleNav() {
+            this.isNavOpened = !this.isNavOpened
+        },
+        closeNav() {
+            this.isNavOpened = false
+        },
+    },
+}
 </script>
 
 <style lang="scss">
+@import '@/assets/colors.scss';
+
 html,
 body {
-    background-color: #f5f5f5;
-    .btn-primary {
-        background-color: #66ccff;
-        border: #66ccff;
-    }
-    .btn-primary:hover {
-        background-color: #66ccff;
-    }
-    .btn-primary:active {
-        background-color: #66ccff !important;
-    }
-    .btn-primary:focus {
-        background-color: #66ccff;
-    }
+    background-color: $white-color;
 }
-.card {
-    padding: 1rem;
+.btn-primary {
+    background-color: $primary-color;
+    border: $primary-color;
 }
-.main-container {
+.btn-primary:hover {
+    background-color: $primary-color;
+}
+.btn-primary:active {
+    background-color: $primary-color !important;
+}
+.btn-primary:focus {
+    background-color: $primary-color;
+}
+.w-full {
     min-height: 100vh;
 }
 .menu-footer {
+    background-color: lightgray;
     position: sticky;
     bottom: 0;
-    background-color: #66ccff;
     display: none;
     z-index: 2;
 
-    @media (max-width: 768px)  {
+    @media (max-width: 768px) {
         display: block;
     }
 }
 #menu-button {
     cursor: pointer;
+}
+.icon {
+    width: 4rem;
+    height: 4rem;
+}
+.card {
+    padding: 0.5rem;
 }
 </style>

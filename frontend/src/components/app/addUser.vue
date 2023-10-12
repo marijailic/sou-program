@@ -1,13 +1,13 @@
 <template>
     <div>
-        <form @submit.prevent="postUser">
+        <form @submit.prevent="createUser">
             <div class="card border-0 p-0 mt-3">
                 <div class="row">
                     <h3 class="headline">Dodaj korisnika</h3>
                     <div class="form-group">
                         <label for="name">Ime</label>
                         <input
-                            v-model="newUserName"
+                            v-model.trim="user.name"
                             type="text"
                             class="form-control"
                             id="name"
@@ -17,7 +17,7 @@
                     <div class="form-group">
                         <label for="surname">Prezime</label>
                         <input
-                            v-model="newUserSurname"
+                            v-model.trim="user.surname"
                             type="text"
                             class="form-control"
                             id="surname"
@@ -25,19 +25,19 @@
                         />
                     </div>
                     <div class="form-group">
-                        <label for="e_mail">E-mail</label>
+                        <label for="email">E-mail</label>
                         <input
-                            v-model="newUserEmail"
+                            v-model.trim="user.email"
                             type="email"
                             class="form-control"
-                            id="e_mail"
+                            id="email"
                             required
                         />
                     </div>
                     <div class="form-group">
                         <label for="username">Korisničko ime</label>
                         <input
-                            v-model="newUserUsername"
+                            v-model.trim="user.username"
                             type="text"
                             class="form-control"
                             id="username"
@@ -47,7 +47,7 @@
                     <div class="form-group">
                         <label for="password">Lozinka</label>
                         <input
-                            v-model="newUserPassword"
+                            v-model.trim="user.password"
                             type="password"
                             class="form-control"
                             id="password"
@@ -62,23 +62,12 @@
                             id="profilePicture"
                             class="picture-input form-control"
                             accept="image/*"
-                            required
                         />
                     </div>
-                    <!-- <div class="form-group">
-                        <label for="profilePicture">Profilna slika</label>
-                        <input
-                            type="file"
-                            class="form-control-file"
-                            id="profilePicture"
-                            accept="image/*"
-                            @change="handleProfilePictureChange"
-                        />
-                    </div> -->
                     <div class="form-group">
                         <label for="bio">Opis</label>
                         <textarea
-                            v-model="newUserBio"
+                            v-model.trim="user.bio"
                             class="form-control"
                             id="bio"
                         ></textarea>
@@ -86,9 +75,10 @@
                     <div class="form-group">
                         <label for="type">Tip korisnika</label>
                         <select
-                            v-model="newUserType"
+                            v-model="user.type"
                             class="form-control"
                             id="type"
+                            required
                         >
                             <option value="" disabled selected>
                                 Odaberi tip korisnika
@@ -99,7 +89,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="closeAdd"
+                    <a class="btn btn-primary me-2" @click="closeAddingUser"
                         >Odustani</a
                     >
                     <button type="submit" class="btn btn-primary">Dodaj</button>
@@ -110,59 +100,52 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from '@/stores/gallery.store'
+import { useStoreUser } from '@/stores/user.store'
+
+const props = {
+    closeAddingUser: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "addUser",
-    props: {
-        closeAdd: {
-            type: Function,
-            required: true,
+    name: 'addUser',
+    props,
+    data: () => ({
+        storeGallery: useStoreGallery(),
+        storeUser: useStoreUser(),
+        user: {
+            name: '',
+            surname: '',
+            email: '',
+            username: '',
+            password: '',
+            bio: '',
+            type: '',
         },
-    },
-    data() {
-        return {
-            storeGallery: useStoreGallery(),
-            storeUser: useStoreUser(),
-            newUserName: "",
-            newUserSurname: "",
-            newUserEmail: "",
-            newUserUsername: "",
-            newUserPassword: "",
-            newUserBio: "",
-            newUserType: "",
-            selectedImage: [],
-        };
-    },
+        selectedImage: null,
+    }),
     methods: {
         addFile(event) {
-            this.selectedImage.push(...event.target.files);
+            this.selectedImage = event.target.files[0]
         },
-        closeAdd() {
-            this.closeAdd();
+        async createUser() {
+            if (this.selectedImage) {
+                const profilePictureKey = (
+                    await this.storeGallery.googleUploadImages({
+                        images: [this.selectedImage],
+                        folderName: 'user',
+                    })
+                )[0]
+                this.user.profile_picture_key = profilePictureKey
+            }
+
+            await this.storeUser.createUser(this.user)
         },
-        async postUser() {
-            const profilePictureKey = await this.storeGallery.googleUploadImages({
-                images: this.selectedImage,
-                folderName: "user",
-            });
-
-            const newUserData = {
-                name: this.newUserName,
-                surname: this.newUserSurname,
-                email: this.newUserEmail,
-                username: this.newUserUsername,
-                password: this.newUserPassword,
-                profile_picture_key: profilePictureKey[0],
-                bio: this.newUserBio,
-                type: this.newUserType,
-            };
-
-            await this.storeUser.createUser(newUserData);
-        }
     },
-};
+}
 </script>
 
 <style scoped>
@@ -176,7 +159,7 @@ export default {
     margin-bottom: 1em;
 }
 .form-group {
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
 }
 .card-footer {
     background-color: white;

@@ -3,26 +3,28 @@
         <form @submit.prevent="postProfilePost">
             <div class="card">
                 <div class="d-flex">
-                        <img
-                            class="card-img-top rounded-circle mx-sm-auto mx-2"
-                            :src="profilePictureKey || '@/assets/sp-icon.png'"
-                        />
-                    <div
-                        class="align-items-center text-start"
-                    >
-                        <div class="card-right card-body text-start">
-                            <textarea
-                                v-model="postText"
-                                class="form-control"
-                                rows="3"
-                                placeholder="Napiši objavu..."
-                                required
-                            ></textarea>
-                        </div>
+                    <img
+                        class="profile-pic card-img-top mt-3 rounded-circle mx-2"
+                        :src="user.imageSrc || require('@/assets/sp-icon.png')"
+                    />
+                    <div class="align-items-center text-start flex-grow-1">
+                        <!-- <div class="card-right card-body text-start"> -->
+                        <textarea
+                            v-model.trim="profilePost.text"
+                            class="form-control"
+                            rows="3"
+                            placeholder="Napiši objavu..."
+                            required
+                        ></textarea>
+                        <!-- </div> -->
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="!profilePost.text"
+                    >
                         Objavi
                     </button>
                 </div>
@@ -31,39 +33,30 @@
     </div>
 </template>
 <script>
-import { useStoreProfilePost } from "@/stores/profilepost.store";
+import { useStoreProfilePost } from '@/stores/profilepost.store'
+
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+}
 
 export default {
-    name: "addProfilePost",
-    props: {
-        userData: {
-            type: Object,
-            required: true,
+    name: 'addProfilePost',
+    props,
+    data: () => ({
+        storeProfilePost: useStoreProfilePost(),
+        profilePost: {
+            text: '',
         },
-        profilePictureKey: {
-            type: String,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            storeProfilePost: useStoreProfilePost(),
-            postText: "",
-        };
-    },
+    }),
     methods: {
         async postProfilePost() {
-            const profilePostData = {
-                text: this.postText,
-                authorId: this.userData.id,
-            };
-
-            if (this.postText.trim() !== "") {
-                await this.storeProfilePost.createProfilePost(profilePostData);
-            }
-        }
+            await this.storeProfilePost.createProfilePost(this.profilePost)
+        },
     },
-};
+}
 </script>
 
 <style scoped>
@@ -72,7 +65,7 @@ export default {
     padding: 0;
     margin-top: 1rem;
 }
-.row {
+/* .row {
     padding: 1rem;
 }
 .second-col {
@@ -80,7 +73,7 @@ export default {
 }
 .card-right {
     padding-left: 0;
-}
+} */
 .card-footer {
     padding: 0.7rem;
     background-color: white;

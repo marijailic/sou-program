@@ -38,10 +38,10 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
+import { useStoreGallery } from '@/stores/gallery.store'
 
 export default {
-    name: "editGallery",
+    name: 'editGallery',
     props: {
         galleryID: {
             type: Number,
@@ -53,30 +53,30 @@ export default {
         },
     },
     async data() {
-        const storeGallery = useStoreGallery();
-        await storeGallery.fetchGallery();
-        const galleryData = storeGallery.getGalleryById(this.galleryID);
+        const storeGallery = useStoreGallery()
+        await storeGallery.fetchGallery()
+        const galleryData = storeGallery.getGalleryById(this.galleryID)
 
         return {
             storeGallery,
             newGalleryTitle: galleryData.title,
             newGalleryText: galleryData.text,
-        };
+        }
     },
     methods: {
         closeEdit() {
-            this.closeEdit();
+            this.closeEdit()
         },
         async editGallery() {
             const updateData = {
                 id: this.galleryID,
                 title: this.newGalleryTitle,
                 text: this.newGalleryText,
-            };
-            await this.storeGallery.updateGallery(updateData);
-        }
+            }
+            await this.storeGallery.updateGallery(updateData)
+        },
     },
-};
+}
 </script>
 
 <style scoped>

@@ -64,11 +64,11 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from '@/stores/gallery.store'
+import { useStoreUser } from '@/stores/user.store'
 
 export default {
-    name: "addGallery",
+    name: 'addGallery',
     props: {
         closeAdd: {
             type: Function,
@@ -79,29 +79,29 @@ export default {
         return {
             storeGallery: useStoreGallery(),
             storeUser: useStoreUser(),
-            currentUserUsername: localStorage.getItem("username"),
-            newGalleryTitle: "",
-            newGalleryText: "",
-            currentUserID: "",
+            currentUserUsername: localStorage.getItem('username'),
+            newGalleryTitle: '',
+            newGalleryText: '',
+            currentUserID: '',
             selectedImages: [],
-        };
+        }
     },
     mounted() {
-        this.getCurrentUser();
+        this.getCurrentUser()
     },
     methods: {
         async getCurrentUser() {
-            await this.storeUser.fetchUser();
+            await this.storeUser.fetchUser()
             const currentUserData = await this.storeUser.getCurrentUser(
                 this.currentUserUsername
-            );
-            this.currentUserID = currentUserData.id;
+            )
+            this.currentUserID = currentUserData.id
         },
         handleFiles(event) {
-            this.selectedImages.push(...event.target.files);
+            this.selectedImages.push(...event.target.files)
         },
         closeAdd() {
-            this.closeAdd();
+            this.closeAdd()
         },
         async postGallery() {
             const newGalleryData = {
@@ -112,13 +112,13 @@ export default {
                 },
                 galleryItemData: {
                     images: this.selectedImages,
-                    folderName: "gallery",
+                    folderName: 'gallery',
                 },
-            };
-            await this.storeGallery.createGallery(newGalleryData);
-        }
+            }
+            await this.storeGallery.createGallery(newGalleryData)
+        },
     },
-};
+}
 </script>
 
 <style scoped>

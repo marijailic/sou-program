@@ -6,8 +6,8 @@
 
 <script>
 export default {
-    name: "MsgWrapper",
-};
+    name: 'MsgWrapper',
+}
 </script>
 
 <style lang="scss">

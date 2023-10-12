@@ -5,12 +5,12 @@
                 <div>
                     <img
                         class="profile-pic rounded-circle"
-                        :src="profilePictureKey || '@/assets/sp-icon.png'"
+                        :src="userImageSrc || require('@/assets/sp-icon.png')"
                     />
                 </div>
                 <div class="flex-grow-1">
                     <textarea
-                        v-model="announcementText"
+                        v-model.trim="announcement.text"
                         class="form-control"
                         rows="3"
                         placeholder="Napiši obavijest..."
@@ -19,7 +19,11 @@
                 </div>
             </div>
             <div class="card-footer bg-white text-end">
-                <button type="submit" class="btn btn-primary">
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    :disabled="!announcement.text"
+                >
                     Objavi
                 </button>
             </div>
@@ -28,39 +32,30 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from "@/stores/announcement.store";
+import { useStoreAnnouncement } from '@/stores/announcement.store'
+
+const props = {
+    userImageSrc: {
+        type: String,
+        required: true,
+    },
+}
 
 export default {
-    name: "addAnnouncement",
-    props: {
-        userData: {
-            type: Object,
-            required: true,
+    name: 'addAnnouncement',
+    props,
+    data: () => ({
+        storeAnnouncement: useStoreAnnouncement(),
+        announcement: {
+            text: '',
         },
-        profilePictureKey: {
-            type: String,
-            required: true,
-        },
-    },
-    data() {
-        return {
-            storeAnnouncements: useStoreAnnouncement(),
-            announcementText: "",
-        };
-    },
+    }),
     methods: {
         async postAnnouncement() {
-            const announcementData = {
-                text: this.announcementText,
-                authorId: this.userData.id,
-            };
-
-            if (this.announcementText.trim() !== "") {
-                await this.storeAnnouncement.createAnnouncement(announcementData);
-            }
-        }
+            await this.storeAnnouncement.createAnnouncement(this.announcement)
+        },
     },
-};
+}
 </script>
 
 <style scoped>

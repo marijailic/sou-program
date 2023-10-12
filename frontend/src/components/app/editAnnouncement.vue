@@ -4,17 +4,21 @@
             <div class="card border-0 p-0 mt-2">
                 <div class="card-body text-start">
                     <textarea
-                        v-model="announcementData.text"
+                        v-model="announcement.text"
                         class="form-control"
                         rows="3"
                         required
                     ></textarea>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="() => {this.closeEdit()}">
+                    <a class="btn btn-primary me-2" @click="closeEditing">
                         Odustani
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="!announcement.text"
+                    >
                         Spremi promjenu
                     </button>
                 </div>
@@ -24,44 +28,40 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from "@/stores/announcement.store";
+import { useStoreAnnouncement } from '@/stores/announcement.store'
 
 const props = {
-    announcementData: {
+    announcement: {
         type: Object,
         required: true,
     },
-    closeEdit: {
+    closeEditing: {
         type: Function,
         required: true,
     },
 }
 
 export default {
-    name: "editAnnouncement",
+    name: 'editAnnouncement',
     props,
     data: () => ({
         storeAnnouncement: useStoreAnnouncement(),
     }),
     methods: {
         async updateAnnouncement() {
-            const updateData = {
-                id: this.announcementData.id,
-                text: this.announcementData.text.trim(),
-            };
-
-            if (updateData.text !== "") {
-                await this.storeAnnouncement.updateAnnouncement(updateData);
+            const updatedAnnouncement = {
+                id: this.announcement.id,
+                text: this.announcement.text,
             }
-        }
+
+            await this.storeAnnouncement.updateAnnouncement(updatedAnnouncement)
+        },
     },
-};
+}
 </script>
 
 <style scoped>
-.card {
-    background-color: #eaeaea;
-}
+.card,
 .card-footer {
     background-color: #eaeaea;
 }
