@@ -1,14 +1,13 @@
 <template>
     <div>
-        <form @submit.prevent="postUser">
-            <div class="card">
+        <form @submit.prevent="createUser">
+            <div class="card border-0 p-0 mt-3">
                 <div class="row">
                     <h3 class="headline">Dodaj korisnika</h3>
-
                     <div class="form-group">
                         <label for="name">Ime</label>
                         <input
-                            v-model="newUserName"
+                            v-model.trim="user.name"
                             type="text"
                             class="form-control"
                             id="name"
@@ -18,7 +17,7 @@
                     <div class="form-group">
                         <label for="surname">Prezime</label>
                         <input
-                            v-model="newUserSurname"
+                            v-model.trim="user.surname"
                             type="text"
                             class="form-control"
                             id="surname"
@@ -26,19 +25,19 @@
                         />
                     </div>
                     <div class="form-group">
-                        <label for="e_mail">E-mail</label>
+                        <label for="email">E-mail</label>
                         <input
-                            v-model="newUserEmail"
+                            v-model.trim="user.email"
                             type="email"
                             class="form-control"
-                            id="e_mail"
+                            id="email"
                             required
                         />
                     </div>
                     <div class="form-group">
                         <label for="username">Korisničko ime</label>
                         <input
-                            v-model="newUserUsername"
+                            v-model.trim="user.username"
                             type="text"
                             class="form-control"
                             id="username"
@@ -48,7 +47,7 @@
                     <div class="form-group">
                         <label for="password">Lozinka</label>
                         <input
-                            v-model="newUserPassword"
+                            v-model.trim="user.password"
                             type="password"
                             class="form-control"
                             id="password"
@@ -63,23 +62,12 @@
                             id="profilePicture"
                             class="picture-input form-control"
                             accept="image/*"
-                            required
                         />
                     </div>
-                    <!-- <div class="form-group">
-                        <label for="profilePicture">Profilna slika</label>
-                        <input
-                            type="file"
-                            class="form-control-file"
-                            id="profilePicture"
-                            accept="image/*"
-                            @change="handleProfilePictureChange"
-                        />
-                    </div> -->
                     <div class="form-group">
                         <label for="bio">Opis</label>
                         <textarea
-                            v-model="newUserBio"
+                            v-model.trim="user.bio"
                             class="form-control"
                             id="bio"
                         ></textarea>
@@ -87,9 +75,10 @@
                     <div class="form-group">
                         <label for="type">Tip korisnika</label>
                         <select
-                            v-model="newUserType"
+                            v-model="user.type"
                             class="form-control"
                             id="type"
+                            required
                         >
                             <option value="" disabled selected>
                                 Odaberi tip korisnika
@@ -100,7 +89,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeAdd"
+                    <a class="btn btn-primary me-2" @click="closeAddingUser"
                         >Odustani</a
                     >
                     <button type="submit" class="btn btn-primary">Dodaj</button>
@@ -111,98 +100,68 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreGallery } from '@/stores/gallery.store'
+import { useStoreUser } from '@/stores/user.store'
 
-import { ref } from "vue";
+const props = {
+    closeAddingUser: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "addUser",
-    data() {},
-    props: {
-        closeAdd: {
-            type: Function,
-            required: true,
+    name: 'addUser',
+    props,
+    data: () => ({
+        storeGallery: useStoreGallery(),
+        storeUser: useStoreUser(),
+        user: {
+            name: '',
+            surname: '',
+            email: '',
+            username: '',
+            password: '',
+            bio: '',
+            type: '',
         },
-    },
-    setup() {
-        const storeGallery = useStoreGallery();
-        const storeUser = useStoreUser();
-
-        const newUserName = ref("");
-        const newUserSurname = ref("");
-        const newUserEmail = ref("");
-        const newUserUsername = ref("");
-        const newUserPassword = ref("");
-        const newUserBio = ref("");
-        const newUserType = ref("");
-
-        const selectedImage = ref([]);
-
-        const postUser = async () => {
-            const profilePictureKey = await storeGallery.googleUploadImages({
-                images: selectedImage.value,
-                folderName: "user",
-            });
-
-            const newUserData = {
-                name: newUserName.value,
-                surname: newUserSurname.value,
-                email: newUserEmail.value,
-                username: newUserUsername.value,
-                password: newUserPassword.value,
-                profile_picture_key: profilePictureKey[0],
-                bio: newUserBio.value,
-                type: newUserType.value,
-            };
-
-            await storeUser.createUser(newUserData);
-        };
-
-        return {
-            storeUser,
-            postUser,
-            newUserName,
-            newUserSurname,
-            newUserEmail,
-            newUserUsername,
-            newUserPassword,
-            newUserBio,
-            newUserType,
-            selectedImage,
-        };
-    },
+        selectedImage: null,
+    }),
     methods: {
         addFile(event) {
-            this.selectedImage.push(...event.target.files);
+            this.selectedImage = event.target.files[0]
         },
-        closeAdd() {
-            this.closeAdd();
+        async createUser() {
+            if (this.selectedImage) {
+                const profilePictureKey = (
+                    await this.storeGallery.googleUploadImages({
+                        images: [this.selectedImage],
+                        folderName: 'user',
+                    })
+                )[0]
+                this.user.profile_picture_key = profilePictureKey
+            }
+
+            await this.storeUser.createUser(this.user)
         },
     },
-};
+}
 </script>
 
 <style scoped>
 .card {
-    border: none;
-    padding: 0;
-    margin-top: 1vw;
+    min-width: 15rem;
 }
 .row {
-    padding: 1vw;
+    padding: 1em;
 }
 .headline {
-    margin-bottom: 1vw;
+    margin-bottom: 1em;
 }
 .form-group {
-    margin-bottom: 1vw;
+    margin-bottom: 0.5em;
 }
 .card-footer {
-    padding: 0.7vw;
     background-color: white;
-}
-.escape-btn {
-    margin-right: 1vw;
 }
 </style>

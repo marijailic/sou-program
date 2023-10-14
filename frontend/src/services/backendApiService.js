@@ -9,7 +9,7 @@ export default {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "DELETE",
             headers: {
-                ...headers,
+                ...headers ?? {},
                 ...getAuthHeaders(),
             },
             body,
@@ -27,7 +27,7 @@ export default {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "POST",
             headers: {
-                ...headers,
+                ...headers ?? {},
                 ...getAuthHeaders(),
             },
             body,
@@ -37,7 +37,7 @@ export default {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "PUT",
             headers: {
-                ...headers,
+                ...headers ?? {},
                 ...getAuthHeaders(),
             },
             body,
@@ -47,7 +47,7 @@ export default {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: "PATCH",
             headers: {
-                ...headers,
+                ...headers ?? {},
                 ...getAuthHeaders(),
             },
             body,

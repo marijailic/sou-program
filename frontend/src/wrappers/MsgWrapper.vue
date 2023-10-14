@@ -6,8 +6,8 @@
 
 <script>
 export default {
-    name: "MsgWrapper",
-};
+    name: 'MsgWrapper',
+}
 </script>
 
 <style lang="scss">
@@ -27,5 +27,8 @@ body {
     .btn-primary:focus {
         background-color: #66ccff;
     }
+}
+.w-full {
+    min-height: 100vh;
 }
 </style>

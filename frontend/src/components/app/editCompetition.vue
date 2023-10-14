@@ -52,13 +52,13 @@ div
 </template>
 
 <script>
-import { useStoreCompetition } from "@/stores/competition.store";
-import addTeam from "./addTeam.vue";
-import editTeam from "./editTeam.vue";
-import { ref } from "vue";
+import { useStoreCompetition } from '@/stores/competition.store'
+import addTeam from './addTeam.vue'
+import editTeam from './editTeam.vue'
+import { ref } from 'vue'
 
 export default {
-    name: "editCompetition",
+    name: 'editCompetition',
     props: {
         competitionID: {
             type: Number,
@@ -74,18 +74,18 @@ export default {
         editTeam,
     },
     setup(props) {
-        const storeCompetition = useStoreCompetition();
-        storeCompetition.fetchCompetition();
+        const storeCompetition = useStoreCompetition()
+        storeCompetition.fetchCompetition()
 
-        const competitionID = props.competitionID;
+        const competitionID = props.competitionID
         const competitionData =
-            storeCompetition.getCompetitionById(competitionID);
+            storeCompetition.getCompetitionById(competitionID)
 
-        const newCompetitionName = ref(competitionData.name);
-        const newCompetitionDescription = ref(competitionData.description);
+        const newCompetitionName = ref(competitionData.name)
+        const newCompetitionDescription = ref(competitionData.description)
         const newCompetitionStartDate = ref(
-            competitionData.start_date.split("T")[0]
-        );
+            competitionData.start_date.split('T')[0]
+        )
 
         return {
             competitionID,
@@ -94,32 +94,32 @@ export default {
             newCompetitionDescription,
             newCompetitionStartDate,
             competitionData,
-        };
+        }
     },
     methods: {
         closeEdit() {
-            this.closeEdit();
+            this.closeEdit()
         },
         openEditTeam(teamId) {
-            this.editingTeamId = teamId;
+            this.editingTeamId = teamId
         },
         deleteTeam(teamId) {
-            this.storeCompetition.deleteTeam(teamId);
+            this.storeCompetition.deleteTeam(teamId)
         },
         async editCompetition() {
-            const id = this.competitionData.id;
+            const id = this.competitionData.id
 
             const updateData = {
                 id: id,
                 name: this.newCompetitionName,
                 description: this.newCompetitionDescription,
                 start_date: this.newCompetitionStartDate,
-            };
+            }
 
-            await this.storeCompetition.updateCompetition(updateData);
+            await this.storeCompetition.updateCompetition(updateData)
         },
     },
-};
+}
 </script>
 
 <style scoped>

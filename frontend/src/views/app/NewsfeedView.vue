@@ -1,13 +1,12 @@
 <template>
     <div>
-        <div class="card">
+        <div class="card border-0">
             <h1>Naslovnica</h1>
         </div>
 
         <add-announcement
-            v-if="isDemos"
-            :userData="currentUserData"
-            :profilePictureKey="profilePictureKey"
+            v-if="storeUser.isCurrentUserDemos && currentUser"
+            :userImageSrc="userImageSrc"
         />
 
         <div
@@ -20,93 +19,49 @@
         <show-announcement
             v-for="announcement in announcements"
             :key="announcement.id"
-            :announcementData="announcement"
+            :announcement="announcement"
+            :getEditingAnnouncementID="getEditingAnnouncementID"
+            :setEditingAnnouncementID="setEditingAnnouncementID"
         />
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import { useStoreAnnouncement } from "@/stores/announcement.store";
-import { useStoreGallery } from "@/stores/gallery.store";
+import { useStoreUser } from '@/stores/user.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store'
 
-import eventBus from "@/eventBus";
-
-import addAnnouncement from "@/components/app/addAnnouncement.vue";
-import showAnnouncement from "@/components/app/showAnnouncement.vue";
-
-import userTypeEnum from "@/enums/userTypeEnum";
+import addAnnouncement from '@/components/app/addAnnouncement.vue'
+import showAnnouncement from '@/components/app/showAnnouncement.vue'
 
 export default {
-    name: "NewsfeedView",
-    data() {
-        return {
-            currentUserData: {},
-            announcements: [],
-            editingAnnouncementID: null,
-            profilePictureKey: "",
-        };
-    },
+    name: 'NewsfeedView',
     components: {
         addAnnouncement,
         showAnnouncement,
     },
-    setup() {
-        const currentUserUsername = localStorage.getItem("username");
-        const isDemos = userTypeEnum.DEMOS === localStorage.getItem("type");
-        const storeUser = useStoreUser();
-        const storeAnnouncement = useStoreAnnouncement();
-        const storeGallery = useStoreGallery();
-
-        return {
-            storeUser,
-            storeAnnouncement,
-            storeGallery,
-            currentUserUsername,
-            isDemos,
-        };
-    },
+    data: () => ({
+        currentUser: {},
+        userImageSrc: '',
+        announcements: [],
+        activeEditingAnnouncementID: 0,
+        storeUser: useStoreUser(),
+        storeAnnouncement: useStoreAnnouncement(),
+    }),
     async created() {
-        await this.getCurrentUser();
-        await this.getAnnouncements();
-        this.getEditingAnnouncementID();
+        await this.storeUser.fetchUser()
+        this.currentUser = await this.storeUser.getCurrentUser()
 
-        const profilePictureKey = this.currentUserData.profile_picture_key;
-        await this.displayImage(profilePictureKey);
+        this.announcements = await this.storeAnnouncement.fetchAnnouncement()
+
+        this.userImageSrc = await this.currentUser.getProfilePictureSrc()
     },
     methods: {
-        async getCurrentUser() {
-            await this.storeUser.fetchUser();
-            const currentUserData = await this.storeUser.getCurrentUser(
-                this.currentUserUsername
-            );
-            this.currentUserData = currentUserData;
-        },
-        async getAnnouncements() {
-            const announcements =
-                await this.storeAnnouncement.fetchAnnouncement();
-            this.announcements = announcements;
-        },
         getEditingAnnouncementID() {
-            eventBus.on("editingAnnouncementID", (editingAnnouncementID) => {
-                if (this.editingAnnouncementID !== editingAnnouncementID) {
-                    const editText = false;
-                    eventBus.emit("closeOpenedAnnouncementEdit", editText);
-                    this.editingAnnouncementID = editingAnnouncementID;
-                }
-            });
+            return this.activeEditingAnnouncementID
         },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
+        setEditingAnnouncementID(editingAnnouncementID) {
+            this.activeEditingAnnouncementID = editingAnnouncementID
         },
     },
-};
-</script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
 }
-</style>
+</script>

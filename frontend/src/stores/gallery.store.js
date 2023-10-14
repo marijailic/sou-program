@@ -133,7 +133,7 @@ export const useStoreGallery = defineStore("storeGallery", {
 
             window.location.href = "/success";
         },
-        async googleDisplayImage(imageID) {
+        async getBase64Image(imageID) {
             const res = await backendApiService.get({
                 url: `/image/${imageID}`,
             });

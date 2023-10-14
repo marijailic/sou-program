@@ -7,7 +7,11 @@
                         <div>
                             <h5 class="competition-name">
                                 {{ competitionData.name }} -
-                                {{ formatDate(competitionData.start_date) }}
+                                {{
+                                    dateService.formatDate_(
+                                        competitionData.start_date
+                                    )
+                                }}
                             </h5>
                             <p class="card-text">
                                 {{ competitionData.description }}
@@ -63,19 +67,20 @@
 </template>
 
 <script>
-import { useStoreCompetition } from "@/stores/competition.store";
-import editCompetition from "./editCompetition.vue";
-import eventBus from "@/eventBus";
+import { useStoreCompetition } from '@/stores/competition.store'
+import editCompetition from './editCompetition.vue'
+import eventBus from '@/eventBus'
 
-import userTypeEnum from "@/enums/userTypeEnum";
+import dateService from '@/services/dateService'
+import userTypeEnum from '@/enums/userTypeEnum'
 
 export default {
-    name: "showCompetition",
+    name: 'showCompetition',
     data() {
         return {
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
             editingTeamId: null,
-        };
+        }
     },
     components: {
         editCompetition,
@@ -87,8 +92,8 @@ export default {
         },
     },
     setup() {
-        const storeCompetition = useStoreCompetition();
-        return { storeCompetition };
+        const storeCompetition = useStoreCompetition()
+        return { storeCompetition }
     },
     computed: {
         editingTeamData() {
@@ -96,38 +101,30 @@ export default {
                 this.competitionData.teams.find(
                     (team) => team.id === this.editingTeamId
                 ) || null
-            );
+            )
         },
     },
     methods: {
         async deleteCompetition(idCompetition) {
             const isConfirmed = window.confirm(
-                "Jeste li sigurni da želite izbrisati natjecanje?"
-            );
+                'Jeste li sigurni da želite izbrisati natjecanje?'
+            )
 
             if (isConfirmed) {
-                await this.storeCompetition.deleteCompetition(idCompetition);
+                await this.storeCompetition.deleteCompetition(idCompetition)
             }
         },
         openEditCompetition() {
-            const editCompetition = true;
-            const editCompetitionID = this.competitionData.id;
+            const editCompetition = true
+            const editCompetitionID = this.competitionData.id
             const editObj = {
                 editCompetition,
                 editCompetitionID,
-            };
-            eventBus.emit("editCompetition", editObj);
-        },
-        formatDate(dateString) {
-            const date = new Date(dateString);
-            const day = String(date.getUTCDate()).padStart(2, "0");
-            const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-            const year = date.getUTCFullYear();
-
-            return `${day}/${month}/${year}`;
+            }
+            eventBus.emit('editCompetition', editObj)
         },
     },
-};
+}
 </script>
 
 <style scoped>
@@ -145,13 +142,13 @@ export default {
 }
 .competition-name {
     text-align: left;
-    color: rgb(33, 37, 41);
+    color: #212529;
 }
 .delete-btn {
     margin-right: 1vw;
 }
 .bg-blue {
-    background-color: rgb(210, 231, 255);
+    background-color: #d2e7ff;
     padding: 0.3em 0.6em;
     border-radius: 99px;
     line-height: 1.3;
