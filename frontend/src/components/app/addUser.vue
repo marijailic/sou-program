@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form @submit.prevent="postUser">
+    <form @submit.prevent="postUser" autocomplete="off">
       <div class="card">
         <div class="row">
           <h3 class="headline">Dodaj korisnika</h3>
@@ -47,19 +47,30 @@
               id="username"
               required
               autocomplete="off"
+              maxlength="16"
+              minlength="3"
             />
           </div>
+          <username-errors
+            v-if="usernameErrors.length > 0"
+            :errorMessages="usernameErrors"
+          />
           <div class="form-group">
             <label for="password">Lozinka</label>
+
             <input
               v-model="newUserPassword"
               type="password"
               class="form-control"
               id="password"
               required
-              autocomplete="off"
+              autocomplete="new-password"
             />
           </div>
+          <password-errors
+            v-if="passwordErrors.length > 0"
+            :errorMessages="passwordErrors"
+          />
           <div class="form-group">
             <label for="profilePicture">Slika profila</label>
             <input
@@ -68,7 +79,6 @@
               id="profilePicture"
               class="picture-input form-control"
               accept="image/*"
-              required
             />
           </div>
           <!-- <div class="form-group">
@@ -91,7 +101,12 @@
           </div>
           <div class="form-group">
             <label for="type">Tip korisnika</label>
-            <select v-model="newUserType" class="form-control" id="type">
+            <select
+              v-model="newUserType"
+              class="form-control"
+              id="type"
+              required
+            >
               <option value="" disabled selected>Odaberi tip korisnika</option>
               <option value="demonstrator">Demonstrator</option>
               <option value="student">Student</option>
@@ -110,12 +125,18 @@
 <script>
 import { useStoreGallery } from "@/stores/gallery.store";
 import { useStoreUser } from "@/stores/user.store";
+import usernameErrors from "@/components/app/frontendValidacija/usernameErrors.vue";
+import passwordErrors from "@/components/app/frontendValidacija/passwordErrors.vue";
 
 import { ref } from "vue";
 
 export default {
   name: "addUser",
   data() {},
+  components: {
+    usernameErrors,
+    passwordErrors,
+  },
   props: {
     closeAdd: {
       type: Function,
@@ -133,27 +154,75 @@ export default {
     const newUserPassword = ref("");
     const newUserBio = ref("");
     const newUserType = ref("");
-
     const selectedImage = ref([]);
+    const usernameErrors = ref([]);
+    const passwordErrors = ref([]);
+
+    function containsWhitespace(str) {
+      return /\s/.test(str);
+    }
+    const alphanumericRegex = /^[a-zA-Z0-9._ ]+$/;
+    const uppercaseRegex = /[A-Z]/;
+    const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+    const lengthRegex = /^.{8,}$/;
+    const repeatingCharactersRegex = /^([a-zA-Z0-9._])\1+$/;
 
     const postUser = async () => {
-      const profilePictureKey = await storeGallery.googleUploadImages({
-        images: selectedImage.value,
-        folderName: "user",
-      });
+      usernameErrors.value = [];
+      passwordErrors.value = [];
+      if (newUserUsername.value.length < 3) {
+        usernameErrors.value.push(
+          "Korisničko ime ne može imati manje od 3 znaka."
+        );
+      }
+      if (containsWhitespace(newUserUsername.value)) {
+        usernameErrors.value.push("Korisničko ime ne može imati razmake.");
+      }
+      if (!alphanumericRegex.test(newUserUsername.value)) {
+        usernameErrors.value.push(
+          "Korisničko ime ne može sadržavati posebne znakove."
+        );
+      }
+      if (repeatingCharactersRegex.test(newUserUsername.value)) {
+        usernameErrors.value.push(
+          "Korisničko ime ne može sadržavati samo ponavljajući isti znak."
+        );
+      }
+      if (!uppercaseRegex.test(newUserPassword.value)) {
+        passwordErrors.value.push(
+          "Lozinka mora imati barem jedno veliko slovo."
+        );
+      }
+      if (!specialCharacterRegex.test(newUserPassword.value)) {
+        passwordErrors.value.push(
+          "Lozinka mora imati barem jedan poseban znak."
+        );
+      }
+      if (!lengthRegex.test(newUserPassword.value)) {
+        passwordErrors.value.push("Lozinka mora imati barem 8 znakova.");
+      }
 
-      const newUserData = {
-        name: newUserName.value,
-        surname: newUserSurname.value,
-        email: newUserEmail.value,
-        username: newUserUsername.value,
-        password: newUserPassword.value,
-        profile_picture_key: profilePictureKey[0],
-        bio: newUserBio.value,
-        type: newUserType.value,
-      };
+      if (
+        usernameErrors.value.length === 0 &&
+        passwordErrors.value.length === 0
+      ) {
+        const profilePictureKey = await storeGallery.googleUploadImages({
+          images: selectedImage.value,
+          folderName: "user",
+        });
+        const newUserData = {
+          name: newUserName.value,
+          surname: newUserSurname.value,
+          email: newUserEmail.value,
+          username: newUserUsername.value,
+          password: newUserPassword.value,
+          profile_picture_key: profilePictureKey[0],
+          bio: newUserBio.value,
+          type: newUserType.value,
+        };
 
-      await storeUser.createUser(newUserData);
+        await storeUser.createUser(newUserData);
+      }
     };
 
     return {
@@ -167,6 +236,8 @@ export default {
       newUserBio,
       newUserType,
       selectedImage,
+      usernameErrors,
+      passwordErrors,
     };
   },
   methods: {
