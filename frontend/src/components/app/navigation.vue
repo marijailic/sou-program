@@ -56,6 +56,37 @@
                 </button>
             </div>
         </div>
+        <nav class="nav flex-column">
+            <router-link to="/newsfeed" class="nav-link"
+                ><i class="material-icons">article</i> Naslovnica</router-link
+            >
+            <router-link to="/my-profile" class="nav-link"
+                ><i class="material-icons">person</i>Profil</router-link
+            >
+            <router-link to="/search" class="nav-link"
+                ><i class="material-icons">people</i>Stalkaonica</router-link
+            >
+            <router-link to="/gallery" class="nav-link"
+                ><i class="material-icons">photo_library</i>
+                Galerija</router-link
+            >
+            <router-link to="/competitions" class="nav-link"
+                ><i class="material-icons">emoji_events</i>
+                Natjecanja</router-link
+            >
+        </nav>
+        <div class="nav-btns">
+            <div class="info-link">
+                <router-link to="/resources" class="info-btn">
+                    Resursi</router-link
+                >
+            </div>
+            <div>
+                <button class="btn btn-primary" @click="logout">
+                    Odjavi me
+                </button>
+            </div>
+        </div>
     </div>
 </template>
 
