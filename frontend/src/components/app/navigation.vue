@@ -1,149 +1,214 @@
 <template>
-  <div class="side-navigation">
-    <div class="card text-center">
-      <!-- <img
-                v-if="image"
-                class="card-img-top rounded-circle mx-auto"
-                :src="image"
-            /> -->
-      <img
-        class="card-img-top rounded-circle mx-auto"
-        src="@/assets/sp-icon.png"
-      />
-      <div class="card-body">
-        <div class="card-title mt-1">
-          <!-- <router-link class="custom-link" to="/my-profile"> -->
-          <h5>{{ username }}</h5>
-          <!-- </router-link> -->
+    <div class="nav-container">
+        <div class="card text-center">
+            <img
+                id="profile-image"
+                class="card-img-top rounded-circle mx-sm-auto mx-2"
+                :src="userImageSrc || require('@/assets/sp-icon.png')"
+            />
+            <div class="card-body px-0">
+                <h5 class="card-title mt-1">
+                    <router-link class="custom-link" to="/my-profile">
+                        {{ username }}</router-link
+                    >
+                </h5>
+                <nav class="nav flex-column">
+                    <router-link
+                        to="/newsfeed"
+                        class="nav-link"
+                        data-text="Naslovnica"
+                        @click="toggleNav"
+                        ><i class="material-icons">article</i></router-link
+                    >
+                    <router-link
+                        to="/search"
+                        class="nav-link"
+                        data-text="Stalkaonica"
+                        @click="toggleNav"
+                        ><i class="material-icons">people</i></router-link
+                    >
+                    <router-link
+                        to="/gallery"
+                        class="nav-link"
+                        data-text="Galerija"
+                        @click="toggleNav"
+                        ><i class="material-icons"
+                            >photo_library</i
+                        ></router-link
+                    >
+                    <router-link
+                        to="/competitions"
+                        class="nav-link"
+                        data-text="Natjecanja"
+                        @click="toggleNav"
+                        ><i class="material-icons">emoji_events</i></router-link
+                    >
+                </nav>
+            </div>
+            <div class="px-3">
+                <div class="mb-2">
+                    <router-link to="/resources" class="info-btn">
+                        Resursi</router-link
+                    >
+                </div>
+                <button class="btn btn-primary px-3" @click="logout">
+                    Odjavi me
+                </button>
+            </div>
         </div>
         <nav class="nav flex-column">
-          <router-link to="/newsfeed" class="nav-link"
-            ><i class="material-icons">article</i> Naslovnica</router-link
-          >
-          <router-link to="/my-profile" class="nav-link"
-            ><i class="material-icons">person</i>Profil</router-link
-          >
-          <router-link to="/search" class="nav-link"
-            ><i class="material-icons">people</i>Stalkaonica</router-link
-          >
-          <router-link to="/gallery" class="nav-link"
-            ><i class="material-icons">photo_library</i> Galerija</router-link
-          >
-          <router-link to="/competitions" class="nav-link"
-            ><i class="material-icons">emoji_events</i> Natjecanja</router-link
-          >
+            <router-link to="/newsfeed" class="nav-link"
+                ><i class="material-icons">article</i> Naslovnica</router-link
+            >
+            <router-link to="/my-profile" class="nav-link"
+                ><i class="material-icons">person</i>Profil</router-link
+            >
+            <router-link to="/search" class="nav-link"
+                ><i class="material-icons">people</i>Stalkaonica</router-link
+            >
+            <router-link to="/gallery" class="nav-link"
+                ><i class="material-icons">photo_library</i>
+                Galerija</router-link
+            >
+            <router-link to="/competitions" class="nav-link"
+                ><i class="material-icons">emoji_events</i>
+                Natjecanja</router-link
+            >
         </nav>
-      </div>
-      <div class="nav-btns">
-        <div class="info-link">
-          <router-link to="/resources" class="info-btn"> Resursi</router-link>
+        <div class="nav-btns">
+            <div class="info-link">
+                <router-link to="/resources" class="info-btn">
+                    Resursi</router-link
+                >
+            </div>
+            <div>
+                <button class="btn btn-primary" @click="logout">
+                    Odjavi me
+                </button>
+            </div>
         </div>
-        <div>
-          <button class="btn btn-primary" @click="logout">Odjavi me</button>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { useStoreUser } from "@/stores/user.store";
+import { useStoreUser } from '@/stores/user.store'
+import imageService from '@/services/imageService'
+
+const props = {
+    toggleNav: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-  name: "navigation",
-  data() {
-    return {
-      username: "",
-      profilePictureKey: "",
-      image: "",
-    };
-  },
-  setup() {
-    const storeGallery = useStoreGallery();
-    const storeUser = useStoreUser();
+    name: 'navigation',
+    props,
+    data: () => ({
+        username: '',
+        userImageSrc: '',
+        storeUser: useStoreUser(),
+    }),
+    async created() {
+        await this.storeUser.fetchUser()
+        const currentUser = await this.storeUser.getCurrentUser()
 
-    return { storeGallery, storeUser };
-  },
-  async created() {
-    this.getUsername();
-    await this.getAuthorUsername();
-    await this.displayImage();
-  },
-  methods: {
-    logout() {
-      localStorage.removeItem("token");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("type");
-      window.location.href = "/login";
+        this.username = currentUser.username
+        this.userImageSrc = await imageService.getImageSrc(
+            currentUser.profile_picture_key
+        )
     },
-    getUsername() {
-      const username = localStorage.getItem("username");
-      this.username = username;
+    methods: {
+        logout() {
+            localStorage.removeItem('token')
+            localStorage.removeItem('refreshToken')
+            localStorage.removeItem('username')
+            localStorage.removeItem('type')
+            window.location.href = '/login'
+        },
     },
-    async getAuthorUsername() {
-      await this.storeUser.fetchUser();
-      const user = await this.storeUser.getCurrentUser(this.username);
-      this.profilePictureKey = user.profile_picture_key;
-    },
-    async displayImage() {
-      const image = await this.storeGallery.googleDisplayImage(
-        this.profilePictureKey
-      );
-      this.image = `data:image/jpeg;base64,${image}`;
-    },
-  },
-};
+}
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.nav-container {
+    height: 100vh;
+    transform: translateX(-110%);
+    transition: transform 0.3s ease-in-out;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    display: block;
+    position: fixed;
+    z-index: 1;
+    &.slide-in {
+        transform: translateX(0);
+    }
+}
+#profile-image {
+    width: 60px;
+    height: 60px;
+}
+.card-title {
+    display: none;
+}
 .card {
-  width: 100%;
-  height: calc(100vh - 4vw);
-  border: none;
-  padding-top: 2vw;
-  padding-bottom: 2vw;
-}
-.card-img-top {
-  width: 100px;
-  height: 100px;
-}
-.card-body {
-  padding-left: 0;
-  padding-right: 0;
+    width: 100%;
+    height: calc(100% - 56px);
+    padding: 1rem 0;
 }
 .custom-link {
-  color: rgb(33, 37, 41);
+    color: #212529;
 }
 .nav {
-  margin-top: 3vw;
+    margin-top: 3rem;
 }
 .nav-link {
-  display: flex;
-  align-items: center;
-  color: rgb(33, 37, 41);
-  padding: 0;
-  height: 3vw;
-}
-.nav-link:hover {
-  background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    color: #212529;
+    padding: 0;
+    height: 3rem;
+
+    &:hover {
+        background-color: #f5f5f5;
+    }
+
+    &::after {
+        display: none;
+        content: attr(data-text); // Display the text content
+        margin-left: 0.5rem;
+    }
 }
 .material-icons {
-  margin-left: 1.2vw;
-  margin-right: 0.5vw;
-}
-.nav-btns {
-  padding-left: 0.5vw;
-  padding-right: 0.5vw;
-}
-.info-link {
-  margin-bottom: 0.5vw;
+    margin-left: 1.2rem;
+    margin-right: 0.5rem;
 }
 .info-btn {
-  color: rgb(33, 37, 41);
+    color: #212529;
 }
 .btn {
-  width: 100%;
+    width: 100%;
+}
+
+@media (min-width: 769px) {
+    .nav-container {
+        position: static;
+        transform: translateX(0);
+        width: 18rem;
+    }
+    .card {
+        border: none;
+    }
+    #profile-image {
+        width: 100px;
+        height: 100px;
+    }
+    .card-title {
+        display: block;
+    }
+    .nav-link::after {
+        display: block;
+    }
 }
 </style>

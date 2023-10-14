@@ -1,22 +1,24 @@
 <template>
     <div>
         <form @submit.prevent="updateAnnouncement">
-            <div class="card">
-                <div class="row">
-                    <div class="card-body text-start">
-                        <textarea
-                            v-model="announcementText"
-                            class="form-control"
-                            rows="3"
-                            required
-                        ></textarea>
-                    </div>
+            <div class="card border-0 p-0 mt-2">
+                <div class="card-body text-start">
+                    <textarea
+                        v-model="announcement.text"
+                        class="form-control"
+                        rows="3"
+                        required
+                    ></textarea>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeEdit">
+                    <a class="btn btn-primary me-2" @click="closeEditing">
                         Odustani
                     </a>
-                    <button type="submit" class="btn btn-primary">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="!announcement.text"
+                    >
                         Spremi promjenu
                     </button>
                 </div>
@@ -26,69 +28,41 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from "@/stores/announcement.store";
-import { ref } from "vue";
+import { useStoreAnnouncement } from '@/stores/announcement.store'
+
+const props = {
+    announcement: {
+        type: Object,
+        required: true,
+    },
+    closeEditing: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "editAnnouncement",
-    props: {
-        announcementData: {
-            type: Object,
-            required: true,
-        },
-        closeEdit: {
-            type: Function,
-            required: true,
-        },
-    },
-    setup(props) {
-        const storeAnnouncement = useStoreAnnouncement();
-
-        const announcementText = ref(props.announcementData.text);
-
-        const updateAnnouncement = async () => {
-            const id = props.announcementData.id;
-            const text = announcementText.value;
-
-            const updateData = {
-                id: id,
-                text: text,
-            };
-
-            if (text.trim() !== "") {
-                await storeAnnouncement.updateAnnouncement(updateData);
-            }
-        };
-
-        return {
-            storeAnnouncement,
-            updateAnnouncement,
-            announcementText,
-        };
-    },
+    name: 'editAnnouncement',
+    props,
+    data: () => ({
+        storeAnnouncement: useStoreAnnouncement(),
+    }),
     methods: {
-        closeEdit() {
-            this.closeEdit();
+        async updateAnnouncement() {
+            const updatedAnnouncement = {
+                id: this.announcement.id,
+                text: this.announcement.text,
+            }
+
+            await this.storeAnnouncement.updateAnnouncement(updatedAnnouncement)
         },
     },
-};
+}
 </script>
 
 <style scoped>
-.card {
-    border: none;
-    padding: 0;
-    background-color: #eaeaea;
-    margin-top: 1vw;
-}
-.row {
-    padding: 1vw;
-}
+.card,
 .card-footer {
-    padding: 0.7vw;
     background-color: #eaeaea;
-}
-.escape-btn {
-    margin-right: 1vw;
 }
 </style>

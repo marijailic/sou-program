@@ -64,76 +64,61 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { useStoreUser } from "@/stores/user.store";
-
-import { ref } from "vue";
+import { useStoreGallery } from '@/stores/gallery.store'
+import { useStoreUser } from '@/stores/user.store'
 
 export default {
-    name: "addGallery",
+    name: 'addGallery',
     props: {
         closeAdd: {
             type: Function,
             required: true,
         },
     },
-    setup() {
-        const currentUserUsername = localStorage.getItem("username");
-
-        const storeGallery = useStoreGallery();
-        const storeUser = useStoreUser();
-
-        const newGalleryTitle = ref("");
-        const newGalleryText = ref("");
-        const currentUserID = ref("");
-
-        const selectedImages = ref([]);
-
-        const postGallery = async () => {
-            const newGalleryData = {
-                galleryData: {
-                    title: newGalleryTitle.value,
-                    text: newGalleryText.value,
-                    author_id: currentUserID.value,
-                },
-                galleryItemData: {
-                    images: selectedImages.value,
-                    folderName: "gallery",
-                },
-            };
-            await storeGallery.createGallery(newGalleryData);
-        };
-
+    data() {
         return {
-            currentUserUsername,
-            storeGallery,
-            storeUser,
-            postGallery,
-            newGalleryTitle,
-            newGalleryText,
-            currentUserID,
-            selectedImages,
-        };
+            storeGallery: useStoreGallery(),
+            storeUser: useStoreUser(),
+            currentUserUsername: localStorage.getItem('username'),
+            newGalleryTitle: '',
+            newGalleryText: '',
+            currentUserID: '',
+            selectedImages: [],
+        }
     },
-    async created() {
-        await this.getCurrentUser();
+    mounted() {
+        this.getCurrentUser()
     },
     methods: {
         async getCurrentUser() {
-            await this.storeUser.fetchUser();
+            await this.storeUser.fetchUser()
             const currentUserData = await this.storeUser.getCurrentUser(
                 this.currentUserUsername
-            );
-            this.currentUserID = currentUserData.id;
+            )
+            this.currentUserID = currentUserData.id
         },
         handleFiles(event) {
-            this.selectedImages.push(...event.target.files);
+            this.selectedImages.push(...event.target.files)
         },
         closeAdd() {
-            this.closeAdd();
+            this.closeAdd()
+        },
+        async postGallery() {
+            const newGalleryData = {
+                galleryData: {
+                    title: this.newGalleryTitle,
+                    text: this.newGalleryText,
+                    author_id: this.currentUserID,
+                },
+                galleryItemData: {
+                    images: this.selectedImages,
+                    folderName: 'gallery',
+                },
+            }
+            await this.storeGallery.createGallery(newGalleryData)
         },
     },
-};
+}
 </script>
 
 <style scoped>

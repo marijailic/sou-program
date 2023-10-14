@@ -1,61 +1,90 @@
 <template>
-    <div class="main-container row">
-        <div class="nav-container col">
-            <navigation />
+    <div @click="closeNav">
+        <div class="w-full d-flex gap-3 p-3">
+            <navigation
+                :class="{ 'slide-in': isNavOpened }"
+                :toggleNav="toggleNav"
+                @click.stop
+            />
+            <div class="w-100">
+                <router-view></router-view>
+            </div>
         </div>
-        <div class="content-container col">
-            <router-view></router-view>
+        <div class="menu-footer">
+            <img
+                id="menu-button"
+                class="icon p-3 rounded-circle"
+                :src="require('@/assets/sp-icon.png')"
+                @click.stop="toggleNav"
+            />
         </div>
     </div>
 </template>
 
 <script>
-import navigation from "@/components/app/navigation.vue";
+import navigation from '@/components/app/navigation.vue'
 
 export default {
-    name: "AppWrapper",
+    name: 'AppWrapper',
     components: {
         navigation,
     },
-};
+    data: () => ({
+        isNavOpened: false,
+    }),
+    methods: {
+        toggleNav() {
+            this.isNavOpened = !this.isNavOpened
+        },
+        closeNav() {
+            this.isNavOpened = false
+        },
+    },
+}
 </script>
 
 <style lang="scss">
+@import '@/assets/colors.scss';
+
 html,
 body {
-    background-color: #f5f5f5;
-    .btn-primary {
-        background-color: #66ccff;
-        border: #66ccff;
-    }
-    .btn-primary:hover {
-        background-color: #66ccff;
-    }
-    .btn-primary:active {
-        background-color: #66ccff !important;
-    }
-    .btn-primary:focus {
-        background-color: #66ccff;
+    background-color: $white-color;
+}
+.btn-primary {
+    background-color: $primary-color;
+    border: $primary-color;
+}
+.btn-primary:hover {
+    background-color: $primary-color;
+}
+.btn-primary:active {
+    background-color: $primary-color !important;
+}
+.btn-primary:focus {
+    background-color: $primary-color;
+}
+.w-full {
+    min-height: 100vh;
+}
+.menu-footer {
+    background-color: lightgray;
+    position: sticky;
+    bottom: 0;
+    display: none;
+    z-index: 2;
+
+    @media (max-width: 768px) {
+        display: block;
     }
 }
-.main-container {
-    margin-left: 0;
-    margin-right: 0;
+#menu-button {
+    cursor: pointer;
 }
-.nav-container {
-    width: 20vw;
-    height: 100vh;
-    position: fixed;
-    padding-top: 2vw;
-    padding-bottom: 2vw;
-    padding-left: 2vw;
-    padding-right: 0;
+.icon {
+    width: 4rem;
+    height: 4rem;
 }
-.content-container {
-    margin-left: 20vw;
-    padding-top: 2vw;
-    padding-bottom: 2vw;
-    padding-left: 2vw;
-    padding-right: 2vw;
+.card {
+    padding: 0.5rem;
 }
 </style>

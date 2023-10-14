@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card">
-            <div class="header">
+        <div class="card border-0">
+            <div class="d-flex justify-content-between align-items-center">
                 <h1>Natjecanja</h1>
                 <button
                     v-if="isDemos"
@@ -41,80 +41,60 @@
 </template>
 
 <script>
-import { useStoreCompetition } from "@/stores/competition.store";
-import eventBus from "@/eventBus";
+import { useStoreCompetition } from '@/stores/competition.store'
+import eventBus from '@/eventBus'
 
-import showCompetition from "@/components/app/showCompetition.vue";
-import addCompetition from "@/components/app/addCompetition.vue";
-import editCompetition from "@/components/app/editCompetition.vue";
+import showCompetition from '@/components/app/showCompetition.vue'
+import addCompetition from '@/components/app/addCompetition.vue'
+import editCompetition from '@/components/app/editCompetition.vue'
 
-import userTypeEnum from "@/enums/userTypeEnum";
+import userTypeEnum from '@/enums/userTypeEnum'
 
 export default {
-    name: "CompetitionView",
+    name: 'CompetitionView',
     data() {
         return {
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
+            storeCompetition: useStoreCompetition(),
+            isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
             competitions: [],
-            closeAdd: () => {},
-            closeEdit: () => {},
             addCompetition: false,
             editCompetition: false,
             editCompetitionID: null,
-        };
+        }
     },
     components: {
         showCompetition,
         addCompetition,
         editCompetition,
     },
-    setup() {
-        const storeCompetition = useStoreCompetition();
-        return { storeCompetition };
-    },
-    created() {
-        this.getCompetitions();
-        this.openEditCompetition();
-        this.closeAdd = () => {
-            this.addCompetition = false;
-        };
-        this.closeEdit = () => {
-            this.editCompetition = false;
-        };
+    async created() {
+        this.competitions = await this.storeCompetition.fetchCompetition()
+        this.openEditCompetition()
     },
     methods: {
-        async getCompetitions() {
-            this.competitions = await this.storeCompetition.fetchCompetition();
+        closeAdd() {
+            this.addCompetition = false
+        },
+        closeEdit() {
+            this.editCompetition = false
         },
         rightColActiveCheck() {
-            this.addCompetition = false;
-            this.editCompetition = false;
+            this.addCompetition = false
+            this.editCompetition = false
         },
         openAddCompetition() {
-            this.rightColActiveCheck();
-            this.addCompetition = true;
+            this.rightColActiveCheck()
+            this.addCompetition = true
         },
         openEditCompetition() {
-            eventBus.on("editCompetition", (editObj) => {
-                this.rightColActiveCheck();
-                this.editCompetitionID = editObj.editCompetitionID;
+            eventBus.on('editCompetition', (editObj) => {
+                this.rightColActiveCheck()
+                this.editCompetitionID = editObj.editCompetitionID
                 this.$nextTick(() => {
-                    this.editCompetition = editObj.editCompetition;
-                });
-            });
+                    this.editCompetition = editObj.editCompetition
+                })
+            })
         },
     },
-};
+}
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-</style>

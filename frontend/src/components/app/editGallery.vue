@@ -38,11 +38,10 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import { ref } from "vue";
+import { useStoreGallery } from '@/stores/gallery.store'
 
 export default {
-    name: "editGallery",
+    name: 'editGallery',
     props: {
         galleryID: {
             type: Number,
@@ -53,39 +52,31 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeGallery = useStoreGallery();
-        storeGallery.fetchGallery();
-
-        const galleryID = props.galleryID;
-        const galleryData = storeGallery.getGalleryById(galleryID);
-
-        const newGalleryTitle = ref(galleryData.title);
-        const newGalleryText = ref(galleryData.text);
-
-        const editGallery = async () => {
-            const id = galleryData.id;
-            const updateData = {
-                id: id,
-                title: newGalleryTitle.value,
-                text: newGalleryText.value,
-            };
-            await storeGallery.updateGallery(updateData);
-        };
+    async data() {
+        const storeGallery = useStoreGallery()
+        await storeGallery.fetchGallery()
+        const galleryData = storeGallery.getGalleryById(this.galleryID)
 
         return {
             storeGallery,
-            editGallery,
-            newGalleryTitle,
-            newGalleryText,
-        };
+            newGalleryTitle: galleryData.title,
+            newGalleryText: galleryData.text,
+        }
     },
     methods: {
         closeEdit() {
-            this.closeEdit();
+            this.closeEdit()
+        },
+        async editGallery() {
+            const updateData = {
+                id: this.galleryID,
+                title: this.newGalleryTitle,
+                text: this.newGalleryText,
+            }
+            await this.storeGallery.updateGallery(updateData)
         },
     },
-};
+}
 </script>
 
 <style scoped>

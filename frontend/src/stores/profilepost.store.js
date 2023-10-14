@@ -1,15 +1,15 @@
 import { defineStore } from "pinia";
-import { getAuthHeaders } from "@/services/authService";
 import backendApiService from "@/services/backendApiService";
+import dateService from "@/services/dateService";
 
 export const useStoreProfilePost = defineStore("storeProfilePost", {
     state: () => ({
-        profilePost: [],
+        profilePosts: [],
     }),
     actions: {
-        async fetchProfilePost(authorId) {
+        async fetchProfilePost(authorID) {
             const res = await backendApiService.get({
-                url: `/profile-post/${authorId}`,
+                url: `/profile-post/${authorID}`,
             });
 
             if (!res.ok) {
@@ -18,33 +18,39 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
             }
 
             const resObj = await res.json();
-            this.profilePost = resObj.data;
 
-            return resObj.data;
+            this.profilePosts = await Promise.all(
+                resObj.data.map(async (profilePost) => ({
+                    ...profilePost,
+                    posted_at: dateService.getRelativeTime(profilePost.timestamp),
+                }))
+            );
+
+            return this.profilePosts;
         },
-        async createProfilePost(profilePostData) {
+        async createProfilePost(profilePost) {
             const res = await backendApiService.post({
                 url: "/create-profile-post",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(profilePostData),
+                body: JSON.stringify(profilePost),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async deleteProfilePost(idPost) {
+        async deleteProfilePost(profilePostID) {
             const res = await backendApiService.delete({
                 url: "/delete-profile-post",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: idPost }),
+                body: JSON.stringify({ id: profilePostID }),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async updateProfilePost(updateData) {
+        async updateProfilePost(profilePost) {
             const res = await backendApiService.post({
                 url: "/update-profile-post",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updateData),
+                body: JSON.stringify(profilePost),
             });
 
             window.location.href = res.ok ? "/success" : "/error";

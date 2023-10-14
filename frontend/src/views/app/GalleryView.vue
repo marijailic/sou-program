@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card">
-            <div class="header">
+        <div class="card border-0">
+            <div class="d-flex justify-content-between align-items-center">
                 <h1>Galerija</h1>
                 <button class="btn btn-primary" @click="openAddGallery">
                     Dodaj galeriju
@@ -43,28 +43,26 @@
 </template>
 
 <script>
-import { useStoreGallery } from "@/stores/gallery.store";
-import eventBus from "@/eventBus";
+import { useStoreGallery } from '@/stores/gallery.store'
+import eventBus from '@/eventBus'
 
-import showGallery from "@/components/app/showGallery.vue";
-import addGallery from "@/components/app/addGallery.vue";
-import editGallery from "@/components/app/editGallery.vue";
-import showFullGallery from "@/components/app/showFullGallery.vue";
+import showGallery from '@/components/app/showGallery.vue'
+import addGallery from '@/components/app/addGallery.vue'
+import editGallery from '@/components/app/editGallery.vue'
+import showFullGallery from '@/components/app/showFullGallery.vue'
 
 export default {
-    name: "GalleryView",
+    name: 'GalleryView',
     data() {
         return {
+            storeGallery: useStoreGallery(),
             galleries: [],
-            closeAdd: () => {},
-            closeEdit: () => {},
-            closeShow: () => {},
             addGallery: false,
             editGallery: false,
             editGalleryID: null,
             showFullGallery: false,
             showFullGalleryID: null,
-        };
+        }
     },
     components: {
         showGallery,
@@ -72,70 +70,49 @@ export default {
         editGallery,
         showFullGallery,
     },
-    setup() {
-        const storeGallery = useStoreGallery();
-        return { storeGallery };
-    },
     async created() {
-        await this.getGalleries();
+        this.galleries = await this.storeGallery.fetchGallery()
 
-        this.openEditGallery();
-        this.openShowFullGallery();
-
-        this.closeAdd = () => {
-            this.addGallery = false;
-        };
-        this.closeEdit = () => {
-            this.editGallery = false;
-        };
-        this.closeShow = () => {
-            this.showFullGallery = false;
-        };
+        this.openEditGallery()
+        this.openShowFullGallery()
     },
     methods: {
-        async getGalleries() {
-            const galleries = await this.storeGallery.fetchGallery();
-            this.galleries = galleries;
+        closeAdd() {
+            this.addGallery = false
+        },
+        closeEdit() {
+            this.editGallery = false
+        },
+        closeShow() {
+            this.showFullGallery = false
         },
         rightColActiveCheck() {
-            this.addGallery = false;
-            this.editGallery = false;
-            this.showFullGallery = false;
+            this.addGallery = false
+            this.editGallery = false
+            this.showFullGallery = false
         },
         openAddGallery() {
-            this.rightColActiveCheck();
-            this.addGallery = true;
+            this.rightColActiveCheck()
+            this.addGallery = true
         },
         openEditGallery() {
-            eventBus.on("editGallery", (editObj) => {
-                this.rightColActiveCheck();
-                this.editGalleryID = editObj.editGalleryID;
+            eventBus.on('editGallery', (editObj) => {
+                this.rightColActiveCheck()
+                this.editGalleryID = editObj.editGalleryID
                 this.$nextTick(() => {
-                    this.editGallery = editObj.editGallery;
-                });
-            });
+                    this.editGallery = editObj.editGallery
+                })
+            })
         },
         openShowFullGallery() {
-            eventBus.on("showFullGallery", (editObj) => {
-                this.rightColActiveCheck();
-                this.showFullGalleryID = editObj.showFullGalleryID;
+            eventBus.on('showFullGallery', (editObj) => {
+                this.rightColActiveCheck()
+                this.showFullGalleryID = editObj.showFullGalleryID
                 this.$nextTick(() => {
-                    this.showFullGallery = editObj.showFullGallery;
-                });
-            });
+                    this.showFullGallery = editObj.showFullGallery
+                })
+            })
         },
     },
-};
+}
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-</style>

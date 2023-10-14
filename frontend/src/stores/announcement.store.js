@@ -1,51 +1,62 @@
 import { defineStore } from "pinia";
 import backendApiService from "@/services/backendApiService";
+import dateService from "@/services/dateService";
+import { useStoreUser } from "@/stores/user.store"
 
 export const useStoreAnnouncement = defineStore("storeAnnouncement", {
     state: () => ({
-        announcement: [],
+        announcements: [],
     }),
-    getters: {},
     actions: {
         async fetchAnnouncement() {
             const res = await backendApiService.get({
                 url: "/announcement",
             });
 
-            console.log(res)
             if (!res.ok) {
                 window.location.href = "/error";
                 return;
             }
 
             const resObj = await res.json();
-            this.announcement = resObj.data;
+            const storeUser = useStoreUser();
+            await storeUser.fetchUser();
 
-            return resObj.data;
+            const announcementsWithAuthor = await Promise.all(
+                resObj.data.map(async (announcement) => ({
+                    ...announcement,
+                    posted_at: dateService.getRelativeTime(announcement.timestamp),
+                    author: await storeUser.getUserByID(announcement.author_id)
+                }))
+            );
+
+            this.announcements = announcementsWithAuthor;
+
+            return this.announcements;
         },
-        async deleteAnnouncement(idAnnouncement) {
+        async deleteAnnouncement(announcementID) {
             const res = await backendApiService.delete({
                 url: "/delete-announcement",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: idAnnouncement }),
+                body: JSON.stringify({ id: announcementID }),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async createAnnouncement(announcementData) {
+        async createAnnouncement(announcement) {
             const res = await backendApiService.post({
                 url: "/create-announcement",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(announcementData),
+                body: JSON.stringify(announcement),
             });
 
             window.location.href = res.ok ? "/success" : "/error";
         },
-        async updateAnnouncement(updateData) {
+        async updateAnnouncement(announcement) {
             const res = await backendApiService.post({
                 url: "/update-announcement",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updateData),
+                body: JSON.stringify(announcement),
             });
 
             window.location.href = res.ok ? "/success" : "/error";

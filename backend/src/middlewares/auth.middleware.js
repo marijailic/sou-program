@@ -1,4 +1,4 @@
-import { Users } from "../models/models";
+import db from "../db";
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -9,7 +9,7 @@ async function hashPassword(passwordInput) {
 }
 
 async function getAuthUserData(username, password) {
-    const user = await Users.select().where("username", username).first();
+    const user = await db("user").select().where("username", username).first();
 
     if (!user) {
         throw new Error("No user");

@@ -1,13 +1,13 @@
 <template>
     <div>
-        <div class="card">
+        <div class="card mt-1 p-1 border-0">
             <div class="input-group">
                 <input
                     type="text"
                     class="form-control"
                     placeholder="Upiši ime || prezime korisnika..."
                     v-model="searchText"
-                    @input="emitSearchText"
+                    @input="filterUsers(searchText)"
                 />
             </div>
         </div>
@@ -15,25 +15,16 @@
 </template>
 
 <script>
-import eventBus from "@/eventBus";
+const props = {
+    filterUsers: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "searchUser",
-    data() {
-        return { searchText: "" };
-    },
-    methods: {
-        emitSearchText() {
-            eventBus.emit("searchText", this.searchText);
-        },
-    },
-};
-</script>
-
-<style scoped>
-.card {
-    border: none;
-    padding: 1vw;
-    margin-top: 1vw;
+    name: 'searchUser',
+    props,
+    data: () => ({ searchText: '' }),
 }
-</style>
+</script>

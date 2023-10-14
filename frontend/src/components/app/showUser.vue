@@ -1,140 +1,120 @@
 <template>
     <div>
         <div class="card">
-            <div class="user-profile">
+            <div class="d-flex align-items-center">
                 <img
-                    v-if="profilePictureKey"
                     class="user-profile-image rounded-circle"
-                    :src="profilePictureKey"
+                    :src="userImageSrc"
                 />
-                <img
-                    v-else
-                    class="user-profile-image rounded-circle"
-                    src="@/assets/sp-icon.png"
-                />
-                <div class="user-info">
+                <div class="flex-grow-1">
                     <router-link
-                        :to="'/user-profile/' + userData.id"
+                        :to="'/user-profile/' + user.id"
                         class="user-name"
                     >
-                        {{ userData.name }} {{ userData.surname }}
+                        {{ fullName }}
                     </router-link>
-                    <div class="username text-muted">
-                        {{ userData.username }}
+                    <div class="text-muted">
+                        {{ user.username }}
                     </div>
                 </div>
-                <div
-                    v-if="isDemos"
-                    class="user-actions d-flex justify-content-end"
-                >
+                <div v-if="isDemos" class="d-flex justify-content-end">
                     <button
-                        class="delete-btn btn btn-primary"
-                        @click="deleteUser(userData.id)"
+                        class="btn btn-primary me-2"
+                        @click="deleteUser(user.id)"
                     >
                         Izbriši
                     </button>
                     <button
                         class="edit-btn btn btn-primary"
-                        @click="openEditUser"
+                        @click="openEditing(user.id)"
                     >
                         Uredi
                     </button>
                 </div>
             </div>
         </div>
+        <edit-user
+            v-if="isDemos && isEditingActive && user"
+            :user="user"
+            :closeEditing="closeEditing"
+        />
     </div>
 </template>
 
 <script>
-import { useStoreUser } from "@/stores/user.store";
-import { useStoreGallery } from "@/stores/gallery.store";
+import { useStoreUser } from '@/stores/user.store'
+import userTypeEnum from '@/enums/userTypeEnum'
 
-import eventBus from "@/eventBus";
+import editUser from '@/components/app/editUser.vue'
 
-import userTypeEnum from "@/enums/userTypeEnum";
+const props = {
+    user: {
+        type: Object,
+        required: true,
+    },
+    getEditingUserID: {
+        type: Function,
+        required: true,
+    },
+    setEditingUserID: {
+        type: Function,
+        required: true,
+    },
+}
 
 export default {
-    name: "showUser",
-    data() {
-        return {
-            isDemos: userTypeEnum.DEMOS === localStorage.getItem("type"),
-            profilePictureKey: "",
-        };
-    },
-    props: {
-        userData: {
-            type: Object,
-            required: true,
-        },
-    },
-    setup(props) {
-        const userProfilePictureKey = props.userData.profile_picture_key;
-
-        const storeUser = useStoreUser();
-        const storeGallery = useStoreGallery();
-
-        return { storeUser, storeGallery, userProfilePictureKey };
-    },
+    name: 'showUser',
+    props,
+    components: { editUser },
+    data: () => ({
+        isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
+        userImageSrc: require('@/assets/sp-icon.png'),
+        storeUser: useStoreUser(),
+        isEditingUser: false,
+    }),
     async created() {
-        await this.displayImage(this.userProfilePictureKey);
+        this.userImageSrc = await this.user.getProfilePictureSrc()
+    },
+    computed: {
+        fullName() {
+            return `${this.user.name} ${this.user.surname}`
+        },
+        isEditingActive() {
+            return this.user.id === this.getEditingUserID()
+        },
     },
     methods: {
-        async deleteUser(idUser) {
+        async deleteUser(userID) {
             const isConfirmed = window.confirm(
-                "Jeste li sigurni da želite izbrisati korisnika?"
-            );
+                'Jeste li sigurni da želite izbrisati korisnika?'
+            )
 
             if (isConfirmed) {
-                await this.storeUser.deleteUser(idUser);
+                await this.storeUser.deleteUser(userID)
             }
         },
-        openEditUser() {
-            const editUser = true;
-            const editUserID = this.userData.id;
-            const editObj = {
-                editUser,
-                editUserID,
-            };
-            eventBus.emit("editUser", editObj);
+        openEditing(editingUserID) {
+            this.setEditingUserID(editingUserID)
         },
-        async displayImage(imageID) {
-            const image = await this.storeGallery.googleDisplayImage(imageID);
-            this.profilePictureKey = `data:image/jpeg;base64,${image}`;
+        closeEditing() {
+            this.setEditingUserID(0)
         },
     },
-};
+}
 </script>
 
 <style scoped>
 .card {
     border: none;
-    padding: 1vw;
-    margin-top: 1vw;
-}
-.user-profile {
-    display: flex;
-    align-items: center;
+    padding: 0.5rem;
+    margin-top: 1rem;
 }
 .user-profile-image {
     width: 50px;
     height: 50px;
-    margin-right: 1vw;
-}
-.user-info {
-    width: 100%;
+    margin-right: 1rem;
 }
 .user-name {
-    text-align: left;
-    color: rgb(33, 37, 41);
-}
-.username {
-    text-align: left;
-    font-size: 14px;
-}
-.user-actions {
-    width: 100%;
-}
-.delete-btn {
-    margin-right: 1vw;
+    color: #212529;
 }
 </style>

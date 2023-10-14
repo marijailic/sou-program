@@ -67,12 +67,11 @@
 </template>
 
 <script>
-import { useStoreCompetition } from "@/stores/competition.store";
-import { useStoreUser } from "@/stores/user.store";
-import { ref, onMounted } from "vue";
+import { useStoreCompetition } from '@/stores/competition.store'
+import { useStoreUser } from '@/stores/user.store'
 
 export default {
-    name: "EditTeam",
+    name: 'EditTeam',
     props: {
         teamData: {
             type: Object,
@@ -83,40 +82,30 @@ export default {
             required: true,
         },
     },
-    setup(props) {
-        const storeCompetition = useStoreCompetition();
-        const storeUser = useStoreUser();
-
-        const teamName = ref(props.teamData.name);
-        const selectedUserId = ref(""); // To store the selected user's ID
-        const allUsers = ref([]); // To store all the users
-
+    data() {
         return {
-            teamData: props.teamData,
-            storeCompetition,
-            teamName,
-            allUsers,
-            selectedUserId,
-        };
+            storeCompetition: useStoreCompetition(),
+            storeUser: useStoreUser(),
+            teamName: this.teamData.name,
+            selectedUserId: '', // To store the selected user's ID
+            allUsers: [], // To store all the users
+        }
     },
-    async onMounted() {
-        this.allUsers.value = await this.storeUser.fetchUser();
+    async mounted() {
+        this.allUsers = await this.storeUser.fetchUser()
     },
     methods: {
         closeEdit() {
-            this.closeEdit();
+            this.closeEdit()
         },
         async updateTeam() {
-            const id = this.teamData.id;
-            const name = this.teamName;
-
             const updateData = {
-                id,
-                name,
-            };
+                id: this.teamData.id,
+                name: this.teamName,
+            }
 
-            if (name.trim() !== "") {
-                await this.storeCompetition.updateTeam(updateData);
+            if (this.teamName.trim() !== '') {
+                await this.storeCompetition.updateTeam(updateData)
             }
         },
         async addMember() {
@@ -125,18 +114,18 @@ export default {
                     await this.storeCompetition.createMember({
                         team_id: this.teamData.id,
                         member_id: this.selectedUserId,
-                    });
+                    })
                 } catch (error) {
-                    console.error("Failed to create member:", error);
+                    console.error('Failed to create member:', error)
                 }
-                this.selectedUserId = "";
+                this.selectedUserId = ''
             }
         },
         async removeMember(memberId) {
-            await this.storeCompetition.deleteMember(memberId);
+            await this.storeCompetition.deleteMember(memberId)
         },
     },
-};
+}
 </script>
 
 <!-- Add your styles here -->

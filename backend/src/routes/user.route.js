@@ -2,37 +2,39 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-import { Users } from "../models/models";
-
 import { demosMiddleware } from "../middlewares/demos.middleware";
 import { hashPassword, authMiddleware } from "../middlewares/auth.middleware";
+import db from "../db";
 
 router.get("/user", [authMiddleware], async (req, res, next) => {
-    Users.select()
-        .from("user")
-        .orderBy("id", "desc")
-        .then((users) =>
-            res.json({
-                message: "User fetched successfully",
-                data: users,
-            })
-        )
-        .catch(next);
+    try {
+        const users = await db("user").orderBy("id", "desc");
+        res.json({
+            message: "User fetched successfully",
+            data: users,
+        });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", data: {} });
+    }
 });
 
 router.delete(
     "/delete-user",
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
-        Users.where({ id: req.body.id })
-            .del()
-            .then((res) =>
-                res.json({
-                    message: "User deleted successfully",
-                    data: {},
-                })
-            )
-            .catch(next);
+        try {
+            await db("user").where({ id: req.body.id }).del();
+            res.json({
+                message: "User deleted successfully",
+                data: {},
+            });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
 );
 
@@ -57,14 +59,19 @@ router.post(
             join_date: timestamp,
         };
 
-        await Users.insert(userData)
-            .then(() =>
-                res.json({
-                    message: "User created successfully",
-                    data: {},
-                })
-            )
-            .catch(next);
+        try {
+            await db("user").insert(userData);
+            res.json({
+                message: "User created successfully",
+                data: {},
+            });
+        } catch (error) {
+            console.log("Error:", error);
+            res.status(500).json({
+                message: "Internal server error",
+                data: {},
+            });
+        }
     }
 );
 
@@ -86,7 +93,7 @@ router.post(
         };
 
         try {
-            await Users.where({ id: id }).update(userData);
+            await db("user").where({ id: id }).update(userData);
             res.json({
                 message: "User updated successfully",
                 data: {},
