@@ -7,7 +7,7 @@
                     <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="name">Ime</label>
                         <input
-                            v-model.trim="user.name"
+                            v-model.trim="userName"
                             type="text"
                             class="form-control"
                             id="name"
@@ -17,7 +17,7 @@
                     <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="surname">Prezime</label>
                         <input
-                            v-model.trim="user.surname"
+                            v-model.trim="userSurname"
                             type="text"
                             class="form-control"
                             id="surname"
@@ -27,7 +27,7 @@
                     <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="email">E-mail</label>
                         <input
-                            v-model.trim="user.email"
+                            v-model.trim="userEmail"
                             type="email"
                             class="form-control"
                             id="email"
@@ -67,7 +67,7 @@
                     <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="bio">Opis</label>
                         <textarea
-                            v-model.trim="user.bio"
+                            v-model.trim="userBio"
                             class="form-control"
                             id="bio"
                         ></textarea>
@@ -75,7 +75,7 @@
                     <div class="form-group col-lg-3 col-sm-6 text-start">
                         <label for="type">Tip korisnika</label>
                         <select
-                            v-model="user.type"
+                            v-model="userType"
                             class="form-control"
                             id="type"
                         >
@@ -85,18 +85,13 @@
                     </div>
                 </div>
                 <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="closeEditing"
+                    <a class="btn btn-primary me-2" @click="closeEditingUser"
                         >Odustani</a
                     >
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        :disabled="
-                            !user.name ||
-                            !user.surname ||
-                            !user.email ||
-                            !user.type
-                        "
+                        :disabled="!userName || !userSurname || !userType"
                     >
                         Spremi promjenu
                     </button>
@@ -110,11 +105,11 @@
 import { useStoreUser } from '@/stores/user.store'
 
 const props = {
-    user: {
-        type: Object,
+    userID: {
+        type: Number,
         required: true,
     },
-    closeEditing: {
+    closeEditingUser: {
         type: Function,
         required: true,
     },
@@ -123,12 +118,31 @@ const props = {
 export default {
     name: 'editUser',
     props,
-    data: () => ({
-        storeUser: useStoreUser(),
-    }),
+    data() {
+        const storeUser = useStoreUser()
+        const user = storeUser.getUserByID(this.userID)
+
+        return {
+            user,
+            userName: user.name,
+            userSurname: user.surname,
+            userEmail: user.email,
+            userBio: user.bio,
+            userType: user.type,
+        }
+    },
     methods: {
         async updateUser() {
-            await this.storeUser.updateUser(this.user)
+            const updatedUser = {
+                ...user,
+                name: this.userName,
+                surname: this.surname,
+                email: this.userEmail,
+                bio: this.user,
+                type: this.userType,
+            }
+
+            await this.storeUser.updateUser(updatedUser)
         },
     },
 }
@@ -143,6 +157,6 @@ export default {
 }
 .card,
 .card-footer {
-    background-color: #eaeaea;
+    background-color: var(--white-color-2);
 }
 </style>

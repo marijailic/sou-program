@@ -28,23 +28,20 @@ export default {
     name: 'UserProfileView',
     components: { showProfile, showProfilePost },
     data: () => ({
+        userID: 0,
         user: {},
         profilePosts: [],
-        storeProfilePost: useStoreProfilePost(),
     }),
     async created() {
+        const storeProfilePost = useStoreProfilePost()
         const storeUser = useStoreUser()
-        const userID = this.$route.params.id
 
-        await storeUser.fetchUser()
+        await storeUser.fetchUsers()
 
-        this.user = await storeUser.getUserByID(userID)
+        this.userID = this.$route.params.id
+        this.user = storeUser.getUserByID(this.userID)
 
-        this.user.profilePosts = await this.storeProfilePost.fetchProfilePost(
-            userID
-        )
-
-        this.user.imageSrc = await this.user.getProfilePictureSrc()
+        this.profilePosts = await storeProfilePost.fetchProfilePost(this.userID)
     },
 }
 </script>

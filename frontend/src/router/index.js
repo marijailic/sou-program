@@ -1,95 +1,95 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
     {
-        path: "/",
-        name: "WebWrapper",
-        component: () => import("@/wrappers/WebWrapper.vue"),
+        path: '/',
+        name: 'WebWrapper',
+        component: () => import('@/wrappers/WebWrapper.vue'),
         meta: {
             authRequired: false,
         },
         children: [
             {
-                path: "",
-                name: "HomeView",
-                meta: { title: "Početna" },
+                path: '',
+                name: 'HomeView',
+                meta: { title: 'Početna' },
 
-                component: () => import("@/views/web/HomeView.vue"),
+                component: () => import('@/views/web/HomeView.vue'),
             },
             {
-                path: "login",
-                name: "LoginView",
-                meta: { title: "Prijava" },
+                path: 'login',
+                name: 'LoginView',
+                meta: { title: 'Prijava' },
 
-                component: () => import("@/views/web/LoginView.vue"),
+                component: () => import('@/views/web/LoginView.vue'),
             },
             {
-                path: "contact",
-                name: "ContactView",
-                meta: { title: "Kontakt" },
+                path: 'contact',
+                name: 'ContactView',
+                meta: { title: 'Kontakt' },
 
-                component: () => import("@/views/web/ContactView"),
+                component: () => import('@/views/web/ContactView'),
             },
             {
-                path: "educators",
-                name: "EducatorsView",
-                meta: { title: "Šou lab" },
+                path: 'educators',
+                name: 'EducatorsView',
+                meta: { title: 'Šou lab' },
 
-                component: () => import("@/views/web/EducatorsView"),
+                component: () => import('@/views/web/EducatorsView'),
             },
             {
-                path: "podcast",
-                name: "PodcastView",
-                meta: { title: "Šou podkast" },
+                path: 'podcast',
+                name: 'PodcastView',
+                meta: { title: 'Šou podkast' },
 
-                component: () => import("@/views/web/PodcastView"),
+                component: () => import('@/views/web/PodcastView'),
             },
         ],
     },
     {
-        path: "/",
-        name: "AppWrapper",
-        component: () => import("@/wrappers/AppWrapper.vue"),
+        path: '/',
+        name: 'AppWrapper',
+        component: () => import('@/wrappers/AppWrapper.vue'),
         meta: {
             authRequired: true,
         },
         children: [
             {
-                path: "newsfeed",
-                name: "NewsfeedView",
-                component: () => import("@/views/app/NewsfeedView.vue"),
+                path: 'newsfeed',
+                name: 'NewsfeedView',
+                component: () => import('@/views/app/NewsfeedView.vue'),
             },
             {
-                path: "search",
-                name: "SearchView",
-                component: () => import("@/views/app/SearchView.vue"),
+                path: 'search',
+                name: 'SearchView',
+                component: () => import('@/views/app/SearchView.vue'),
             },
             {
-                path: "my-profile",
-                name: "MyProfileView",
-                component: () => import("@/views/app/MyProfileView.vue"),
+                path: 'my-profile',
+                name: 'MyProfileView',
+                component: () => import('@/views/app/MyProfileView.vue'),
             },
             {
-                path: "user-profile/:id",
-                name: "UserProfileView",
-                component: () => import("@/views/app/UserProfileView.vue"),
+                path: 'user-profile/:id',
+                name: 'UserProfileView',
+                component: () => import('@/views/app/UserProfileView.vue'),
             },
             {
-                path: "gallery",
-                name: "GalleryView",
-                component: () => import("@/views/app/GalleryView.vue"),
+                path: 'gallery',
+                name: 'GalleryView',
+                component: () => import('@/views/app/GalleryView.vue'),
             },
             {
-                path: "competitions",
-                name: "CompetitionView",
-                component: () => import("@/views/app/CompetitionView.vue"),
+                path: 'competitions',
+                name: 'CompetitionView',
+                component: () => import('@/views/app/CompetitionView.vue'),
             },
         ],
     },
     {
-        path: "/",
-        name: "MsgWrapper",
-        component: () => import("@/wrappers/MsgWrapper.vue"),
+        path: '/',
+        name: 'MsgWrapper',
+        component: () => import('@/wrappers/MsgWrapper.vue'),
         children: [
             // {
             //     path: "login",
@@ -97,28 +97,28 @@ const routes = [
             //     component: () => import("@/views/LoginView.vue"),
             // },
             {
-                path: "error",
-                name: "Error",
-                component: () => import("@/views/app/Error.vue"),
+                path: 'error',
+                name: 'Error',
+                component: () => import('@/views/app/Error.vue'),
             },
             {
-                path: "success",
-                name: "Success",
-                component: () => import("@/views/app/Success.vue"),
+                path: 'success',
+                name: 'Success',
+                component: () => import('@/views/app/Success.vue'),
             },
         ],
     },
     {
-        path: "/",
-        name: "WebWrapper all routes",
-        path: "/:catchAll(.*)",
-        redirect: "/",
+        path: '/',
+        name: 'WebWrapper all routes',
+        path: '/:catchAll(.*)',
+        redirect: '/',
 
         meta: {
             authRequired: false,
         },
     },
-];
+]
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -128,40 +128,40 @@ const router = createRouter({
     scrollBehavior(to, from, savedPosition) {
         return {
             top: -1,
-        };
+        }
     },
-});
+})
 
 router.beforeEach((to, _from, next) => {
-    const token = localStorage.getItem("token");
-    const isUserLoggedIn = token !== null;
+    const token = localStorage.getItem('token')
+    const isUserLoggedIn = token !== null
 
     // success and error
-    let shouldRefresh = localStorage.getItem("shouldRefresh") === "true";
+    let shouldRefresh = localStorage.getItem('shouldRefresh') === 'true'
     if (shouldRefresh) {
-        localStorage.removeItem("shouldRefresh");
-        location.reload();
+        localStorage.removeItem('shouldRefresh')
+        location.reload()
     }
 
     // provjera auth
     if (to.meta.authRequired) {
         if (!isUserLoggedIn) {
-            return next({ name: "LoginView" });
+            return next({ name: 'LoginView' })
         }
     } else {
         if (isUserLoggedIn) {
-            if (to.name === "LoginView") {
-                return next({ name: "NewsfeedView" });
+            if (to.name === 'LoginView') {
+                return next({ name: 'NewsfeedView' })
             }
         }
     }
 
-    return next();
-});
+    return next()
+})
 
-const DEFAULT_TITLE = "Šou program";
+const DEFAULT_TITLE = 'Šou program'
 router.afterEach((to, from) => {
-    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`;
-});
+    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`
+})
 
-export default router;
+export default router

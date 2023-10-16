@@ -4,7 +4,7 @@
             <div class="card">
                 <div class="card-body text-start">
                     <textarea
-                        v-model.trim="profilePost.text"
+                        v-model.trim="profilePostText"
                         class="form-control"
                         rows="3"
                         required
@@ -17,7 +17,10 @@
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        :disabled="!profilePost.text"
+                        :disabled="
+                            profilePostText === profilePost.text ||
+                            !profilePostText
+                        "
                     >
                         Spremi promjenu
                     </button>
@@ -44,11 +47,16 @@ const props = {
 export default {
     name: 'editProfilePost',
     props,
-    data: () => ({
-        storeProfilePost: useStoreProfilePost(),
-    }),
+    data() {
+        return {
+            profilePostText: this.profilePost.text,
+            storeProfilePost: useStoreProfilePost(),
+        }
+    },
     methods: {
         async updateProfilePost() {
+            this.profilePost.text = profilePostText
+
             await this.storeProfilePost.updateProfilePost(this.profilePost)
         },
     },
@@ -58,7 +66,7 @@ export default {
 <style scoped>
 .card,
 .card-footer {
-    background-color: #eaeaea;
+    background-color: var(--white-color-2);
 }
 .card {
     border: none;

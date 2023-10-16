@@ -5,8 +5,8 @@
         </div>
 
         <add-announcement
-            v-if="storeUser.isCurrentUserDemos && currentUser"
-            :userImageSrc="userImageSrc"
+            v-if="isAuthUserDemos && currentUser"
+            :userProfilePictureSrc="currentUser.profilePictureSrc"
         />
 
         <div
@@ -30,6 +30,9 @@
 import { useStoreUser } from '@/stores/user.store'
 import { useStoreAnnouncement } from '@/stores/announcement.store'
 
+import authService from '@/services/authService'
+import dateService from '@/services/dateService'
+
 import addAnnouncement from '@/components/app/addAnnouncement.vue'
 import showAnnouncement from '@/components/app/showAnnouncement.vue'
 
@@ -41,19 +44,28 @@ export default {
     },
     data: () => ({
         currentUser: {},
-        userImageSrc: '',
         announcements: [],
         activeEditingAnnouncementID: 0,
-        storeUser: useStoreUser(),
-        storeAnnouncement: useStoreAnnouncement(),
     }),
     async created() {
-        await this.storeUser.fetchUser()
-        this.currentUser = await this.storeUser.getCurrentUser()
+        const storeUser = useStoreUser()
+        const storeAnnouncement = useStoreAnnouncement()
 
-        this.announcements = await this.storeAnnouncement.fetchAnnouncement()
+        await storeUser.fetchUsers()
+        this.currentUser = await storeUser.getUserByUsername(
+            authService.getAuthUsername()
+        )
 
-        this.userImageSrc = await this.currentUser.getProfilePictureSrc()
+        const announcements = await storeAnnouncement.fetchAnnouncement()
+
+        const announcementsWithAuthor = await Promise.all(
+            announcements.map(async (announcement) => ({
+                ...announcement,
+                author: await storeUser.getUserByID(announcement.author_id),
+            }))
+        )
+
+        this.announcements = announcementsWithAuthor
     },
     methods: {
         getEditingAnnouncementID() {
@@ -61,6 +73,9 @@ export default {
         },
         setEditingAnnouncementID(editingAnnouncementID) {
             this.activeEditingAnnouncementID = editingAnnouncementID
+        },
+        isAuthUserDemos() {
+            return authService.isAuthUserDemos()
         },
     },
 }

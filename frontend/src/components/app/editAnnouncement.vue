@@ -4,7 +4,7 @@
             <div class="card border-0 p-0 mt-2">
                 <div class="card-body text-start">
                     <textarea
-                        v-model="announcement.text"
+                        v-model.trim="announcementText"
                         class="form-control"
                         rows="3"
                         required
@@ -17,7 +17,10 @@
                     <button
                         type="submit"
                         class="btn btn-primary"
-                        :disabled="!announcement.text"
+                        :disabled="
+                            announcementText === announcement.text ||
+                            !announcementText
+                        "
                     >
                         Spremi promjenu
                     </button>
@@ -44,14 +47,17 @@ const props = {
 export default {
     name: 'editAnnouncement',
     props,
-    data: () => ({
-        storeAnnouncement: useStoreAnnouncement(),
-    }),
+    data() {
+        return {
+            announcementText: this.announcement.text,
+            storeAnnouncement: useStoreAnnouncement(),
+        }
+    },
     methods: {
         async updateAnnouncement() {
             const updatedAnnouncement = {
                 id: this.announcement.id,
-                text: this.announcement.text,
+                text: announcementText,
             }
 
             await this.storeAnnouncement.updateAnnouncement(updatedAnnouncement)
@@ -63,6 +69,6 @@ export default {
 <style scoped>
 .card,
 .card-footer {
-    background-color: #eaeaea;
+    background-color: var(--white-color-2);
 }
 </style>

@@ -5,7 +5,10 @@
                 <div>
                     <img
                         class="profile-pic rounded-circle"
-                        :src="userImageSrc || require('@/assets/sp-icon.png')"
+                        :src="
+                            userProfilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
                     />
                 </div>
                 <div class="flex-grow-1">
@@ -35,7 +38,7 @@
 import { useStoreAnnouncement } from '@/stores/announcement.store'
 
 const props = {
-    userImageSrc: {
+    userProfilePictureSrc: {
         type: String,
         required: true,
     },

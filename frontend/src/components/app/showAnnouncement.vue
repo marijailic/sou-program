@@ -5,7 +5,10 @@
                 <div class="my-auto">
                     <img
                         class="profile-pic rounded-circle"
-                        :src="userImageSrc || require('@/assets/sp-icon.png')"
+                        :src="
+                            userProfilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
                     />
                 </div>
                 <div class="flex-grow-1">
@@ -77,14 +80,14 @@ export default {
         editAnnouncement,
     },
     data: () => ({
-        userImageSrc: '',
+        userProfilePictureSrc: '',
         isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
         isEditingActive: false,
         storeAnnouncement: useStoreAnnouncement(),
     }),
     async created() {
-        this.userImageSrc =
-            await this.announcement.author.getProfilePictureSrc()
+        this.userProfilePictureSrc = await this.announcement.author
+            .profilePictureSrc
     },
     computed: {
         isEditingActive() {

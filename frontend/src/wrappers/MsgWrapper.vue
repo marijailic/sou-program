@@ -13,19 +13,19 @@ export default {
 <style lang="scss">
 html,
 body {
-    background-color: #f5f5f5;
+    background-color: var(--white-color);
     .btn-primary {
-        background-color: #66ccff;
-        border: #66ccff;
+        background-color: var(--primary-color);
+        border: var(--primary-color);
     }
     .btn-primary:hover {
-        background-color: #66ccff;
+        background-color: var(--primary-color);
     }
     .btn-primary:active {
-        background-color: #66ccff !important;
+        background-color: var(--primary-color) !important;
     }
     .btn-primary:focus {
-        background-color: #66ccff;
+        background-color: var(--primary-color);
     }
 }
 .w-full {

@@ -1,8 +1,8 @@
-const mailTo = process.env.VUE_APP_CONTACT_EMAIL;
-const subject = "Email from site";
-const subjcetURIEncoded = encodeURIComponent(subject);
+const mailTo = process.env.VUE_APP_CONTACT_EMAIL
+const subject = 'Email from site'
+const subjcetURIEncoded = encodeURIComponent(subject)
 
-const mailHref = `mailto:${mailTo}?subject=${subjcetURIEncoded}`;
+const mailHref = `mailto:${mailTo}?subject=${subjcetURIEncoded}`
 
 export default {
     mail: { mailHref, mailTo },
@@ -11,4 +11,4 @@ export default {
     linkedin: process.env.VUE_APP_URL_LINKEDIN,
     youtube: process.env.VUE_APP_URL_YOUTUBE,
     github: process.env.VUE_APP_URL_GITHUB,
-};
+}

@@ -4,12 +4,15 @@
             <div class="d-flex justify-content-center gap-3">
                 <img
                     class="profile-pic rounded-circle"
-                    :src="user.imageSrc || require('@/assets/sp-icon.png')"
+                    :src="
+                        user.profilePictureSrc ||
+                        require('@/assets/sp-icon.png')
+                    "
                 />
                 <div class="flex-grow-1 d-flex align-items-center text-start">
                     <div class="text-start">
                         <h6 class="d-inline m-0">
-                            {{ userFullName }}
+                            {{ user.fullName }}
                         </h6>
                         <span class="text-muted">
                             •
@@ -46,12 +49,13 @@
 
 <script>
 import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreUser } from '@/stores/user.store'
 
 import editProfilePost from './editProfilePost.vue'
 
 const props = {
     user: {
-        type: Object,
+        type: Number,
         required: true,
     },
     profilePost: {
@@ -76,14 +80,13 @@ export default {
     components: {
         editProfilePost,
     },
-    data: () => ({
-        storeProfilePost: useStoreProfilePost(),
-        isEditingActive: false,
-        canEdit: false,
-    }),
-    async created() {
-        this.canEdit =
-            this.setEditingProfilePostID && this.getEditingProfilePostID
+    data() {
+        return {
+            isEditingActive: false,
+            canEdit:
+                this.setEditingProfilePostID && this.getEditingProfilePostID,
+            storeProfilePost: useStoreProfilePost(),
+        }
     },
     computed: {
         isEditingActive() {
@@ -91,9 +94,6 @@ export default {
                 this.getEditingProfilePostID !== null &&
                 this.profilePost.id === this.getEditingProfilePostID()
             )
-        },
-        userFullName() {
-            return `${this.user.name} ${this.user.surname}`
         },
     },
     methods: {

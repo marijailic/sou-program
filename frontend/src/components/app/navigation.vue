@@ -1,10 +1,10 @@
 <template>
     <div class="nav-container">
-        <div class="card text-center">
+        <div class="card py-3 text-center">
             <img
                 id="profile-image"
-                class="card-img-top rounded-circle mx-sm-auto mx-2"
-                :src="userImageSrc || require('@/assets/sp-icon.png')"
+                class="card-img-top rounded-circle mx-auto"
+                :src="userProfilePictureSrc || require('@/assets/sp-icon.png')"
             />
             <div class="card-body px-0">
                 <h5 class="card-title mt-1">
@@ -16,6 +16,7 @@
                     <router-link
                         to="/newsfeed"
                         class="nav-link"
+                        :class="{ 'nav-link-active': isActive('/newsfeed') }"
                         data-text="Naslovnica"
                         @click="toggleNav"
                         ><i class="material-icons">article</i></router-link
@@ -23,13 +24,15 @@
                     <router-link
                         to="/search"
                         class="nav-link"
+                        :class="{ 'nav-link-active': isActive('/search') }"
                         data-text="Stalkaonica"
                         @click="toggleNav"
                         ><i class="material-icons">people</i></router-link
                     >
-                    <router-link
+                    <!-- <router-link
                         to="/gallery"
                         class="nav-link"
+                        :class="{ 'nav-link-active': isActive('/gallery') }"
                         data-text="Galerija"
                         @click="toggleNav"
                         ><i class="material-icons"
@@ -39,10 +42,13 @@
                     <router-link
                         to="/competitions"
                         class="nav-link"
+                        :class="{
+                            'nav-link-active': isActive('/competitions'),
+                        }"
                         data-text="Natjecanja"
                         @click="toggleNav"
                         ><i class="material-icons">emoji_events</i></router-link
-                    >
+                    > -->
                 </nav>
             </div>
             <div class="px-3">
@@ -62,6 +68,7 @@
 <script>
 import { useStoreUser } from '@/stores/user.store'
 import imageService from '@/services/imageService'
+import authService from '@/services/authService'
 
 const props = {
     toggleNav: {
@@ -75,19 +82,22 @@ export default {
     props,
     data: () => ({
         username: '',
-        userImageSrc: '',
+        userProfilePictureSrc: '',
         storeUser: useStoreUser(),
     }),
     async created() {
-        await this.storeUser.fetchUser()
-        const currentUser = await this.storeUser.getCurrentUser()
+        await this.storeUser.fetchUsers()
+        const currentUser = await this.storeUser.getUserByUsername(
+            authService.getAuthUsername()
+        )
 
         this.username = currentUser.username
-        this.userImageSrc = await imageService.getImageSrc(
-            currentUser.profile_picture_key
-        )
+        this.userProfilePictureSrc = currentUser.profilePictureSrc
     },
     methods: {
+        isActive(routeName) {
+            return this.$route.path === routeName
+        },
         logout() {
             localStorage.removeItem('token')
             localStorage.removeItem('refreshToken')
@@ -104,11 +114,11 @@ export default {
     height: 100vh;
     transform: translateX(-110%);
     transition: transform 0.3s ease-in-out;
-    top: 0;
-    left: 0;
-    overflow-y: auto;
     display: block;
     position: fixed;
+    top: 0;
+    overflow-y: auto;
+
     z-index: 1;
     &.slide-in {
         transform: translateX(0);
@@ -127,20 +137,23 @@ export default {
     padding: 1rem 0;
 }
 .custom-link {
-    color: #212529;
+    color: var(--black-color);
 }
 .nav {
     margin-top: 3rem;
 }
+.nav-link-active {
+    background-color: var(--white-color);
+}
 .nav-link {
     display: flex;
     align-items: center;
-    color: #212529;
+    color: var(--black-color);
     padding: 0;
     height: 3rem;
 
     &:hover {
-        background-color: #f5f5f5;
+        background-color: var(--white-color);
     }
 
     &::after {
@@ -154,7 +167,7 @@ export default {
     margin-right: 0.5rem;
 }
 .info-btn {
-    color: #212529;
+    color: var(--black-color);
 }
 .btn {
     width: 100%;
@@ -165,7 +178,10 @@ export default {
         position: static;
         transform: translateX(0);
         width: 18rem;
+        margin-top: 1rem;
+        margin-left: 1rem;
     }
+
     .card {
         border: none;
     }
