@@ -84,6 +84,11 @@ const routes = [
                 name: 'CompetitionView',
                 component: () => import('@/views/app/CompetitionView.vue'),
             },
+            {
+                path: "resources",
+                name: "ResourcesView",
+                component: () => import("@/views/app/ResourcesView.vue"),
+            }
         ],
     },
     {

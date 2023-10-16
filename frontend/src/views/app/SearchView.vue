@@ -56,6 +56,30 @@
                 />
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <search-user />
+                <show-user
+                    v-for="user in users"
+                    :key="user.id"
+                    :userData="user"
+                />
+                <div
+                    class="d-flex justify-content-center"
+                    v-if="users.length === 0"
+                >
+                    <h1 class="mt-5">Nema korisnika...</h1>
+                </div>
+            </div>
+            <div class="col" v-if="addUser || editUser">
+                <add-user :closeAdd="closeAdd" v-if="addUser" />
+                <edit-user
+                    :userID="editUserID"
+                    :closeEdit="closeEdit"
+                    v-if="editUser"
+                />
+            </div>
+        </div>
     </div>
 </template>
 
