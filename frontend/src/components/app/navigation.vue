@@ -4,13 +4,11 @@
             <img
                 id="profile-image"
                 class="card-img-top rounded-circle mx-sm-auto mx-2"
-                :src="userImageSrc || require('@/assets/sp-icon.png')"
+                :src="require('@/assets/sp-icon.png')"
             />
             <div class="card-body px-0">
                 <h5 class="card-title mt-1">
-                    <router-link class="custom-link" to="/my-profile">
-                        {{ username }}</router-link
-                    >
+                    {{ username }}
                 </h5>
                 <nav class="nav flex-column">
                     <router-link
@@ -19,6 +17,14 @@
                         data-text="Naslovnica"
                         @click="toggleNav"
                         ><i class="material-icons">article</i></router-link
+                    >
+                    <router-link
+                        class="nav-link"
+                        to="/my-profile"
+                        data-text="Profil"
+                        @click="toggleNav"
+                    >
+                        <i class="material-icons">person</i></router-link
                     >
                     <router-link
                         to="/search"
@@ -52,37 +58,6 @@
                     >
                 </div>
                 <button class="btn btn-primary px-3" @click="logout">
-                    Odjavi me
-                </button>
-            </div>
-        </div>
-        <nav class="nav flex-column">
-            <router-link to="/newsfeed" class="nav-link"
-                ><i class="material-icons">article</i> Naslovnica</router-link
-            >
-            <router-link to="/my-profile" class="nav-link"
-                ><i class="material-icons">person</i>Profil</router-link
-            >
-            <router-link to="/search" class="nav-link"
-                ><i class="material-icons">people</i>Stalkaonica</router-link
-            >
-            <router-link to="/gallery" class="nav-link"
-                ><i class="material-icons">photo_library</i>
-                Galerija</router-link
-            >
-            <router-link to="/competitions" class="nav-link"
-                ><i class="material-icons">emoji_events</i>
-                Natjecanja</router-link
-            >
-        </nav>
-        <div class="nav-btns">
-            <div class="info-link">
-                <router-link to="/resources" class="info-btn">
-                    Resursi</router-link
-                >
-            </div>
-            <div>
-                <button class="btn btn-primary" @click="logout">
                     Odjavi me
                 </button>
             </div>

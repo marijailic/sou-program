@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form @submit.prevent="createUser">
+        <form @submit.prevent="createUser" autocomplete="off">
             <div class="card border-0 p-0 mt-3">
                 <div class="row">
                     <h3 class="headline">Dodaj korisnika</h3>
@@ -12,6 +12,7 @@
                             class="form-control"
                             id="name"
                             required
+                            maxlength="30"
                         />
                     </div>
                     <div class="form-group">
@@ -22,6 +23,7 @@
                             class="form-control"
                             id="surname"
                             required
+                            maxlength="30"
                         />
                     </div>
                     <div class="form-group">
@@ -34,26 +36,8 @@
                             required
                         />
                     </div>
-                    <div class="form-group">
-                        <label for="username">Korisničko ime</label>
-                        <input
-                            v-model.trim="user.username"
-                            type="text"
-                            class="form-control"
-                            id="username"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Lozinka</label>
-                        <input
-                            v-model.trim="user.password"
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            required
-                        />
-                    </div>
+                    <username-input v-model.trim="user.username" />
+                    <password-input v-model.trim="user.password" />
                     <div class="form-group">
                         <label for="profilePicture">Slika profila</label>
                         <input
@@ -62,6 +46,7 @@
                             id="profilePicture"
                             class="picture-input form-control"
                             accept="image/*"
+                            required
                         />
                     </div>
                     <div class="form-group">
@@ -70,6 +55,7 @@
                             v-model.trim="user.bio"
                             class="form-control"
                             id="bio"
+                            maxlength="250"
                         ></textarea>
                     </div>
                     <div class="form-group">
@@ -102,6 +88,8 @@
 <script>
 import { useStoreGallery } from '@/stores/gallery.store'
 import { useStoreUser } from '@/stores/user.store'
+import usernameInput from '@/components/app/validation/usernameInput.vue'
+import passwordInput from '@/components/app/validation/passwordInput.vue'
 
 const props = {
     closeAddingUser: {
@@ -123,10 +111,14 @@ export default {
             username: '',
             password: '',
             bio: '',
-            type: '',
+            type: 'student',
         },
         selectedImage: null,
     }),
+    components: {
+        usernameInput,
+        passwordInput,
+    },
     methods: {
         addFile(event) {
             this.selectedImage = event.target.files[0]
