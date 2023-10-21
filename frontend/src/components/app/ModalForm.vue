@@ -16,6 +16,7 @@
                     <form
                         class="card p-0 border-0 mt-3 d-flex gap-3"
                         @submit.prevent="confirmHandler"
+                        autocomplete="off"
                     >
                         <slot></slot>
                     </form>

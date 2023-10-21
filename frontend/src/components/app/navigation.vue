@@ -8,9 +8,7 @@
             />
             <div class="card-body px-0">
                 <h5 class="card-title mt-1">
-                    <router-link class="custom-link" to="/my-profile">
-                        {{ username }}</router-link
-                    >
+                    {{ username }}
                 </h5>
                 <nav class="nav flex-column">
                     <router-link
@@ -22,6 +20,14 @@
                         data-text="Naslovnica"
                         @click="toggleNav"
                         ><i class="material-icons">article</i></router-link
+                    >
+                    <router-link
+                        class="nav-link"
+                        to="/my-profile"
+                        data-text="Profil"
+                        @click="toggleNav"
+                    >
+                        <i class="material-icons">person</i></router-link
                     >
                     <router-link
                         to="/search"
