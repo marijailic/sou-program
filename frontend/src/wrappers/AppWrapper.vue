@@ -109,5 +109,6 @@ body {
 }
 .card {
     padding: 0.5rem;
+    border: none;
 }
 </style>

@@ -36,37 +36,19 @@
                 </div>
             </div>
         </div>
-        <edit-user
-            v-if="isAuthUserDemos && isEditingActive && !isMobile"
-            :userID="user.id"
-            :closeEditingUser="closeEditingUser"
-        />
     </div>
 </template>
 
 <script>
 import { useStoreUser } from '@/stores/user.store'
-
-import editUser from '@/components/app/editUser.vue'
+import authService from '@/services/authService'
 
 const props = {
     user: {
         type: Object,
         required: true,
     },
-    getEditingUserID: {
-        type: Function,
-        required: true,
-    },
     setEditingUserID: {
-        type: Function,
-        required: true,
-    },
-    closeAddingUser: {
-        type: Function,
-        required: true,
-    },
-    isMobile: {
         type: Function,
         required: true,
     },
@@ -75,10 +57,9 @@ const props = {
 export default {
     name: 'showUser',
     props,
-    components: { editUser },
     computed: {
-        isEditingActive() {
-            return this.user.id === this.getEditingUserID()
+        isAuthUserDemos() {
+            return authService.isAuthUserDemos()
         },
     },
     methods: {
@@ -94,14 +75,10 @@ export default {
             }
         },
         openEditingUser(editingUserID) {
-            this.closeAddingUser()
             this.setEditingUserID(editingUserID)
         },
         closeEditingUser() {
             this.setEditingUserID(0)
-        },
-        isAuthUserDemos() {
-            return authService.isAuthUserDemos()
         },
     },
 }

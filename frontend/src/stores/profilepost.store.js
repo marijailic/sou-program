@@ -7,7 +7,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
         profilePosts: [],
     }),
     actions: {
-        async fetchProfilePost(authorID) {
+        async fetchProfilePosts(authorID) {
             const res = await backendApiService.get({
                 url: `/profile-post/${authorID}`,
             })

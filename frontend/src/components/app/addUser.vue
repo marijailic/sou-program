@@ -1,107 +1,103 @@
 <template>
     <div>
-        <form @submit.prevent="createUser">
-            <div class="card border-0 p-0 mt-3">
-                <div class="row">
-                    <h3 class="headline">Dodaj korisnika</h3>
-                    <div class="form-group">
-                        <label for="name">Ime</label>
-                        <input
-                            v-model.trim="user.name"
-                            type="text"
-                            class="form-control"
-                            id="name"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="surname">Prezime</label>
-                        <input
-                            v-model.trim="user.surname"
-                            type="text"
-                            class="form-control"
-                            id="surname"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input
-                            v-model.trim="user.email"
-                            type="email"
-                            class="form-control"
-                            id="email"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="username">Korisničko ime</label>
-                        <input
-                            v-model.trim="user.username"
-                            type="text"
-                            class="form-control"
-                            id="username"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Lozinka</label>
-                        <input
-                            v-model.trim="user.password"
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            required
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="profilePicture">Slika profila</label>
-                        <input
-                            type="file"
-                            @change="addFile"
-                            id="profilePicture"
-                            class="picture-input form-control"
-                            accept="image/*"
-                        />
-                    </div>
-                    <div class="form-group">
-                        <label for="bio">Opis</label>
-                        <textarea
-                            v-model.trim="user.bio"
-                            class="form-control"
-                            id="bio"
-                        ></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Tip korisnika</label>
-                        <select
-                            v-model="user.type"
-                            class="form-control"
-                            id="type"
-                            required
-                        >
-                            <option value="" disabled selected>
-                                Odaberi tip korisnika
-                            </option>
-                            <option value="demonstrator">Demonstrator</option>
-                            <option value="student">Student</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="closeAddingUser"
-                        >Odustani</a
-                    >
-                    <button type="submit" class="btn btn-primary">Dodaj</button>
-                </div>
+        <ModalForm
+            :isOpen="true"
+            :onClose="closeAddingUser"
+            :onConfirm="createUser"
+            title="Dodaj korisnika"
+        >
+            <div class="form-group">
+                <label for="name">Ime</label>
+                <input
+                    v-model.trim="user.name"
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    required
+                />
             </div>
-        </form>
+            <div class="form-group">
+                <label for="surname">Prezime</label>
+                <input
+                    v-model.trim="user.surname"
+                    type="text"
+                    class="form-control"
+                    id="surname"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input
+                    v-model.trim="user.email"
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="username">Korisničko ime</label>
+                <input
+                    v-model.trim="user.username"
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="password">Lozinka</label>
+                <input
+                    v-model.trim="user.password"
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="profilePicture">Slika profila</label>
+                <input
+                    type="file"
+                    @change="addFile"
+                    id="profilePicture"
+                    class="picture-input form-control"
+                    accept="image/*"
+                />
+            </div>
+            <div class="form-group">
+                <label for="bio">Opis</label>
+                <textarea
+                    v-model.trim="user.bio"
+                    class="form-control"
+                    id="bio"
+                ></textarea>
+            </div>
+            <div class="form-group">
+                <label for="type">Tip korisnika</label>
+                <select
+                    v-model="user.type"
+                    class="form-control"
+                    id="type"
+                    required
+                >
+                    <option value="" disabled selected>
+                        Odaberi tip korisnika
+                    </option>
+                    <option value="demonstrator">Demonstrator</option>
+                    <option value="student">Student</option>
+                </select>
+            </div>
+        </ModalForm>
     </div>
 </template>
 
 <script>
 import { useStoreGallery } from '@/stores/gallery.store'
 import { useStoreUser } from '@/stores/user.store'
+
+import ModalForm from './ModalForm.vue'
 
 const props = {
     closeAddingUser: {
@@ -113,6 +109,9 @@ const props = {
 export default {
     name: 'addUser',
     props,
+    components: {
+        ModalForm,
+    },
     data: () => ({
         storeGallery: useStoreGallery(),
         storeUser: useStoreUser(),
@@ -149,19 +148,4 @@ export default {
 </script>
 
 <style scoped>
-.card {
-    min-width: 15rem;
-}
-.row {
-    padding: 1em;
-}
-.headline {
-    margin-bottom: 1em;
-}
-.form-group {
-    margin-bottom: 0.5em;
-}
-.card-footer {
-    background-color: white;
-}
 </style>

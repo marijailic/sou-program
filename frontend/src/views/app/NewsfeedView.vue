@@ -23,6 +23,10 @@
             :getEditingAnnouncementID="getEditingAnnouncementID"
             :setEditingAnnouncementID="setEditingAnnouncementID"
         />
+
+        <div class="mt-2 d-flex justify-content-center">
+            <LoadingSpinner :isLoading="isLoading" />
+        </div>
     </div>
 </template>
 
@@ -30,8 +34,9 @@
 import { useStoreUser } from '@/stores/user.store'
 import { useStoreAnnouncement } from '@/stores/announcement.store'
 
+import LoadingSpinner from '@/components/app/LoadingSpinner.vue'
+
 import authService from '@/services/authService'
-import dateService from '@/services/dateService'
 
 import addAnnouncement from '@/components/app/addAnnouncement.vue'
 import showAnnouncement from '@/components/app/showAnnouncement.vue'
@@ -41,41 +46,73 @@ export default {
     components: {
         addAnnouncement,
         showAnnouncement,
+        LoadingSpinner,
     },
     data: () => ({
+        pageCount: 0,
+        isLoading: false,
         currentUser: {},
         announcements: [],
+        storeAnnouncement: useStoreAnnouncement(),
+        storeUser: useStoreUser(),
         activeEditingAnnouncementID: 0,
     }),
     async created() {
-        const storeUser = useStoreUser()
-        const storeAnnouncement = useStoreAnnouncement()
-
-        await storeUser.fetchUsers()
-        this.currentUser = await storeUser.getUserByUsername(
+        await this.storeUser.fetchUsers()
+        this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
         )
-
-        const announcements = await storeAnnouncement.fetchAnnouncement()
-
-        const announcementsWithAuthor = await Promise.all(
-            announcements.map(async (announcement) => ({
-                ...announcement,
-                author: await storeUser.getUserByID(announcement.author_id),
-            }))
-        )
-
-        this.announcements = announcementsWithAuthor
+        await this.loadMoreAnnouncements()
+    },
+    mounted() {
+        this.handleScroll()
+    },
+    computed: {
+        isAuthUserDemos() {
+            return authService.isAuthUserDemos()
+        },
     },
     methods: {
+        handleScroll() {
+            window.onscroll = async () => {
+                const OFFSET = 100
+                const bottomOfWindow =
+                    document.documentElement.scrollTop + window.innerHeight >=
+                    document.documentElement.offsetHeight - OFFSET
+
+                if (bottomOfWindow && !this.isLoading) {
+                    this.isLoading = true
+                    await this.loadMoreAnnouncements()
+                    this.isLoading = false
+                }
+            }
+        },
         getEditingAnnouncementID() {
             return this.activeEditingAnnouncementID
         },
         setEditingAnnouncementID(editingAnnouncementID) {
             this.activeEditingAnnouncementID = editingAnnouncementID
         },
-        isAuthUserDemos() {
-            return authService.isAuthUserDemos()
+        async getAnnouncementsWithAuthor(announcements) {
+            return await Promise.all(
+                announcements.map(async (announcement) => ({
+                    ...announcement,
+                    author: await this.storeUser.getUserByID(
+                        announcement.author_id
+                    ),
+                }))
+            )
+        },
+        async loadMoreAnnouncements() {
+            this.pageCount++
+
+            const moreAnnouncements =
+                await this.storeAnnouncement.fetchAnnouncements(this.pageCount)
+
+            const moreAnnouncementsWithAuthor =
+                await this.getAnnouncementsWithAuthor(moreAnnouncements)
+
+            this.announcements.push(...moreAnnouncementsWithAuthor)
         },
     },
 }

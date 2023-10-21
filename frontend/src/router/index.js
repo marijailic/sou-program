@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useStoreAuth } from '@/stores/auth.store'
 
 const routes = [
     {
@@ -85,10 +86,10 @@ const routes = [
                 component: () => import('@/views/app/CompetitionView.vue'),
             },
             {
-                path: "resources",
-                name: "ResourcesView",
-                component: () => import("@/views/app/ResourcesView.vue"),
-            }
+                path: 'resources',
+                name: 'ResourcesView',
+                component: () => import('@/views/app/ResourcesView.vue'),
+            },
         ],
     },
     {
@@ -130,7 +131,7 @@ const router = createRouter({
     routes,
 
     // TODO Check if we can apply this globaly
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior(_to, _from, _savedPosition) {
         return {
             top: -1,
         }
@@ -149,23 +150,18 @@ router.beforeEach((to, _from, next) => {
     }
 
     // provjera auth
-    if (to.meta.authRequired) {
-        if (!isUserLoggedIn) {
-            return next({ name: 'LoginView' })
-        }
-    } else {
-        if (isUserLoggedIn) {
-            if (to.name === 'LoginView') {
-                return next({ name: 'NewsfeedView' })
-            }
-        }
+    if (!isUserLoggedIn && to.meta.authRequired) {
+        return next({ name: 'LoginView' })
+    } else if (isUserLoggedIn && to.name === 'LoginView') {
+        return next({ name: 'NewsfeedView' })
     }
 
     return next()
 })
 
 const DEFAULT_TITLE = 'Šou program'
-router.afterEach((to, from) => {
+
+router.afterEach((to, _from) => {
     document.title = `│ ${to.meta.title || DEFAULT_TITLE}`
 })
 

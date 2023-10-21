@@ -41,7 +41,9 @@ export default {
         this.userID = this.$route.params.id
         this.user = storeUser.getUserByID(this.userID)
 
-        this.profilePosts = await storeProfilePost.fetchProfilePost(this.userID)
+        this.profilePosts = await storeProfilePost.fetchProfilePosts(
+            this.userID
+        )
     },
 }
 </script>

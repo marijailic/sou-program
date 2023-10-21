@@ -16,7 +16,9 @@
                     <router-link
                         to="/newsfeed"
                         class="nav-link"
-                        :class="{ 'nav-link-active': isActive('/newsfeed') }"
+                        :class="{
+                            'nav-link-active': isRouteActive('/newsfeed'),
+                        }"
                         data-text="Naslovnica"
                         @click="toggleNav"
                         ><i class="material-icons">article</i></router-link
@@ -24,7 +26,7 @@
                     <router-link
                         to="/search"
                         class="nav-link"
-                        :class="{ 'nav-link-active': isActive('/search') }"
+                        :class="{ 'nav-link-active': isRouteActive('/search') }"
                         data-text="Stalkaonica"
                         @click="toggleNav"
                         ><i class="material-icons">people</i></router-link
@@ -32,7 +34,7 @@
                     <!-- <router-link
                         to="/gallery"
                         class="nav-link"
-                        :class="{ 'nav-link-active': isActive('/gallery') }"
+                        :class="{ 'nav-link-active': isRouteActive('/gallery') }"
                         data-text="Galerija"
                         @click="toggleNav"
                         ><i class="material-icons"
@@ -43,7 +45,7 @@
                         to="/competitions"
                         class="nav-link"
                         :class="{
-                            'nav-link-active': isActive('/competitions'),
+                            'nav-link-active': isRouteActive('/competitions'),
                         }"
                         data-text="Natjecanja"
                         @click="toggleNav"
@@ -58,37 +60,6 @@
                     >
                 </div>
                 <button class="btn btn-primary px-3" @click="logout">
-                    Odjavi me
-                </button>
-            </div>
-        </div>
-        <nav class="nav flex-column">
-            <router-link to="/newsfeed" class="nav-link"
-                ><i class="material-icons">article</i> Naslovnica</router-link
-            >
-            <router-link to="/my-profile" class="nav-link"
-                ><i class="material-icons">person</i>Profil</router-link
-            >
-            <router-link to="/search" class="nav-link"
-                ><i class="material-icons">people</i>Stalkaonica</router-link
-            >
-            <router-link to="/gallery" class="nav-link"
-                ><i class="material-icons">photo_library</i>
-                Galerija</router-link
-            >
-            <router-link to="/competitions" class="nav-link"
-                ><i class="material-icons">emoji_events</i>
-                Natjecanja</router-link
-            >
-        </nav>
-        <div class="nav-btns">
-            <div class="info-link">
-                <router-link to="/resources" class="info-btn">
-                    Resursi</router-link
-                >
-            </div>
-            <div>
-                <button class="btn btn-primary" @click="logout">
                     Odjavi me
                 </button>
             </div>
@@ -126,7 +97,7 @@ export default {
         this.userProfilePictureSrc = currentUser.profilePictureSrc
     },
     methods: {
-        isActive(routeName) {
+        isRouteActive(routeName) {
             return this.$route.path === routeName
         },
         logout() {

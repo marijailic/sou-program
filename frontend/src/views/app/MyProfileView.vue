@@ -47,7 +47,7 @@ export default {
             authService.getAuthUsername()
         )
 
-        this.profilePosts = await this.storeProfilePost.fetchProfilePost(
+        this.profilePosts = await this.storeProfilePost.fetchProfilePosts(
             this.currentUser.id
         )
     },

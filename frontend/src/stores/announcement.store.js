@@ -1,15 +1,14 @@
 import { defineStore } from 'pinia'
 import backendApiService from '@/services/backendApiService'
-import dateService from '@/services/dateService'
 
 export const useStoreAnnouncement = defineStore('storeAnnouncement', {
     state: () => ({
         announcements: [],
     }),
     actions: {
-        async fetchAnnouncement() {
+        async fetchAnnouncements(pageCount) {
             const res = await backendApiService.get({
-                url: '/announcement',
+                url: `/announcement?page_count=${pageCount}`,
             })
 
             if (!res.ok) {
@@ -19,14 +18,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
 
             const resObj = await res.json()
 
-            this.announcements = await Promise.all(
-                resObj.data.map(async (announcement) => ({
-                    ...announcement,
-                    posted_at: dateService.getRelativeTime(
-                        announcement.timestamp
-                    ),
-                }))
-            )
+            this.announcements = resObj.data
 
             return this.announcements
         },
