@@ -20,6 +20,12 @@ export default {
         localStorage.setItem('type', type);
         localStorage.setItem('username', username);
     },
+    deleteAuthData: () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('type');
+    },
     getAuthUsername: () => localStorage.getItem('username'),
     isAuthUserDemos: () => localStorage.getItem('type') === userTypeEnum.DEMOS,
 };

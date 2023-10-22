@@ -5,12 +5,13 @@
             :onClose="closeEditing"
             :onConfirm="updateAnnouncement"
             title="Uredi oglas"
+            :disabled="!announcementText"
         >
             <div class="form-group">
                 <label for="text">Opis</label>
                 <textarea
                     id="text"
-                    v-model.trim="announcement.text"
+                    v-model.trim="announcementText"
                     class="form-control"
                     rows="3"
                     required
@@ -44,12 +45,19 @@ export default {
     },
     data() {
         return {
+            announcementText: this.announcement.text,
             storeAnnouncement: useStoreAnnouncement(),
         };
     },
     methods: {
         async updateAnnouncement() {
-            await this.storeAnnouncement.updateAnnouncement(this.announcement);
+            const updatedAnnouncement = {
+                id: this.announcement.id,
+                text: this.announcementText,
+            };
+            await this.storeAnnouncement.updateAnnouncement(
+                updatedAnnouncement
+            );
         },
     },
 };

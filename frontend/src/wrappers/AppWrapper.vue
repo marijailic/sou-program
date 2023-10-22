@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import navigation from '@/components/app/navigation.vue'
+import navigation from '@/components/app/navigation.vue';
 
 export default {
     name: 'AppWrapper',
@@ -37,13 +37,13 @@ export default {
     }),
     methods: {
         toggleNav() {
-            this.isNavOpened = !this.isNavOpened
+            this.isNavOpened = !this.isNavOpened;
         },
         closeNav() {
-            this.isNavOpened = false
+            this.isNavOpened = false;
         },
     },
-}
+};
 </script>
 
 <style lang="scss">
@@ -73,7 +73,9 @@ body {
 .btn-primary:focus {
     background-color: var(--primary-color);
 }
-
+.btn-primary:disabled {
+    background-color: var(--primary-color-disabled);
+}
 .w-full {
     min-height: 100vh;
 }

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import backendApiService from '@/services/backendApiService';
+import dateService from '@/services/dateService';
 
 export const useStoreAnnouncement = defineStore('storeAnnouncement', {
     state: () => ({
@@ -18,7 +19,10 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
 
             const resObj = await res.json();
 
-            this.announcements = resObj.data;
+            this.announcements = resObj.data.map((announcement) => ({
+                ...announcement,
+                posted_at: dateService.getRelativeTime(announcement.timestamp),
+            }));
 
             return this.announcements;
         },

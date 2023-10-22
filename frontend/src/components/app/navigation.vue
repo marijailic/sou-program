@@ -107,10 +107,7 @@ export default {
             return this.$route.path === routeName;
         },
         logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('refreshToken');
-            localStorage.removeItem('username');
-            localStorage.removeItem('type');
+            authService.deleteAuthData();
             window.location.href = '/login';
         },
     },
