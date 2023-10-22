@@ -5,7 +5,10 @@
                 <div class="my-auto">
                     <img
                         class="profile-pic rounded-circle"
-                        :src="userImageSrc || require('@/assets/sp-icon.png')"
+                        :src="
+                            userProfilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
                     />
                 </div>
                 <div class="flex-grow-1">
@@ -50,10 +53,10 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import editAnnouncement from './editAnnouncement.vue'
-import userTypeEnum from '@/enums/userTypeEnum'
+import editAnnouncement from './editAnnouncement.vue';
+import userTypeEnum from '@/enums/userTypeEnum';
 
 const props = {
     announcement: {
@@ -68,7 +71,7 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'showAnnouncement',
@@ -77,41 +80,41 @@ export default {
         editAnnouncement,
     },
     data: () => ({
-        userImageSrc: '',
+        userProfilePictureSrc: '',
         isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
         isEditingActive: false,
         storeAnnouncement: useStoreAnnouncement(),
     }),
     async created() {
-        this.userImageSrc =
-            await this.announcement.author.getProfilePictureSrc()
+        this.userProfilePictureSrc = await this.announcement.author
+            .profilePictureSrc;
     },
     computed: {
         isEditingActive() {
-            return this.announcement.id === this.getEditingAnnouncementID()
+            return this.announcement.id === this.getEditingAnnouncementID();
         },
         authorFullName() {
-            return `${this.announcement.author.name} ${this.announcement.author.surname}`
+            return `${this.announcement.author.name} ${this.announcement.author.surname}`;
         },
     },
     methods: {
         async deleteAnnouncement(announcementID) {
             const isConfirmed = window.confirm(
                 'Jeste li sigurni da želite izbrisati objavu?'
-            )
+            );
 
             if (isConfirmed) {
-                await this.storeAnnouncement.deleteAnnouncement(announcementID)
+                await this.storeAnnouncement.deleteAnnouncement(announcementID);
             }
         },
         openEditing(editingAnnouncementID) {
-            this.setEditingAnnouncementID(editingAnnouncementID)
+            this.setEditingAnnouncementID(editingAnnouncementID);
         },
         closeEditing() {
-            this.setEditingAnnouncementID(0)
+            this.setEditingAnnouncementID(0);
         },
     },
-}
+};
 </script>
 
 <style scoped>

@@ -18,33 +18,32 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
-import showProfile from '@/components/app/showProfile.vue'
-import showProfilePost from '@/components/app/showProfilePost.vue'
+import showProfile from '@/components/app/showProfile.vue';
+import showProfilePost from '@/components/app/showProfilePost.vue';
 
 export default {
     name: 'UserProfileView',
     components: { showProfile, showProfilePost },
     data: () => ({
+        userID: 0,
         user: {},
         profilePosts: [],
-        storeProfilePost: useStoreProfilePost(),
     }),
     async created() {
-        const storeUser = useStoreUser()
-        const userID = this.$route.params.id
+        const storeProfilePost = useStoreProfilePost();
+        const storeUser = useStoreUser();
 
-        await storeUser.fetchUser()
+        await storeUser.fetchUsers();
 
-        this.user = await storeUser.getUserByID(userID)
+        this.userID = this.$route.params.id;
+        this.user = storeUser.getUserByID(this.userID);
 
-        this.user.profilePosts = await this.storeProfilePost.fetchProfilePost(
-            userID
-        )
-
-        this.user.imageSrc = await this.user.getProfilePictureSrc()
+        this.profilePosts = await storeProfilePost.fetchProfilePosts(
+            this.userID
+        );
     },
-}
+};
 </script>

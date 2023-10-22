@@ -1,5 +1,5 @@
 const mailTo = process.env.VUE_APP_CONTACT_EMAIL;
-const subject = "Email from site";
+const subject = 'Email from site';
 const subjcetURIEncoded = encodeURIComponent(subject);
 
 const mailHref = `mailto:${mailTo}?subject=${subjcetURIEncoded}`;

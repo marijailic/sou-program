@@ -54,11 +54,18 @@ router.post(
 
 router.get("/image/:image_id", async (req, res) => {
     const imageID = req.params.image_id;
-
     try {
         googleAuth();
-
-        const image = await drive.files.get(
+    } catch (error) {
+        console.log("Error:", error);
+        return res.status(500).json({
+            message: "Internal server error",
+            data: {},
+        });
+    }
+    let image = null;
+    try {
+        image = await drive.files.get(
             {
                 fileId: imageID,
                 alt: "media",
@@ -67,7 +74,14 @@ router.get("/image/:image_id", async (req, res) => {
                 responseType: "arraybuffer",
             }
         );
+    } catch (error) {
+        return res.json({
+            message: "Image doesn't exist",
+            data: "",
+        });
+    }
 
+    try {
         const imageBuffer = Buffer.from(image.data);
         const imageBase64 = imageBuffer.toString("base64");
 
@@ -77,7 +91,7 @@ router.get("/image/:image_id", async (req, res) => {
         });
     } catch (error) {
         console.log("Error:", error);
-        res.status(500).json({
+        return res.status(500).json({
             message: "Internal server error",
             data: {},
         });

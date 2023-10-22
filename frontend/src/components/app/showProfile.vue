@@ -5,12 +5,12 @@
         >
             <img
                 class="profile-pic rounded-circle"
-                :src="user.imageSrc || require('@/assets/sp-icon.png')"
+                :src="user.profilePictureSrc || require('@/assets/sp-icon.png')"
             />
             <div class="flex-grow-1 d-flex align-items-center">
                 <div class="text-start">
                     <h1 class="card-title">
-                        {{ fullName }}
+                        {{ user.fullName }}
                     </h1>
                     <p class="card-text">
                         {{ user.username }} -
@@ -30,17 +30,12 @@ const props = {
         type: Object,
         required: true,
     },
-}
+};
 
 export default {
     name: 'showProfile',
     props,
-    computed: {
-        fullName() {
-            return `${this.user.name} ${this.user.surname}`
-        },
-    },
-}
+};
 </script>
 
 <style scoped>

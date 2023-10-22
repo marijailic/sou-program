@@ -1,64 +1,64 @@
-import { getAuthHeaders } from "@/services/authService";
+import authService from '@/services/authService';
 
 const backendUrl = process.env.VUE_APP_URL;
 
-const trimUrl = (url) => (url[0] === "/" ? url.slice(1) : url);
+const trimUrl = (url) => (url[0] === '/' ? url.slice(1) : url);
 
 export default {
     delete: async ({ url, headers, body }) => {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
-            method: "DELETE",
+            method: 'DELETE',
             headers: {
-                ...headers ?? {},
-                ...getAuthHeaders(),
+                ...(headers ?? {}),
+                ...authService.getAuthHeaders(),
             },
             body,
         });
     },
     post: async ({ url, headers, body }) => {
         console.log({
-            method: "POST",
+            method: 'POST',
             headers: {
                 ...headers,
-                ...getAuthHeaders(),
+                ...authService.getAuthHeaders(),
             },
             body,
         });
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-                ...headers ?? {},
-                ...getAuthHeaders(),
+                ...(headers ?? {}),
+                ...authService.getAuthHeaders(),
             },
             body,
         });
     },
     put: async ({ url, headers, body }) => {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
-            method: "PUT",
+            method: 'PUT',
             headers: {
-                ...headers ?? {},
-                ...getAuthHeaders(),
+                ...(headers ?? {}),
+                ...authService.getAuthHeaders(),
             },
             body,
         });
     },
     patch: async ({ url, headers, body }) => {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
-            method: "PATCH",
+            method: 'PATCH',
             headers: {
-                ...headers ?? {},
-                ...getAuthHeaders(),
+                ...(headers ?? {}),
+                ...authService.getAuthHeaders(),
             },
             body,
         });
     },
     get: async ({ url, headers }) => {
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
-            method: "GET",
+            method: 'GET',
             headers: {
                 ...(headers ?? {}),
-                ...getAuthHeaders(),
+                ...authService.getAuthHeaders(),
             },
         });
     },

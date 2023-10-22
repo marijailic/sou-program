@@ -3,12 +3,13 @@
         <form @submit.prevent="postProfilePost">
             <div class="card">
                 <div class="d-flex">
-                    <img
+                    <!-- <img
                         class="profile-pic card-img-top mt-3 rounded-circle mx-2"
-                        :src="user.imageSrc || require('@/assets/sp-icon.png')"
-                    />
-                    <div class="align-items-center text-start flex-grow-1">
-                        <!-- <div class="card-right card-body text-start"> -->
+                        :src="
+                            profilePictureSrc || require('@/assets/sp-icon.png')
+                        "
+                    /> -->
+                    <div class="align-items-center text-start flex-grow-1 p-2">
                         <textarea
                             v-model.trim="profilePost.text"
                             class="form-control"
@@ -16,7 +17,6 @@
                             placeholder="Napiši objavu..."
                             required
                         ></textarea>
-                        <!-- </div> -->
                     </div>
                 </div>
                 <div class="card-footer text-end">
@@ -33,14 +33,14 @@
     </div>
 </template>
 <script>
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
 const props = {
-    user: {
-        type: Object,
+    profilePictureSrc: {
+        type: String,
         required: true,
     },
-}
+};
 
 export default {
     name: 'addProfilePost',
@@ -53,10 +53,10 @@ export default {
     }),
     methods: {
         async postProfilePost() {
-            await this.storeProfilePost.createProfilePost(this.profilePost)
+            await this.storeProfilePost.createProfilePost(this.profilePost);
         },
     },
-}
+};
 </script>
 
 <style scoped>

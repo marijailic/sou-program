@@ -5,8 +5,8 @@
         </div>
 
         <add-announcement
-            v-if="storeUser.isCurrentUserDemos && currentUser"
-            :userImageSrc="userImageSrc"
+            v-if="isAuthUserDemos && currentUser"
+            :userProfilePictureSrc="currentUser.profilePictureSrc"
         />
 
         <div
@@ -23,45 +23,97 @@
             :getEditingAnnouncementID="getEditingAnnouncementID"
             :setEditingAnnouncementID="setEditingAnnouncementID"
         />
+
+        <div class="mt-2 d-flex justify-content-center">
+            <LoadingSpinner :isLoading="isLoading" />
+        </div>
     </div>
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import addAnnouncement from '@/components/app/addAnnouncement.vue'
-import showAnnouncement from '@/components/app/showAnnouncement.vue'
+import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
+
+import authService from '@/services/authService';
+
+import addAnnouncement from '@/components/app/addAnnouncement.vue';
+import showAnnouncement from '@/components/app/showAnnouncement.vue';
 
 export default {
     name: 'NewsfeedView',
     components: {
         addAnnouncement,
         showAnnouncement,
+        LoadingSpinner,
     },
     data: () => ({
+        pageCount: 0,
+        isLoading: false,
         currentUser: {},
-        userImageSrc: '',
         announcements: [],
-        activeEditingAnnouncementID: 0,
-        storeUser: useStoreUser(),
         storeAnnouncement: useStoreAnnouncement(),
+        storeUser: useStoreUser(),
+        activeEditingAnnouncementID: 0,
     }),
     async created() {
-        await this.storeUser.fetchUser()
-        this.currentUser = await this.storeUser.getCurrentUser()
-
-        this.announcements = await this.storeAnnouncement.fetchAnnouncement()
-
-        this.userImageSrc = await this.currentUser.getProfilePictureSrc()
+        await this.storeUser.fetchUsers();
+        this.currentUser = await this.storeUser.getUserByUsername(
+            authService.getAuthUsername()
+        );
+        await this.loadMoreAnnouncements();
+    },
+    mounted() {
+        this.handleScroll();
+    },
+    computed: {
+        isAuthUserDemos() {
+            return authService.isAuthUserDemos();
+        },
     },
     methods: {
+        handleScroll() {
+            window.onscroll = async () => {
+                const OFFSET = 100;
+                const bottomOfWindow =
+                    document.documentElement.scrollTop + window.innerHeight >=
+                    document.documentElement.offsetHeight - OFFSET;
+
+                if (bottomOfWindow && !this.isLoading) {
+                    this.isLoading = true;
+                    await this.loadMoreAnnouncements();
+                    this.isLoading = false;
+                }
+            };
+        },
         getEditingAnnouncementID() {
-            return this.activeEditingAnnouncementID
+            return this.activeEditingAnnouncementID;
         },
         setEditingAnnouncementID(editingAnnouncementID) {
-            this.activeEditingAnnouncementID = editingAnnouncementID
+            this.activeEditingAnnouncementID = editingAnnouncementID;
+        },
+        async getAnnouncementsWithAuthor(announcements) {
+            return await Promise.all(
+                announcements.map(async (announcement) => ({
+                    ...announcement,
+                    author: await this.storeUser.getUserByID(
+                        announcement.author_id
+                    ),
+                }))
+            );
+        },
+        async loadMoreAnnouncements() {
+            this.pageCount++;
+
+            const moreAnnouncements =
+                await this.storeAnnouncement.fetchAnnouncements(this.pageCount);
+
+            const moreAnnouncementsWithAuthor =
+                await this.getAnnouncementsWithAuthor(moreAnnouncements);
+
+            this.announcements.push(...moreAnnouncementsWithAuthor);
         },
     },
-}
+};
 </script>

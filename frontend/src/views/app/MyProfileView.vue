@@ -1,7 +1,7 @@
 <template>
     <div>
         <show-profile :user="currentUser" />
-        <add-profile-post :user="currentUser" />
+        <add-profile-post :profilePictureSrc="currentUser.profilePictureSrc" />
 
         <div
             class="d-flex justify-content-center"
@@ -22,12 +22,14 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
-import showProfile from '@/components/app/showProfile.vue'
-import addProfilePost from '@/components/app/addProfilePost.vue'
-import showProfilePost from '@/components/app/showProfilePost.vue'
+import authService from '@/services/authService';
+
+import showProfile from '@/components/app/showProfile.vue';
+import addProfilePost from '@/components/app/addProfilePost.vue';
+import showProfilePost from '@/components/app/showProfilePost.vue';
 
 export default {
     name: 'MyProfileView',
@@ -40,22 +42,22 @@ export default {
         storeProfilePost: useStoreProfilePost(),
     }),
     async created() {
-        await this.storeUser.fetchUser()
-        this.currentUser = await this.storeUser.getCurrentUser()
+        await this.storeUser.fetchUsers();
+        this.currentUser = await this.storeUser.getUserByUsername(
+            authService.getAuthUsername()
+        );
 
-        this.currentUser.profilePosts =
-            await this.storeProfilePost.fetchProfilePost(this.currentUser.id)
-
-        this.currentUser.imageSrc =
-            await this.currentUser.getProfilePictureSrc()
+        this.profilePosts = await this.storeProfilePost.fetchProfilePosts(
+            this.currentUser.id
+        );
     },
     methods: {
         getEditingProfilePostID() {
-            return this.activeEditingProfilePostID
+            return this.activeEditingProfilePostID;
         },
         setEditingProfilePostID(editingProfilePostID) {
-            this.activeEditingProfilePostID = editingProfilePostID
+            this.activeEditingProfilePostID = editingProfilePostID;
         },
     },
-}
+};
 </script>

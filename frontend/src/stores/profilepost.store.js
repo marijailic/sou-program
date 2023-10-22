@@ -1,19 +1,19 @@
-import { defineStore } from "pinia";
-import backendApiService from "@/services/backendApiService";
-import dateService from "@/services/dateService";
+import { defineStore } from 'pinia';
+import backendApiService from '@/services/backendApiService';
+import dateService from '@/services/dateService';
 
-export const useStoreProfilePost = defineStore("storeProfilePost", {
+export const useStoreProfilePost = defineStore('storeProfilePost', {
     state: () => ({
         profilePosts: [],
     }),
     actions: {
-        async fetchProfilePost(authorID) {
+        async fetchProfilePosts(authorID) {
             const res = await backendApiService.get({
                 url: `/profile-post/${authorID}`,
             });
 
             if (!res.ok) {
-                window.location.href = "/error";
+                window.location.href = '/error';
                 return;
             }
 
@@ -22,7 +22,9 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
             this.profilePosts = await Promise.all(
                 resObj.data.map(async (profilePost) => ({
                     ...profilePost,
-                    posted_at: dateService.getRelativeTime(profilePost.timestamp),
+                    posted_at: dateService.getRelativeTime(
+                        profilePost.timestamp
+                    ),
                 }))
             );
 
@@ -30,30 +32,30 @@ export const useStoreProfilePost = defineStore("storeProfilePost", {
         },
         async createProfilePost(profilePost) {
             const res = await backendApiService.post({
-                url: "/create-profile-post",
-                headers: { "Content-Type": "application/json" },
+                url: '/create-profile-post',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(profilePost),
             });
 
-            window.location.href = res.ok ? "/success" : "/error";
+            window.location.href = res.ok ? '/success' : '/error';
         },
         async deleteProfilePost(profilePostID) {
             const res = await backendApiService.delete({
-                url: "/delete-profile-post",
-                headers: { "Content-Type": "application/json" },
+                url: '/delete-profile-post',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: profilePostID }),
             });
 
-            window.location.href = res.ok ? "/success" : "/error";
+            window.location.href = res.ok ? '/success' : '/error';
         },
         async updateProfilePost(profilePost) {
             const res = await backendApiService.post({
-                url: "/update-profile-post",
-                headers: { "Content-Type": "application/json" },
+                url: '/update-profile-post',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(profilePost),
             });
 
-            window.location.href = res.ok ? "/success" : "/error";
+            window.location.href = res.ok ? '/success' : '/error';
         },
     },
 });

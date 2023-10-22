@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <form @submit="login">
+        <form @submit.prevent="login">
             <div class="card">
                 <h1>Tko si?</h1>
                 <div class="row">
@@ -36,50 +36,49 @@
 </template>
 
 <script>
-import { saveAuthData } from "@/services/authService";
+import authService from '@/services/authService'
 
 export default {
-    name: "LoginView",
+    name: 'LoginView',
     data: function () {
         return {
-            username: "",
-            password: "",
-        };
+            username: '',
+            password: '',
+        }
     },
     methods: {
-        async login(event) {
-            event.preventDefault();
+        async login() {
             const credentials = {
                 username: this.username,
                 password: this.password,
-            };
-
-            const response = await fetch(`${process.env.VUE_APP_URL}/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(credentials),
-            });
-
-            if (!response.ok) {
-                window.location.href = "/error";
-                return;
             }
 
-            const data = await response.json();
+            const response = await fetch(`${process.env.VUE_APP_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials),
+            })
 
-            saveAuthData({
+            if (!response.ok) {
+                window.location.href = '/error'
+                return
+            }
+
+            const data = await response.json()
+
+            authService.saveAuthData({
                 username: data.username,
                 type: data.type,
                 token: data.token,
                 refreshToken: data.refreshToken,
-            });
+            })
 
-            window.location.href = "/newsfeed";
+            window.location.href = '/newsfeed'
         },
     },
-};
+}
 </script>
 
 <style scoped>

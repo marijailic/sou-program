@@ -14,9 +14,9 @@ export default {
     name: 'Error',
     methods: {
         goBack() {
-            localStorage.setItem('shouldRefresh', true)
-            window.history.back()
+            localStorage.setItem('shouldRefresh', true);
+            window.history.back();
         },
     },
-}
+};
 </script>

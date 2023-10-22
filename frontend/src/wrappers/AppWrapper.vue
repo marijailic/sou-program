@@ -1,16 +1,19 @@
 <template>
     <div @click="closeNav">
-        <div class="w-full d-flex gap-3 p-3">
-            <navigation
-                :class="{ 'slide-in': isNavOpened }"
-                :toggleNav="toggleNav"
-                @click.stop
-            />
-            <div class="w-100">
+        <div class="w-full d-flex">
+            <div id="nav">
+                <navigation
+                    class="position-fixed"
+                    :class="{ 'slide-in': isNavOpened }"
+                    :toggleNav="toggleNav"
+                    @click.stop
+                />
+            </div>
+            <div class="w-100 p-3 main-content">
                 <router-view></router-view>
             </div>
         </div>
-        <div class="menu-footer">
+        <div class="menu-footer position-fixed w-100">
             <img
                 id="menu-button"
                 class="icon p-3 rounded-circle"
@@ -44,31 +47,39 @@ export default {
 </script>
 
 <style lang="scss">
-@import '@/assets/colors.scss';
+:root {
+    --primary-color: #66ccff;
+    --primary-color-disabled: #c0eaff;
+    --white-color: #f5f5f5;
+    --white-color-2: #eaeaea;
+    --black-color: #212529;
+    --red-color: #dc3545;
+}
 
 html,
 body {
-    background-color: $white-color;
+    background-color: var(--white-color);
 }
 .btn-primary {
-    background-color: $primary-color;
-    border: $primary-color;
+    background-color: var(--primary-color);
+    border: var(--primary-color);
 }
 .btn-primary:hover {
-    background-color: $primary-color;
+    background-color: var(--primary-color);
 }
 .btn-primary:active {
-    background-color: $primary-color !important;
+    background-color: var(--primary-color) !important;
 }
 .btn-primary:focus {
-    background-color: $primary-color;
+    background-color: var(--primary-color);
 }
+
 .w-full {
     min-height: 100vh;
 }
+
 .menu-footer {
     background-color: lightgray;
-    position: sticky;
     bottom: 0;
     display: none;
     z-index: 2;
@@ -80,11 +91,26 @@ body {
 #menu-button {
     cursor: pointer;
 }
+#nav {
+    z-index: 2;
+    left: 0;
+
+    @media (min-width: 769px) {
+        position: static;
+        margin-top: 1rem;
+    }
+}
+.main-content {
+    @media (min-width: 769px) {
+        margin-left: 19rem;
+    }
+}
 .icon {
     width: 4rem;
     height: 4rem;
 }
 .card {
     padding: 0.5rem;
+    border: none;
 }
 </style>

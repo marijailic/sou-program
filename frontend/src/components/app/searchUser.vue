@@ -1,30 +1,28 @@
 <template>
     <div>
-        <div class="card mt-1 p-1 border-0">
-            <div class="input-group">
-                <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Upiši ime || prezime korisnika..."
-                    v-model="searchText"
-                    @input="filterUsers(searchText)"
-                />
-            </div>
+        <div class="card mt-2 p-0 border-0">
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Upiši ime || prezime korisnika..."
+                v-model="searchedUsername"
+                @input="searchedUsersByUsername(searchedUsername)"
+            />
         </div>
     </div>
 </template>
 
 <script>
 const props = {
-    filterUsers: {
+    searchedUsersByUsername: {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'searchUser',
     props,
-    data: () => ({ searchText: '' }),
-}
+    data: () => ({ searchedUsername: '' }),
+};
 </script>

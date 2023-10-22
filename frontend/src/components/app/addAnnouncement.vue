@@ -5,7 +5,10 @@
                 <div>
                     <img
                         class="profile-pic rounded-circle"
-                        :src="userImageSrc || require('@/assets/sp-icon.png')"
+                        :src="
+                            userProfilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
                     />
                 </div>
                 <div class="flex-grow-1">
@@ -32,14 +35,14 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
 const props = {
-    userImageSrc: {
+    userProfilePictureSrc: {
         type: String,
         required: true,
     },
-}
+};
 
 export default {
     name: 'addAnnouncement',
@@ -52,10 +55,10 @@ export default {
     }),
     methods: {
         async postAnnouncement() {
-            await this.storeAnnouncement.createAnnouncement(this.announcement)
+            await this.storeAnnouncement.createAnnouncement(this.announcement);
         },
     },
-}
+};
 </script>
 
 <style scoped>

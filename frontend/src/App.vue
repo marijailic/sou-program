@@ -4,7 +4,7 @@
 
 <style lang="scss">
 #app {
-    font-family: "Poppins", sans-serif;
-    color: rgb(33, 37, 41);
+    font-family: 'Poppins', sans-serif;
+    color: var(--black-color);
 }
 </style>
