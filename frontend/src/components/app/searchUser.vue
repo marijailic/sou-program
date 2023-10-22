@@ -18,11 +18,11 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'searchUser',
     props,
     data: () => ({ searchedUsername: '' }),
-}
+};
 </script>

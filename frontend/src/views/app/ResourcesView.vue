@@ -92,9 +92,9 @@
 export default {
     name: 'ResourcesView',
     data() {
-        return {}
+        return {};
     },
-}
+};
 </script>
 
 <style scoped>

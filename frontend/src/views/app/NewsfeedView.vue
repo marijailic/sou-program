@@ -31,15 +31,15 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import LoadingSpinner from '@/components/app/LoadingSpinner.vue'
+import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
 
-import authService from '@/services/authService'
+import authService from '@/services/authService';
 
-import addAnnouncement from '@/components/app/addAnnouncement.vue'
-import showAnnouncement from '@/components/app/showAnnouncement.vue'
+import addAnnouncement from '@/components/app/addAnnouncement.vue';
+import showAnnouncement from '@/components/app/showAnnouncement.vue';
 
 export default {
     name: 'NewsfeedView',
@@ -58,40 +58,40 @@ export default {
         activeEditingAnnouncementID: 0,
     }),
     async created() {
-        await this.storeUser.fetchUsers()
+        await this.storeUser.fetchUsers();
         this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
-        )
-        await this.loadMoreAnnouncements()
+        );
+        await this.loadMoreAnnouncements();
     },
     mounted() {
-        this.handleScroll()
+        this.handleScroll();
     },
     computed: {
         isAuthUserDemos() {
-            return authService.isAuthUserDemos()
+            return authService.isAuthUserDemos();
         },
     },
     methods: {
         handleScroll() {
             window.onscroll = async () => {
-                const OFFSET = 100
+                const OFFSET = 100;
                 const bottomOfWindow =
                     document.documentElement.scrollTop + window.innerHeight >=
-                    document.documentElement.offsetHeight - OFFSET
+                    document.documentElement.offsetHeight - OFFSET;
 
                 if (bottomOfWindow && !this.isLoading) {
-                    this.isLoading = true
-                    await this.loadMoreAnnouncements()
-                    this.isLoading = false
+                    this.isLoading = true;
+                    await this.loadMoreAnnouncements();
+                    this.isLoading = false;
                 }
-            }
+            };
         },
         getEditingAnnouncementID() {
-            return this.activeEditingAnnouncementID
+            return this.activeEditingAnnouncementID;
         },
         setEditingAnnouncementID(editingAnnouncementID) {
-            this.activeEditingAnnouncementID = editingAnnouncementID
+            this.activeEditingAnnouncementID = editingAnnouncementID;
         },
         async getAnnouncementsWithAuthor(announcements) {
             return await Promise.all(
@@ -101,19 +101,19 @@ export default {
                         announcement.author_id
                     ),
                 }))
-            )
+            );
         },
         async loadMoreAnnouncements() {
-            this.pageCount++
+            this.pageCount++;
 
             const moreAnnouncements =
-                await this.storeAnnouncement.fetchAnnouncements(this.pageCount)
+                await this.storeAnnouncement.fetchAnnouncements(this.pageCount);
 
             const moreAnnouncementsWithAuthor =
-                await this.getAnnouncementsWithAuthor(moreAnnouncements)
+                await this.getAnnouncementsWithAuthor(moreAnnouncements);
 
-            this.announcements.push(...moreAnnouncementsWithAuthor)
+            this.announcements.push(...moreAnnouncementsWithAuthor);
         },
     },
-}
+};
 </script>

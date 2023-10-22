@@ -43,13 +43,13 @@
 </template>
 
 <script>
-import { useStoreGallery } from '@/stores/gallery.store'
-import eventBus from '@/eventBus'
+import { useStoreGallery } from '@/stores/gallery.store';
+import eventBus from '@/eventBus';
 
-import showGallery from '@/components/app/showGallery.vue'
-import addGallery from '@/components/app/addGallery.vue'
-import editGallery from '@/components/app/editGallery.vue'
-import showFullGallery from '@/components/app/showFullGallery.vue'
+import showGallery from '@/components/app/showGallery.vue';
+import addGallery from '@/components/app/addGallery.vue';
+import editGallery from '@/components/app/editGallery.vue';
+import showFullGallery from '@/components/app/showFullGallery.vue';
 
 export default {
     name: 'GalleryView',
@@ -62,7 +62,7 @@ export default {
             editGalleryID: null,
             showFullGallery: false,
             showFullGalleryID: null,
-        }
+        };
     },
     components: {
         showGallery,
@@ -71,48 +71,48 @@ export default {
         showFullGallery,
     },
     async created() {
-        this.galleries = await this.storeGallery.fetchGallery()
+        this.galleries = await this.storeGallery.fetchGallery();
 
-        this.openEditGallery()
-        this.openShowFullGallery()
+        this.openEditGallery();
+        this.openShowFullGallery();
     },
     methods: {
         closeAdd() {
-            this.addGallery = false
+            this.addGallery = false;
         },
         closeEdit() {
-            this.editGallery = false
+            this.editGallery = false;
         },
         closeShow() {
-            this.showFullGallery = false
+            this.showFullGallery = false;
         },
         rightColActiveCheck() {
-            this.addGallery = false
-            this.editGallery = false
-            this.showFullGallery = false
+            this.addGallery = false;
+            this.editGallery = false;
+            this.showFullGallery = false;
         },
         openAddGallery() {
-            this.rightColActiveCheck()
-            this.addGallery = true
+            this.rightColActiveCheck();
+            this.addGallery = true;
         },
         openEditGallery() {
             eventBus.on('editGallery', (editObj) => {
-                this.rightColActiveCheck()
-                this.editGalleryID = editObj.editGalleryID
+                this.rightColActiveCheck();
+                this.editGalleryID = editObj.editGalleryID;
                 this.$nextTick(() => {
-                    this.editGallery = editObj.editGallery
-                })
-            })
+                    this.editGallery = editObj.editGallery;
+                });
+            });
         },
         openShowFullGallery() {
             eventBus.on('showFullGallery', (editObj) => {
-                this.rightColActiveCheck()
-                this.showFullGalleryID = editObj.showFullGalleryID
+                this.rightColActiveCheck();
+                this.showFullGalleryID = editObj.showFullGalleryID;
                 this.$nextTick(() => {
-                    this.showFullGallery = editObj.showFullGallery
-                })
-            })
+                    this.showFullGallery = editObj.showFullGallery;
+                });
+            });
         },
     },
-}
+};
 </script>

@@ -30,12 +30,12 @@ const props = {
         type: Object,
         required: true,
     },
-}
+};
 
 export default {
     name: 'showProfile',
     props,
-}
+};
 </script>
 
 <style scoped>

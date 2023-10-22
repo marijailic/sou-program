@@ -40,14 +40,14 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
+import { useStoreUser } from '@/stores/user.store';
 
-import authService from '@/services/authService'
+import authService from '@/services/authService';
 
-import searchUser from '@/components/app/searchUser.vue'
-import showUser from '@/components/app/showUser.vue'
-import addUser from '@/components/app/addUser.vue'
-import editUser from '@/components/app/editUser.vue'
+import searchUser from '@/components/app/searchUser.vue';
+import showUser from '@/components/app/showUser.vue';
+import addUser from '@/components/app/addUser.vue';
+import editUser from '@/components/app/editUser.vue';
 
 export default {
     name: 'SearchView',
@@ -66,30 +66,30 @@ export default {
     }),
     computed: {
         isEditingUser() {
-            return this.activeEditingUserID !== 0
+            return this.activeEditingUserID !== 0;
         },
     },
     async created() {
-        this.users = await this.storeUser.fetchUsers()
-        this.searchedUsersByUsername('')
+        this.users = await this.storeUser.fetchUsers();
+        this.searchedUsersByUsername('');
     },
     methods: {
         openAddingUser() {
-            this.isAddingUser = true
+            this.isAddingUser = true;
         },
         closeAddingUser() {
-            this.isAddingUser = false
+            this.isAddingUser = false;
         },
         searchedUsersByUsername(searchedUsername) {
             this.users =
-                this.storeUser.getSearchedUsersByUsername(searchedUsername)
+                this.storeUser.getSearchedUsersByUsername(searchedUsername);
         },
         setEditingUserID(editingUserID) {
-            this.activeEditingUserID = editingUserID
+            this.activeEditingUserID = editingUserID;
         },
         closeEditingUser() {
-            this.setEditingUserID(0)
+            this.setEditingUserID(0);
         },
     },
-}
+};
 </script>

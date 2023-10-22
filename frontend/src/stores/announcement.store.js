@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia'
-import backendApiService from '@/services/backendApiService'
+import { defineStore } from 'pinia';
+import backendApiService from '@/services/backendApiService';
 
 export const useStoreAnnouncement = defineStore('storeAnnouncement', {
     state: () => ({
@@ -9,45 +9,45 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
         async fetchAnnouncements(pageCount) {
             const res = await backendApiService.get({
                 url: `/announcement?page_count=${pageCount}`,
-            })
+            });
 
             if (!res.ok) {
-                window.location.href = '/error'
-                return
+                window.location.href = '/error';
+                return;
             }
 
-            const resObj = await res.json()
+            const resObj = await res.json();
 
-            this.announcements = resObj.data
+            this.announcements = resObj.data;
 
-            return this.announcements
+            return this.announcements;
         },
         async deleteAnnouncement(announcementID) {
             const res = await backendApiService.delete({
                 url: '/delete-announcement',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id: announcementID }),
-            })
+            });
 
-            window.location.href = res.ok ? '/success' : '/error'
+            window.location.href = res.ok ? '/success' : '/error';
         },
         async createAnnouncement(announcement) {
             const res = await backendApiService.post({
                 url: '/create-announcement',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(announcement),
-            })
+            });
 
-            window.location.href = res.ok ? '/success' : '/error'
+            window.location.href = res.ok ? '/success' : '/error';
         },
         async updateAnnouncement(announcement) {
             const res = await backendApiService.post({
                 url: '/update-announcement',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(announcement),
-            })
+            });
 
-            window.location.href = res.ok ? '/success' : '/error'
+            window.location.href = res.ok ? '/success' : '/error';
         },
     },
-})
+});

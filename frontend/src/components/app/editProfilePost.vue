@@ -1,37 +1,29 @@
 <template>
     <div>
-        <form @submit.prevent="updateProfilePost">
-            <div class="card">
-                <div class="card-body text-start">
-                    <textarea
-                        v-model.trim="profilePostText"
-                        class="form-control"
-                        rows="3"
-                        required
-                    ></textarea>
-                </div>
-                <div class="card-footer text-end">
-                    <a class="escape-btn btn btn-primary" @click="closeEditing">
-                        Odustani
-                    </a>
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                        :disabled="
-                            profilePostText === profilePost.text ||
-                            !profilePostText
-                        "
-                    >
-                        Spremi promjenu
-                    </button>
-                </div>
+        <ModalForm
+            :isOpen="true"
+            :onClose="closeEditing"
+            :onConfirm="updateProfilePost"
+            title="Uredi profilnu objavu"
+        >
+            <div class="form-group">
+                <label for="text">Opis</label>
+                <textarea
+                    id="text"
+                    v-model.trim="profilePost.text"
+                    class="form-control"
+                    rows="3"
+                    required
+                ></textarea>
             </div>
-        </form>
+        </ModalForm>
     </div>
 </template>
 
 <script>
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreProfilePost } from '@/stores/profilepost.store';
+
+import ModalForm from '@/components/app/ModalForm.vue';
 
 const props = {
     profilePost: {
@@ -42,25 +34,25 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'editProfilePost',
     props,
+    components: {
+        ModalForm,
+    },
     data() {
         return {
-            profilePostText: this.profilePost.text,
             storeProfilePost: useStoreProfilePost(),
-        }
+        };
     },
     methods: {
         async updateProfilePost() {
-            this.profilePost.text = profilePostText
-
-            await this.storeProfilePost.updateProfilePost(this.profilePost)
+            await this.storeProfilePost.updateProfilePost(this.profilePost);
         },
     },
-}
+};
 </script>
 
 <style scoped>

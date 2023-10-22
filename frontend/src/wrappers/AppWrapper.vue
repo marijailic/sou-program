@@ -49,6 +49,7 @@ export default {
 <style lang="scss">
 :root {
     --primary-color: #66ccff;
+    --primary-color-disabled: #c0eaff;
     --white-color: #f5f5f5;
     --white-color-2: #eaeaea;
     --black-color: #212529;
@@ -72,6 +73,7 @@ body {
 .btn-primary:focus {
     background-color: var(--primary-color);
 }
+
 .w-full {
     min-height: 100vh;
 }

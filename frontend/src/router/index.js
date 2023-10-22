@@ -1,5 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import { useStoreAuth } from '@/stores/auth.store'
+import { createRouter, createWebHistory } from 'vue-router';
+import { useStoreAuth } from '@/stores/auth.store';
 
 const routes = [
     {
@@ -124,7 +124,7 @@ const routes = [
             authRequired: false,
         },
     },
-]
+];
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
@@ -134,35 +134,35 @@ const router = createRouter({
     scrollBehavior(_to, _from, _savedPosition) {
         return {
             top: -1,
-        }
+        };
     },
-})
+});
 
 router.beforeEach((to, _from, next) => {
-    const token = localStorage.getItem('token')
-    const isUserLoggedIn = token !== null
+    const token = localStorage.getItem('token');
+    const isUserLoggedIn = token !== null;
 
     // success and error
-    let shouldRefresh = localStorage.getItem('shouldRefresh') === 'true'
+    let shouldRefresh = localStorage.getItem('shouldRefresh') === 'true';
     if (shouldRefresh) {
-        localStorage.removeItem('shouldRefresh')
-        location.reload()
+        localStorage.removeItem('shouldRefresh');
+        location.reload();
     }
 
     // provjera auth
     if (!isUserLoggedIn && to.meta.authRequired) {
-        return next({ name: 'LoginView' })
+        return next({ name: 'LoginView' });
     } else if (isUserLoggedIn && to.name === 'LoginView') {
-        return next({ name: 'NewsfeedView' })
+        return next({ name: 'NewsfeedView' });
     }
 
-    return next()
-})
+    return next();
+});
 
-const DEFAULT_TITLE = 'Šou program'
+const DEFAULT_TITLE = 'Šou program';
 
 router.afterEach((to, _from) => {
-    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`
-})
+    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`;
+});
 
-export default router
+export default router;

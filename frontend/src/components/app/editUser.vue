@@ -4,50 +4,34 @@
             :isOpen="true"
             :onClose="closeEditingUser"
             :onConfirm="updateUser"
-            :disabled="!userName || !userSurname || !userType"
             title="Uredi korisnika"
         >
-            <div class="form-group">
-                <label for="name">Ime</label>
-                <input
-                    v-model.trim="userName"
-                    type="text"
-                    class="form-control"
-                    id="name"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="surname">Prezime</label>
-                <input
-                    v-model.trim="userSurname"
-                    type="text"
-                    class="form-control"
-                    id="surname"
-                    required
-                />
-            </div>
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input
-                    v-model.trim="userEmail"
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    required
-                />
-            </div>
+            <DynamicInput
+                :label="'Ime'"
+                v-model="user.name"
+                :validations="validationRules.name"
+            />
+            <DynamicInput
+                :label="'Prezime'"
+                v-model="user.surname"
+                :validations="validationRules.surname"
+            />
+            <DynamicInput
+                :label="'Email'"
+                v-model="user.email"
+                :validations="validationRules.email"
+            />
             <div class="form-group">
                 <label for="bio">Opis</label>
                 <textarea
-                    v-model.trim="userBio"
+                    v-model.trim="user.bio"
                     class="form-control"
                     id="bio"
                 ></textarea>
             </div>
             <div class="form-group">
                 <label for="type">Tip korisnika</label>
-                <select v-model="userType" class="form-control" id="type">
+                <select v-model="user.type" class="form-control" id="type">
                     <option value="demonstrator">Demonstrator</option>
                     <option value="student">Student</option>
                 </select>
@@ -57,9 +41,12 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
+import { useStoreUser } from '@/stores/user.store';
 
-import ModalForm from './ModalForm.vue'
+import ModalForm from '@/components/app/ModalForm.vue';
+import DynamicInput from '@/components/app/DynamicInput.vue';
+
+import { required, email, maxLength } from '@/utils/validations.js';
 
 const props = {
     userID: {
@@ -70,42 +57,59 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'editUser',
     props,
     components: {
         ModalForm,
+        DynamicInput,
     },
     data() {
-        const storeUser = useStoreUser()
-        const user = storeUser.getUserByID(this.userID)
+        const storeUser = useStoreUser();
+        const user = storeUser.getUserByID(this.userID);
+        user.email = user.e_mail;
 
         return {
+            storeUser,
             user,
-            userName: user.name,
-            userSurname: user.surname,
-            userEmail: user.email,
-            userBio: user.bio,
-            userType: user.type,
-        }
+            validationRules: {
+                name: [required, maxLength(30)],
+                surname: [required, maxLength(30)],
+                email: [required, email],
+                // bio: [maxLength(250)],
+            },
+        };
+    },
+    computed: {
+        isFormValid() {
+            return Object.keys(this.validationRules).every((key) =>
+                this.validationRules[key].every(
+                    (validation) => validation(this.user[key]) === true
+                )
+            );
+        },
     },
     methods: {
         async updateUser() {
-            const updatedUser = {
-                ...user,
-                name: this.userName,
-                surname: this.surname,
-                email: this.userEmail,
-                bio: this.user,
-                type: this.userType,
+            if (!this.isFormValid) {
+                return;
             }
 
-            await this.storeUser.updateUser(updatedUser)
+            const cleanUser = {
+                id: this.user.id,
+                name: this.user.name,
+                surname: this.user.surname,
+                email: this.user.email,
+                bio: this.user.bio,
+                type: this.user.type,
+            };
+
+            await this.storeUser.updateUser(cleanUser);
         },
     },
-}
+};
 </script>
 
 <style scoped>

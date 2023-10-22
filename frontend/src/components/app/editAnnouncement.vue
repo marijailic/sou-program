@@ -1,37 +1,29 @@
 <template>
     <div>
-        <form @submit.prevent="updateAnnouncement">
-            <div class="card border-0 p-0 mt-2">
-                <div class="card-body text-start">
-                    <textarea
-                        v-model.trim="announcementText"
-                        class="form-control"
-                        rows="3"
-                        required
-                    ></textarea>
-                </div>
-                <div class="card-footer text-end">
-                    <a class="btn btn-primary me-2" @click="closeEditing">
-                        Odustani
-                    </a>
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                        :disabled="
-                            announcementText === announcement.text ||
-                            !announcementText
-                        "
-                    >
-                        Spremi promjenu
-                    </button>
-                </div>
+        <ModalForm
+            :isOpen="true"
+            :onClose="closeEditing"
+            :onConfirm="updateAnnouncement"
+            title="Uredi oglas"
+        >
+            <div class="form-group">
+                <label for="text">Opis</label>
+                <textarea
+                    id="text"
+                    v-model.trim="announcement.text"
+                    class="form-control"
+                    rows="3"
+                    required
+                ></textarea>
             </div>
-        </form>
+        </ModalForm>
     </div>
 </template>
 
 <script>
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store';
+
+import ModalForm from '@/components/app/ModalForm.vue';
 
 const props = {
     announcement: {
@@ -42,33 +34,26 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'editAnnouncement',
     props,
+    components: {
+        ModalForm,
+    },
     data() {
         return {
-            announcementText: this.announcement.text,
             storeAnnouncement: useStoreAnnouncement(),
-        }
+        };
     },
     methods: {
         async updateAnnouncement() {
-            const updatedAnnouncement = {
-                id: this.announcement.id,
-                text: announcementText,
-            }
-
-            await this.storeAnnouncement.updateAnnouncement(updatedAnnouncement)
+            await this.storeAnnouncement.updateAnnouncement(this.announcement);
         },
     },
-}
+};
 </script>
 
 <style scoped>
-.card,
-.card-footer {
-    background-color: var(--white-color-2);
-}
 </style>

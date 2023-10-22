@@ -74,16 +74,16 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import imageService from '@/services/imageService'
-import authService from '@/services/authService'
+import { useStoreUser } from '@/stores/user.store';
+import imageService from '@/services/imageService';
+import authService from '@/services/authService';
 
 const props = {
     toggleNav: {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'navigation',
@@ -94,27 +94,27 @@ export default {
         storeUser: useStoreUser(),
     }),
     async created() {
-        await this.storeUser.fetchUsers()
+        await this.storeUser.fetchUsers();
         const currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
-        )
+        );
 
-        this.username = currentUser.username
-        this.userProfilePictureSrc = currentUser.profilePictureSrc
+        this.username = currentUser.username;
+        this.userProfilePictureSrc = currentUser.profilePictureSrc;
     },
     methods: {
         isRouteActive(routeName) {
-            return this.$route.path === routeName
+            return this.$route.path === routeName;
         },
         logout() {
-            localStorage.removeItem('token')
-            localStorage.removeItem('refreshToken')
-            localStorage.removeItem('username')
-            localStorage.removeItem('type')
-            window.location.href = '/login'
+            localStorage.removeItem('token');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('type');
+            window.location.href = '/login';
         },
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>

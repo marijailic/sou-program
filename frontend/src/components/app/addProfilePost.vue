@@ -33,14 +33,14 @@
     </div>
 </template>
 <script>
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
 const props = {
     profilePictureSrc: {
         type: String,
         required: true,
     },
-}
+};
 
 export default {
     name: 'addProfilePost',
@@ -53,10 +53,10 @@ export default {
     }),
     methods: {
         async postProfilePost() {
-            await this.storeProfilePost.createProfilePost(this.profilePost)
+            await this.storeProfilePost.createProfilePost(this.profilePost);
         },
     },
-}
+};
 </script>
 
 <style scoped>

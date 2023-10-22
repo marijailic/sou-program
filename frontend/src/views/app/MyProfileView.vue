@@ -22,14 +22,14 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
-import authService from '@/services/authService'
+import authService from '@/services/authService';
 
-import showProfile from '@/components/app/showProfile.vue'
-import addProfilePost from '@/components/app/addProfilePost.vue'
-import showProfilePost from '@/components/app/showProfilePost.vue'
+import showProfile from '@/components/app/showProfile.vue';
+import addProfilePost from '@/components/app/addProfilePost.vue';
+import showProfilePost from '@/components/app/showProfilePost.vue';
 
 export default {
     name: 'MyProfileView',
@@ -42,22 +42,22 @@ export default {
         storeProfilePost: useStoreProfilePost(),
     }),
     async created() {
-        await this.storeUser.fetchUsers()
+        await this.storeUser.fetchUsers();
         this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
-        )
+        );
 
         this.profilePosts = await this.storeProfilePost.fetchProfilePosts(
             this.currentUser.id
-        )
+        );
     },
     methods: {
         getEditingProfilePostID() {
-            return this.activeEditingProfilePostID
+            return this.activeEditingProfilePostID;
         },
         setEditingProfilePostID(editingProfilePostID) {
-            this.activeEditingProfilePostID = editingProfilePostID
+            this.activeEditingProfilePostID = editingProfilePostID;
         },
     },
-}
+};
 </script>

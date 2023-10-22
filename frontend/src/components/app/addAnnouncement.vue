@@ -35,14 +35,14 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
 const props = {
     userProfilePictureSrc: {
         type: String,
         required: true,
     },
-}
+};
 
 export default {
     name: 'addAnnouncement',
@@ -55,10 +55,10 @@ export default {
     }),
     methods: {
         async postAnnouncement() {
-            await this.storeAnnouncement.createAnnouncement(this.announcement)
+            await this.storeAnnouncement.createAnnouncement(this.announcement);
         },
     },
-}
+};
 </script>
 
 <style scoped>

@@ -1,9 +1,9 @@
-import { useStoreGallery } from '@/stores/gallery.store'
+import { useStoreGallery } from '@/stores/gallery.store';
 
 export default {
     async getImageSrc(imageID) {
-        const storeGallery = useStoreGallery()
-        const imageBase64 = await storeGallery.getImage(imageID)
-        return imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : ''
+        const storeGallery = useStoreGallery();
+        const imageBase64 = await storeGallery.getImage(imageID);
+        return imageBase64 ? `data:image/jpeg;base64,${imageBase64}` : '';
     },
-}
+};

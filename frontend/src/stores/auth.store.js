@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia'
-import backendApiService from '@/services/backendApiService'
-import userTypeEnum from '@/enums/userTypeEnum'
+import { defineStore } from 'pinia';
+import backendApiService from '@/services/backendApiService';
+import userTypeEnum from '@/enums/userTypeEnum';
 
 export const useStoreAuth = defineStore('storeAuth', {
     state: () => ({
@@ -11,26 +11,26 @@ export const useStoreAuth = defineStore('storeAuth', {
         getHeaders:
             (state) =>
             ({ auth, contentTypeJson }) => {
-                let headers = {}
+                let headers = {};
 
                 if (auth) {
-                    headers['Authorization'] = `Bearer ${state.checkToken()}`
+                    headers['Authorization'] = `Bearer ${state.checkToken()}`;
                 }
 
                 if (contentTypeJson) {
-                    headers['Content-Type'] = 'application/json'
+                    headers['Content-Type'] = 'application/json';
                 }
 
-                return headers
+                return headers;
             },
         getAuthUserType: (state) => () => {
-            return state.type
+            return state.type;
         },
         isAuthUserDemos: (state) => () => {
-            return state.type === userTypeEnum.DEMOS
+            return state.type === userTypeEnum.DEMOS;
         },
         isAuthenticated: (state) => {
-            return !!state.token && !!state.user
+            return !!state.token && !!state.user;
         },
     },
     actions: {
@@ -39,38 +39,38 @@ export const useStoreAuth = defineStore('storeAuth', {
                 url: '/login',
                 headers: this.getAuthHeaders({ contentTypeJson: true }),
                 body: JSON.stringify({ username, password }),
-            })
+            });
 
             if (!res.ok) {
-                window.location.href = '/error'
-                return
+                window.location.href = '/error';
+                return;
             }
 
-            const resObj = await res.json()
+            const resObj = await res.json();
 
-            console.log(resObj)
-            this.user = resObj.user
-            this.token = resObj.token
+            console.log(resObj);
+            this.user = resObj.user;
+            this.token = resObj.token;
 
-            localStorage.setItem('token', this.token)
+            localStorage.setItem('token', this.token);
 
-            window.location.href = '/newsfeed'
+            window.location.href = '/newsfeed';
         },
         logout() {
-            this.username = ''
-            this.token = ''
+            this.username = '';
+            this.token = '';
 
-            localStorage.removeItem('token')
+            localStorage.removeItem('token');
 
-            window.location.href = '/login'
+            window.location.href = '/login';
         },
         checkToken() {
-            const tokenFromLocalStorage = localStorage.getItem('token')
+            const tokenFromLocalStorage = localStorage.getItem('token');
             if (tokenFromLocalStorage) {
-                this.token = tokenFromLocalStorage
+                this.token = tokenFromLocalStorage;
                 // TODO: Fetch the user data based on the token
             }
-            return token
+            return token;
         },
     },
-})
+});

@@ -53,10 +53,10 @@
 </template>
 
 <script>
-import { useStoreAnnouncement } from '@/stores/announcement.store'
+import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import editAnnouncement from './editAnnouncement.vue'
-import userTypeEnum from '@/enums/userTypeEnum'
+import editAnnouncement from './editAnnouncement.vue';
+import userTypeEnum from '@/enums/userTypeEnum';
 
 const props = {
     announcement: {
@@ -71,7 +71,7 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'showAnnouncement',
@@ -87,34 +87,34 @@ export default {
     }),
     async created() {
         this.userProfilePictureSrc = await this.announcement.author
-            .profilePictureSrc
+            .profilePictureSrc;
     },
     computed: {
         isEditingActive() {
-            return this.announcement.id === this.getEditingAnnouncementID()
+            return this.announcement.id === this.getEditingAnnouncementID();
         },
         authorFullName() {
-            return `${this.announcement.author.name} ${this.announcement.author.surname}`
+            return `${this.announcement.author.name} ${this.announcement.author.surname}`;
         },
     },
     methods: {
         async deleteAnnouncement(announcementID) {
             const isConfirmed = window.confirm(
                 'Jeste li sigurni da želite izbrisati objavu?'
-            )
+            );
 
             if (isConfirmed) {
-                await this.storeAnnouncement.deleteAnnouncement(announcementID)
+                await this.storeAnnouncement.deleteAnnouncement(announcementID);
             }
         },
         openEditing(editingAnnouncementID) {
-            this.setEditingAnnouncementID(editingAnnouncementID)
+            this.setEditingAnnouncementID(editingAnnouncementID);
         },
         closeEditing() {
-            this.setEditingAnnouncementID(0)
+            this.setEditingAnnouncementID(0);
         },
     },
-}
+};
 </script>
 
 <style scoped>

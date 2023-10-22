@@ -7,29 +7,25 @@
         <button
             type="button"
             class="btn-close btn-close-top-left"
-            @click="closeHandler"
+            @click="onClose"
         ></button>
         <div class="modal-dialog">
             <div class="modal-content border-0 shadow-sm">
-                <div class="modal-body">
-                    <h4 class="modal-title mt-sm-0 mt-4">{{ title }}</h4>
-                    <form
-                        class="card p-0 border-0 mt-3 d-flex gap-3"
-                        @submit.prevent="confirmHandler"
-                        autocomplete="off"
-                    >
+                <form
+                    class="card p-0 border-0 d-flex gap-3"
+                    autocomplete="off"
+                    @submit.prevent="confirmHandler"
+                >
+                    <div class="modal-body d-flex flex-column gap-3">
+                        <h4 class="modal-title mt-sm-0 mt-4">{{ title }}</h4>
                         <slot></slot>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                        :disabled="disabled"
-                    >
-                        Potvrdi
-                    </button>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">
+                            Potvrdi
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -54,21 +50,13 @@ export default {
             type: Function,
             default: () => {},
         },
-        disabled: {
-            type: Boolean,
-            default: false,
-        },
     },
     methods: {
-        closeHandler() {
-            this.onClose()
-        },
         confirmHandler() {
-            this.onConfirm()
-            this.closeHandler()
+            this.onConfirm();
         },
     },
-}
+};
 </script>
 
 <style scoped>
@@ -81,5 +69,9 @@ export default {
     top: 1rem;
     left: 1rem;
     z-index: 1;
+}
+
+.not-allowed {
+    cursor: not-allowed;
 }
 </style>

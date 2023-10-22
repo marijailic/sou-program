@@ -7,10 +7,10 @@ const props = {
     isLoading: {
         type: Boolean,
     },
-}
+};
 export default {
     props,
-}
+};
 </script>
 <style scoped>
 .spinner {

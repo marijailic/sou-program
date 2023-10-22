@@ -1,25 +1,25 @@
-import userTypeEnum from '@/enums/userTypeEnum'
+import userTypeEnum from '@/enums/userTypeEnum';
 
 export default {
     getAuthHeaders: () => {
-        const token = localStorage.getItem('token')
-        const refreshToken = localStorage.getItem('refreshToken')
-        const username = localStorage.getItem('username')
-        const type = localStorage.getItem('type')
+        const token = localStorage.getItem('token');
+        const refreshToken = localStorage.getItem('refreshToken');
+        const username = localStorage.getItem('username');
+        const type = localStorage.getItem('type');
 
         return {
             Authorization: `Bearer ${token}`,
             RefreshToken: refreshToken,
             username,
             type,
-        }
+        };
     },
     saveAuthData: ({ username, type, token, refreshToken }) => {
-        localStorage.setItem('token', token)
-        localStorage.setItem('refreshToken', refreshToken)
-        localStorage.setItem('type', type)
-        localStorage.setItem('username', username)
+        localStorage.setItem('token', token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('type', type);
+        localStorage.setItem('username', username);
     },
     getAuthUsername: () => localStorage.getItem('username'),
     isAuthUserDemos: () => localStorage.getItem('type') === userTypeEnum.DEMOS,
-}
+};

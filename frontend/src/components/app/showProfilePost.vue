@@ -48,10 +48,10 @@
 </template>
 
 <script>
-import { useStoreProfilePost } from '@/stores/profilepost.store'
-import { useStoreUser } from '@/stores/user.store'
+import { useStoreProfilePost } from '@/stores/profilepost.store';
+import { useStoreUser } from '@/stores/user.store';
 
-import editProfilePost from './editProfilePost.vue'
+import editProfilePost from './editProfilePost.vue';
 
 const props = {
     user: {
@@ -72,7 +72,7 @@ const props = {
         required: false,
         default: null,
     },
-}
+};
 
 export default {
     name: 'showProfilePost',
@@ -86,34 +86,34 @@ export default {
             canEdit:
                 this.setEditingProfilePostID && this.getEditingProfilePostID,
             storeProfilePost: useStoreProfilePost(),
-        }
+        };
     },
     computed: {
         isEditingActive() {
             return (
                 this.getEditingProfilePostID !== null &&
                 this.profilePost.id === this.getEditingProfilePostID()
-            )
+            );
         },
     },
     methods: {
         async deleteProfilePost(profilePostID) {
             const isConfirmed = window.confirm(
                 'Jeste li sigurni da želite izbrisati objavu?'
-            )
+            );
 
             if (isConfirmed) {
-                await this.storeProfilePost.deleteProfilePost(profilePostID)
+                await this.storeProfilePost.deleteProfilePost(profilePostID);
             }
         },
         openEditing(editingProfilePostID) {
-            this.setEditingProfilePostID(editingProfilePostID)
+            this.setEditingProfilePostID(editingProfilePostID);
         },
         closeEditing() {
-            this.setEditingProfilePostID(0)
+            this.setEditingProfilePostID(0);
         },
     },
-}
+};
 </script>
 
 <style scoped>

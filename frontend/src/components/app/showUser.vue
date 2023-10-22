@@ -40,8 +40,8 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import authService from '@/services/authService'
+import { useStoreUser } from '@/stores/user.store';
+import authService from '@/services/authService';
 
 const props = {
     user: {
@@ -52,36 +52,36 @@ const props = {
         type: Function,
         required: true,
     },
-}
+};
 
 export default {
     name: 'showUser',
     props,
     computed: {
         isAuthUserDemos() {
-            return authService.isAuthUserDemos()
+            return authService.isAuthUserDemos();
         },
     },
     methods: {
         async deleteUser(userID) {
-            const storeUser = useStoreUser()
+            const storeUser = useStoreUser();
 
             const isConfirmed = window.confirm(
                 'Jeste li sigurni da želite izbrisati korisnika?'
-            )
+            );
 
             if (isConfirmed) {
-                await storeUser.deleteUser(userID)
+                await storeUser.deleteUser(userID);
             }
         },
         openEditingUser(editingUserID) {
-            this.setEditingUserID(editingUserID)
+            this.setEditingUserID(editingUserID);
         },
         closeEditingUser() {
-            this.setEditingUserID(0)
+            this.setEditingUserID(0);
         },
     },
-}
+};
 </script>
 
 <style scoped>

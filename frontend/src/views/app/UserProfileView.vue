@@ -18,11 +18,11 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store'
-import { useStoreProfilePost } from '@/stores/profilepost.store'
+import { useStoreUser } from '@/stores/user.store';
+import { useStoreProfilePost } from '@/stores/profilepost.store';
 
-import showProfile from '@/components/app/showProfile.vue'
-import showProfilePost from '@/components/app/showProfilePost.vue'
+import showProfile from '@/components/app/showProfile.vue';
+import showProfilePost from '@/components/app/showProfilePost.vue';
 
 export default {
     name: 'UserProfileView',
@@ -33,17 +33,17 @@ export default {
         profilePosts: [],
     }),
     async created() {
-        const storeProfilePost = useStoreProfilePost()
-        const storeUser = useStoreUser()
+        const storeProfilePost = useStoreProfilePost();
+        const storeUser = useStoreUser();
 
-        await storeUser.fetchUsers()
+        await storeUser.fetchUsers();
 
-        this.userID = this.$route.params.id
-        this.user = storeUser.getUserByID(this.userID)
+        this.userID = this.$route.params.id;
+        this.user = storeUser.getUserByID(this.userID);
 
         this.profilePosts = await storeProfilePost.fetchProfilePosts(
             this.userID
-        )
+        );
     },
-}
+};
 </script>
