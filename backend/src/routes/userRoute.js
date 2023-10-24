@@ -2,8 +2,8 @@ const moment = require("moment-timezone");
 const express = require("express");
 const router = express.Router();
 
-import { demosMiddleware } from "../middlewares/demos.middleware";
-import { hashPassword, authMiddleware } from "../middlewares/auth.middleware";
+import { demosMiddleware } from "../middlewares/demosMiddleware";
+import { hashPassword, authMiddleware } from "../middlewares/authMiddleware";
 import db from "../db";
 
 router.get("/user", [authMiddleware], async (req, res, next) => {

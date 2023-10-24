@@ -1,5 +1,5 @@
 const db = require("../db");
-const { sendMail } = require("../services/email.service");
+const { sendMail } = require("./emailService");
 
 const sendAnnouncements = async (text) => {
     const emailObjArray = await db.select("e_mail").from("user");

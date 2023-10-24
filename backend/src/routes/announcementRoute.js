@@ -3,11 +3,13 @@ const express = require("express");
 const router = express.Router();
 
 import db from "../db";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { demosMiddleware } from "../middlewares/demos.middleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { demosMiddleware } from "../middlewares/demosMiddleware";
 
-const { getUserByUsername } = require("../services/user.service");
-const { sendAnnouncements } = require("../services/sendAnnouncement.service");
+const { getUserByUsername } = require("../services/userService");
+const {
+    sendAnnouncements,
+} = require("../services/sendAnnouncementEmailService");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
