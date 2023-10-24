@@ -315,7 +315,7 @@
                         <ul>
                             <li>
                                 <a
-                                    href="https://dl.ebooksworld.ir/books/Introduction.to.Algorithms.4th.Leiserson.Stein.Rivest.Cormen.MIT.Press.9780262046305.EBooksWorld.ir.pdf"
+                                    href="https://dahlan.unimal.ac.id/files/ebooks/2009%20Introduction%20to%20Algorithms%20Third%20Ed.pdf"
                                     target="_blank"
                                     >Introduction to Algorithms - Thomas H.
                                     Cormen</a
