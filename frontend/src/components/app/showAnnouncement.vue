@@ -28,7 +28,7 @@
                 </div>
             </div>
 
-            <div v-if="isDemos" class="card-footer bg-white text-end">
+            <div v-if="isAuthUserDemos" class="card-footer bg-white text-end">
                 <button
                     @click="deleteAnnouncement(announcement.id)"
                     class="btn btn-primary me-2"
@@ -45,7 +45,7 @@
         </div>
 
         <edit-announcement
-            v-if="isEditingActive"
+            v-if="isAuthUserDemos && isEditingActive"
             :announcement="announcement"
             :closeEditing="closeEditing"
         />
@@ -54,6 +54,8 @@
 
 <script>
 import { useStoreAnnouncement } from '@/stores/announcement.store';
+
+import authService from '@/services/authService';
 
 import editAnnouncement from './editAnnouncement.vue';
 import userTypeEnum from '@/enums/userTypeEnum';
@@ -80,9 +82,8 @@ export default {
         editAnnouncement,
     },
     data: () => ({
+        isAuthUserDemos: authService.isAuthUserDemos(),
         userProfilePictureSrc: '',
-        isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
-        isEditingActive: false,
         storeAnnouncement: useStoreAnnouncement(),
     }),
     async created() {

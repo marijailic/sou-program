@@ -1,54 +1,52 @@
-const moment = require("moment-timezone");
-const express = require("express");
+const moment = require('moment-timezone');
+const express = require('express');
 const router = express.Router();
 
-import db from "../db";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { demosMiddleware } from "../middlewares/demos.middleware";
+import db from '../db';
+import { authMiddleware } from '../middlewares/auth.middleware';
+import { demosMiddleware } from '../middlewares/demos.middleware';
 
-const { getUserByUsername } = require("../services/user.service");
-const { sendAnnouncements } = require("../services/sendAnnouncement.service");
+const { getUserByUsername } = require('../services/user.service');
+const { sendAnnouncements } = require('../services/sendAnnouncement.service');
 
-router.get("/announcement", authMiddleware, async (req, res) => {
+router.get('/announcement', authMiddleware, async (req, res) => {
     try {
-        const announcement = await db("announcement")
-            .orderBy("timestamp", "desc")
+        const announcement = await db('announcement')
+            .orderBy('timestamp', 'desc')
             .limit(10);
         res.json({
-            message: "Announcement fetched successfully",
+            message: 'Announcement fetched successfully',
             data: announcement,
         });
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
         res.status(500).json({
-            message: "Internal server error",
+            message: 'Internal server error',
             data: {},
         });
     }
 });
 
 router.delete(
-    "/delete-announcement",
+    '/delete-announcement',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idAnnouncement = req.body.id;
-        const idUser = (await getUserByUsername(req.headers["username"])).id;
 
         try {
-            await db("announcement")
+            await db('announcement')
                 .where({
                     id: idAnnouncement,
-                    author_id: idUser,
                 })
                 .del();
             res.json({
-                message: "Announcement deleted successfully",
+                message: 'Announcement deleted successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -56,39 +54,38 @@ router.delete(
 );
 
 router.post(
-    "/create-announcement",
+    '/create-announcement',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
-        console.log("Create");
         const text = req.body.text;
-        const idUser = (await getUserByUsername(req.headers["username"])).id;
+        const idUser = (await getUserByUsername(req.headers['username'])).id;
 
-        const timezone = "Europe/Amsterdam";
-        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+        const timezone = 'Europe/Amsterdam';
+        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
-        if (text.trim() === "") {
-            res.status(400).json({ message: "Client error", data: {} });
+        if (text.trim() === '') {
+            res.status(400).json({ message: 'Client error', data: {} });
         }
 
         const announcementData = {
             text: text,
-            picture_key: "",
+            picture_key: '',
             author_id: idUser,
             timestamp: timestamp,
         };
 
         try {
-            await db("announcement").insert(announcementData);
+            await db('announcement').insert(announcementData);
             await sendAnnouncements(text);
 
             res.json({
-                message: "Announcement created successfully",
+                message: 'Announcement created successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -96,33 +93,30 @@ router.post(
 );
 
 router.post(
-    "/update-announcement",
+    '/update-announcement',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const id = req.body.id;
         const text = req.body.text;
-        const idUser = (await getUserByUsername(req.headers["username"])).id;
 
-        if (text.trim() === "") {
-            res.status(400).json({ message: "Client error", data: {} });
+        if (text.trim() === '') {
+            res.status(400).json({ message: 'Client error', data: {} });
             return;
         }
 
         try {
-            await db("announcement")
-                .where({ id: id, author_id: idUser })
-                .update({
-                    text: text,
-                });
+            await db('announcement').where({ id: id }).update({
+                text: text,
+            });
 
             res.json({
-                message: "Announcement updated successfully",
+                message: 'Announcement updated successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }

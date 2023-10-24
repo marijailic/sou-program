@@ -21,7 +21,11 @@
                         <slot></slot>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            :disabled="disabled"
+                        >
                             Potvrdi
                         </button>
                     </div>
@@ -50,6 +54,15 @@ export default {
             type: Function,
             default: () => {},
         },
+        disabled: {
+            type: Boolean,
+            default: false,
+        },
+    },
+    data() {
+        return {
+            isDisabled: this.disabled,
+        };
     },
     methods: {
         confirmHandler() {
@@ -72,6 +85,11 @@ export default {
 }
 
 .not-allowed {
+    cursor: not-allowed;
+}
+
+.btn:disabled {
+    opacity: 0.65;
     cursor: not-allowed;
 }
 </style>
