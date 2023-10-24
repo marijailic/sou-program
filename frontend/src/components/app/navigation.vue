@@ -1,16 +1,19 @@
 <template>
     <div class="nav-container">
-        <div class="card py-3 text-center">
-            <img
-                id="profile-image"
-                class="card-img-top rounded-circle mx-auto"
-                :src="userProfilePictureSrc || require('@/assets/sp-icon.png')"
-            />
-            <div class="card-body px-0">
-                <h5 class="card-title mt-1">
+        <div class="card p-0 text-center d-flex gap-3 my-0 my-md-3">
+            <div class="pt-3">
+                <img
+                    class="profile-image rounded-circle mx-auto"
+                    :src="
+                        userProfilePictureSrc || require('@/assets/sp-icon.png')
+                    "
+                />
+                <h5 class="card-title mt-2 d-none d-md-block">
                     {{ username }}
                 </h5>
-                <nav class="nav flex-column">
+            </div>
+            <div class="card-body p-0 flex-grow-1">
+                <nav class="nav mt-2 flex-column">
                     <router-link
                         to="/newsfeed"
                         class="nav-link"
@@ -19,24 +22,29 @@
                         }"
                         data-text="Naslovnica"
                         @click="toggleNav"
-                        ><i class="material-icons">article</i></router-link
                     >
+                        <i class="material-icons">article</i>
+                    </router-link>
                     <router-link
-                        class="nav-link"
                         to="/my-profile"
+                        class="nav-link"
+                        :class="{
+                            'nav-link-active': isRouteActive('/my-profile'),
+                        }"
                         data-text="Profil"
                         @click="toggleNav"
                     >
-                        <i class="material-icons">person</i></router-link
-                    >
+                        <i class="material-icons">person</i>
+                    </router-link>
                     <router-link
                         to="/search"
                         class="nav-link"
                         :class="{ 'nav-link-active': isRouteActive('/search') }"
                         data-text="Stalkaonica"
                         @click="toggleNav"
-                        ><i class="material-icons">people</i></router-link
                     >
+                        <i class="material-icons">people</i>
+                    </router-link>
                     <!-- <router-link
                         to="/gallery"
                         class="nav-link"
@@ -59,13 +67,13 @@
                     > -->
                 </nav>
             </div>
-            <div class="px-3">
+            <div class="pb-3 px-3">
                 <div class="mb-2">
-                    <router-link to="/resources" class="info-btn">
-                        Resursi</router-link
-                    >
+                    <router-link to="/resources" class="resources-link">
+                        Resursi
+                    </router-link>
                 </div>
-                <button class="btn btn-primary px-3" @click="logout">
+                <button class="btn btn-primary px-3 w-100" @click="logout">
                     Odjavi me
                 </button>
             </div>
@@ -75,7 +83,6 @@
 
 <script>
 import { useStoreUser } from '@/stores/user.store';
-import imageService from '@/services/imageService';
 import authService from '@/services/authService';
 
 const props = {
@@ -123,29 +130,20 @@ export default {
     position: fixed;
     top: 0;
     overflow-y: auto;
-
+    margin-left: 0;
     z-index: 1;
     &.slide-in {
         transform: translateX(0);
     }
 }
-#profile-image {
+.profile-image {
     width: 60px;
     height: 60px;
 }
-.card-title {
-    display: none;
-}
 .card {
-    width: 100%;
-    height: calc(100% - 56px);
-    padding: 1rem 0;
-}
-.custom-link {
-    color: var(--black-color);
-}
-.nav {
-    margin-top: 3rem;
+    height: calc(100vh - 4rem);
+    border: solid 1px lightgray;
+    border-radius: 0;
 }
 .nav-link-active {
     background-color: var(--white-color);
@@ -171,31 +169,25 @@ export default {
     margin-left: 1.2rem;
     margin-right: 0.5rem;
 }
-.info-btn {
+.resources-link {
     color: var(--black-color);
 }
-.btn {
-    width: 100%;
-}
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
     .nav-container {
         position: static;
         transform: translateX(0);
         width: 18rem;
-        margin-top: 1rem;
         margin-left: 1rem;
     }
-
     .card {
+        height: calc(100vh - 2rem);
         border: none;
+        border-radius: 0.5rem;
     }
-    #profile-image {
+    .profile-image {
         width: 100px;
         height: 100px;
-    }
-    .card-title {
-        display: block;
     }
     .nav-link::after {
         display: block;

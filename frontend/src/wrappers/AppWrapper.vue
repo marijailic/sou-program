@@ -97,13 +97,13 @@ body {
     z-index: 2;
     left: 0;
 
-    @media (min-width: 769px) {
+    @media (min-width: 768px) {
         position: static;
         margin-top: 1rem;
     }
 }
 .main-content {
-    @media (min-width: 769px) {
+    @media (min-width: 768px) {
         margin-left: 19rem;
     }
 }
