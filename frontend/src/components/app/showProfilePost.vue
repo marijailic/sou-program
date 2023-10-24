@@ -55,7 +55,7 @@ import editProfilePost from './editProfilePost.vue';
 
 const props = {
     user: {
-        type: Number,
+        type: Object,
         required: true,
     },
     profilePost: {
@@ -82,7 +82,6 @@ export default {
     },
     data() {
         return {
-            isEditingActive: false,
             canEdit:
                 this.setEditingProfilePostID && this.getEditingProfilePostID,
             storeProfilePost: useStoreProfilePost(),

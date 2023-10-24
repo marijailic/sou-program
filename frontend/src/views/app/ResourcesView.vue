@@ -1,14 +1,9 @@
 <template>
     <div>
         <div class="card">
-            <h1>Naslovnica</h1>
+            <h1>Dobro došli! 🎉</h1>
         </div>
         <div class="row">
-            <div class="col">
-                <div class="card">
-                    <h1>Dobro došli! 🎉</h1>
-                </div>
-            </div>
             <div class="col">
                 <div class="card">
                     <h1>Resursi</h1>

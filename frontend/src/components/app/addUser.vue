@@ -5,7 +5,7 @@
             :onClose="closeAddingUser"
             :onConfirm="createUser"
             title="Dodaj korisnika"
-            :isConfirmDisabled="!isFormValid"
+            :disabled="!isFormValid"
         >
             <DynamicInput
                 :label="'Ime'"
