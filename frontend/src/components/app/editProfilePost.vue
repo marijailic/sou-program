@@ -5,12 +5,13 @@
             :onClose="closeEditing"
             :onConfirm="updateProfilePost"
             title="Uredi profilnu objavu"
+            :disabled="!profilePostText"
         >
             <div class="form-group">
                 <label for="text">Opis</label>
                 <textarea
                     id="text"
-                    v-model.trim="profilePost.text"
+                    v-model.trim="profilePostText"
                     class="form-control"
                     rows="3"
                     required
@@ -44,12 +45,17 @@ export default {
     },
     data() {
         return {
+            profilePostText: this.profilePost.text,
             storeProfilePost: useStoreProfilePost(),
         };
     },
     methods: {
         async updateProfilePost() {
-            await this.storeProfilePost.updateProfilePost(this.profilePost);
+            const updatedProfilePost = {
+                id: this.profilePost.id,
+                text: this.profilePostText,
+            };
+            await this.storeProfilePost.updateProfilePost(updatedProfilePost);
         },
     },
 };

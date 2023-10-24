@@ -176,10 +176,10 @@
 </template>
 
 <script>
-import EmailLink from "@/components/web/EmailLink.vue";
+import EmailLink from '@/components/web/EmailLink.vue';
 
 export default {
-    name: "Home",
+    name: 'Home',
     components: {
         EmailLink,
     },

@@ -20,3 +20,19 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.btn-primary {
+    background-color: #66ccff;
+    border: #66ccff;
+}
+.btn-primary:hover {
+    background-color: #66ccff;
+}
+.btn-primary:active {
+    background-color: #66ccff !important;
+}
+.btn-primary:focus {
+    background-color: #66ccff;
+}
+</style>

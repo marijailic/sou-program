@@ -5,6 +5,7 @@
             :onClose="closeEditingUser"
             :onConfirm="updateUser"
             title="Uredi korisnika"
+            :disabled="!isFormValid"
         >
             <DynamicInput
                 :label="'Ime'"
