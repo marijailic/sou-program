@@ -5,13 +5,14 @@ const router = express.Router();
 import db from "../db";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { demosMiddleware } from "../middlewares/demos.middleware";
+import { Announcements } from "../models/models";
 
 const { getUserByUsername } = require("../services/user.service");
 const { sendAnnouncements } = require("../services/sendAnnouncement.service");
 
 router.get("/announcement", authMiddleware, async (req, res) => {
     try {
-        const announcement = await db("announcement")
+        const announcement = await Announcements()
             .orderBy("timestamp", "desc")
             .limit(10);
         res.json({
@@ -35,7 +36,7 @@ router.delete(
         const idUser = (await getUserByUsername(req.headers["username"])).id;
 
         try {
-            await db("announcement")
+            await Announcements()
                 .where({
                     id: idAnnouncement,
                     author_id: idUser,

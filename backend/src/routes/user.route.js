@@ -3,8 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 import { demosMiddleware } from "../middlewares/demos.middleware";
-import { hashPassword, authMiddleware } from "../middlewares/auth.middleware";
+import { authMiddleware } from "../middlewares/auth.middleware";
 import db from "../db";
+import { hashPassword } from "../services/authService";
 
 router.get("/user", [authMiddleware], async (req, res, next) => {
     try {
