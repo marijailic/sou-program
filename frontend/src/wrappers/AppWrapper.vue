@@ -13,12 +13,14 @@
                 <router-view></router-view>
             </div>
         </div>
-        <div class="menu-footer position-fixed w-100 p-2">
-            <img
-                class="icon rounded-circle cursor-pointer"
-                :src="require('@/assets/sp-icon.png')"
-                @click.stop="toggleNav"
-            />
+        <div class="menu-footer position-fixed w-100 p-1">
+            <div class="d-flex h-100">
+                <img
+                    class="icon rounded-circle cursor-pointer align-self-center"
+                    :src="require('@/assets/sp-icon.png')"
+                    @click.stop="toggleNav"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -91,6 +93,7 @@ body {
 .menu-footer {
     background-color: lightgray;
     bottom: 0;
+    height: 4rem;
     display: none;
     z-index: 2;
 
@@ -114,6 +117,8 @@ body {
 }
 
 .main-content {
+    padding-bottom: 4rem !important;
+
     @media (min-width: 769px) {
         margin-left: 19rem;
     }
