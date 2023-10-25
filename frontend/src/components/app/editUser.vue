@@ -7,17 +7,17 @@
             title="Uredi korisnika"
             :disabled="!isFormValid"
         >
-            <DynamicInput
+            <Input
                 :label="'Ime'"
                 v-model="user.name"
                 :validations="validationRules.name"
             />
-            <DynamicInput
+            <Input
                 :label="'Prezime'"
                 v-model="user.surname"
                 :validations="validationRules.surname"
             />
-            <DynamicInput
+            <Input
                 :label="'Email'"
                 v-model="user.email"
                 :validations="validationRules.email"
@@ -45,7 +45,7 @@
 import { useStoreUser } from '@/stores/user.store';
 
 import ModalForm from '@/components/app/ModalForm.vue';
-import DynamicInput from '@/components/app/DynamicInput.vue';
+import Input from '@/components/app/Input.vue';
 
 import { required, email, maxLength } from '@/utils/validations.js';
 
@@ -65,7 +65,7 @@ export default {
     props,
     components: {
         ModalForm,
-        DynamicInput,
+        Input,
     },
     data() {
         const storeUser = useStoreUser();
@@ -112,16 +112,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    min-width: 15rem;
-}
-.row {
-    padding: 1em;
-}
-.card,
-.card-footer {
-    background-color: var(--white-color-2);
-}
-</style>

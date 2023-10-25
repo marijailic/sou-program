@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <div class="card">
-            <div class="d-flex justify-content-between align-items-center">
+    <div class="d-flex flex-column gap-3 h-100">
+        <div class="card border-0">
+            <div
+                class="card-body p-2 d-flex justify-content-between align-items-center"
+            >
                 <h1>Stalkaonica</h1>
                 <button
                     v-if="isAuthUserDemos"
@@ -12,21 +14,27 @@
                 </button>
             </div>
         </div>
-        <div>
-            <search-user :searchedUsersByUsername="searchedUsersByUsername" />
-            <show-user
-                v-for="user in users"
-                :key="user.id"
-                :user="user"
-                :setEditingUserID="setEditingUserID"
-            />
-            <div
-                class="d-flex justify-content-center"
-                v-if="users.length === 0"
-            >
-                <h1 class="mt-5">Nema korisnika...</h1>
-            </div>
+
+        <search-user :searchedUsersByUsername="searchedUsersByUsername" />
+
+        <show-user
+            v-for="user in users"
+            :key="user.id"
+            :user="user"
+            :setEditingUserID="setEditingUserID"
+        />
+
+        <h1 class="mt-5 mx-auto" v-if="users.length === 0 && !isLoading">
+            Nema korisnika...
+        </h1>
+
+        <div
+            class="d-flex align-items-center justify-content-center flex-grow-1"
+            v-if="isLoading"
+        >
+            <LoadingSpinner />
         </div>
+
         <add-user
             v-if="isAuthUserDemos && isAddingUser"
             :closeAddingUser="closeAddingUser"
@@ -48,6 +56,7 @@ import searchUser from '@/components/app/searchUser.vue';
 import showUser from '@/components/app/showUser.vue';
 import addUser from '@/components/app/addUser.vue';
 import editUser from '@/components/app/editUser.vue';
+import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
 
 export default {
     name: 'SearchView',
@@ -56,8 +65,10 @@ export default {
         showUser,
         addUser,
         editUser,
+        LoadingSpinner,
     },
     data: () => ({
+        isLoading: false,
         users: [],
         isAddingUser: false,
         activeEditingUserID: 0,
@@ -70,8 +81,12 @@ export default {
         },
     },
     async created() {
+        this.isLoading = true;
+
         this.users = await this.storeUser.fetchUsers();
         this.searchedUsersByUsername('');
+
+        this.isLoading = false;
     },
     methods: {
         openAddingUser() {

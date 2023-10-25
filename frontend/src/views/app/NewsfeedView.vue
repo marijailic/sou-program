@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="d-flex flex-column gap-3 h-100">
         <div class="card border-0">
             <h1>Naslovnica</h1>
         </div>
@@ -9,12 +9,12 @@
             :userProfilePictureSrc="currentUser.profilePictureSrc"
         />
 
-        <div
-            class="d-flex justify-content-center"
-            v-if="announcements.length === 0"
+        <h1
+            class="mt-5 mx-auto"
+            v-if="announcements.length === 0 && !isLoading"
         >
-            <h1 class="mt-5">Nema obavijesti...</h1>
-        </div>
+            Nema obavijesti...
+        </h1>
 
         <show-announcement
             v-for="announcement in announcements"
@@ -24,8 +24,11 @@
             :setEditingAnnouncementID="setEditingAnnouncementID"
         />
 
-        <div class="mt-2 d-flex justify-content-center">
-            <LoadingSpinner :isLoading="isLoading" />
+        <div
+            class="d-flex align-items-center justify-content-center flex-grow-1"
+            v-if="isLoading"
+        >
+            <LoadingSpinner />
         </div>
     </div>
 </template>
@@ -58,11 +61,15 @@ export default {
         activeEditingAnnouncementID: 0,
     }),
     async created() {
+        this.isLoading = true;
+
         await this.storeUser.fetchUsers();
         this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
         );
         await this.loadMoreAnnouncements();
+
+        this.isLoading = false;
     },
     mounted() {
         this.handleScroll();

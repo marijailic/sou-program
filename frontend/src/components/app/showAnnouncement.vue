@@ -1,10 +1,10 @@
 <template>
     <div>
-        <div class="card border-0 mt-3 p-0">
-            <div class="d-flex gap-3 p-3">
-                <div class="my-auto">
+        <div class="card border-0 p-0">
+            <div class="card-body d-flex gap-3 p-2">
+                <div>
                     <img
-                        class="profile-pic rounded-circle"
+                        class="icon rounded-circle"
                         :src="
                             userProfilePictureSrc ||
                             require('@/assets/sp-icon.png')
@@ -12,7 +12,7 @@
                     />
                 </div>
                 <div class="flex-grow-1">
-                    <div class="card-right card-body">
+                    <div class="card-right">
                         <h5 class="card-title d-inline">
                             {{ authorFullName }}
                         </h5>
@@ -21,17 +21,20 @@
                             {{ announcement.posted_at }}
                             ago
                         </span>
-                        <p class="card-text mt-2">
+                        <p class="mt-2 mb-1">
                             {{ announcement.text }}
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div v-if="isAuthUserDemos" class="card-footer bg-white text-end">
+            <div
+                v-if="isAuthUserDemos"
+                class="card-footer bg-white d-flex gap-2 justify-content-end p-2"
+            >
                 <button
                     @click="deleteAnnouncement(announcement.id)"
-                    class="btn btn-primary me-2"
+                    class="btn btn-primary"
                 >
                     Izbriši
                 </button>
@@ -58,7 +61,6 @@ import { useStoreAnnouncement } from '@/stores/announcement.store';
 import authService from '@/services/authService';
 
 import editAnnouncement from './editAnnouncement.vue';
-import userTypeEnum from '@/enums/userTypeEnum';
 
 const props = {
     announcement: {
@@ -117,10 +119,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.profile-pic {
-    width: 50px;
-    height: 50px;
-}
-</style>

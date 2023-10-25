@@ -1,36 +1,30 @@
 <template>
     <div
-        class="modal fade full-screen-modal"
+        class="modal fade bg-white"
         tabindex="-1"
         :class="{ 'show d-block': isOpen }"
     >
-        <button
-            type="button"
-            class="btn-close btn-close-top-left"
-            @click="onClose"
-        ></button>
+        <button type="button" class="btn-close" @click="handleClose"></button>
         <div class="modal-dialog">
-            <div class="modal-content border-0 shadow-sm">
-                <form
-                    class="card p-0 border-0 d-flex gap-3"
-                    autocomplete="off"
-                    @submit.prevent="confirmHandler"
-                >
-                    <div class="modal-body d-flex flex-column gap-3">
-                        <h4 class="modal-title mt-sm-0 mt-4">{{ title }}</h4>
-                        <slot></slot>
-                    </div>
-                    <div class="modal-footer">
-                        <button
-                            type="submit"
-                            class="btn btn-primary"
-                            :disabled="disabled"
-                        >
-                            Potvrdi
-                        </button>
-                    </div>
-                </form>
-            </div>
+            <form
+                class="p-0 d-flex flex-column gap-3 modal-content border-0"
+                autocomplete="off"
+                @submit.prevent="handleConfirm"
+            >
+                <div class="modal-body d-flex flex-column gap-3 p-0">
+                    <h3 class="modal-title mt-sm-0 mt-4">{{ title }}</h3>
+                    <slot></slot>
+                </div>
+                <div class="modal-footer border-0 p-0">
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        :disabled="disabled"
+                    >
+                        Potvrdi
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </template>
@@ -64,32 +58,31 @@ export default {
             isDisabled: this.disabled,
         };
     },
+    created() {
+        document.body.style.overflow = 'hidden';
+    },
     methods: {
-        confirmHandler() {
+        handleConfirm() {
             this.onConfirm();
+        },
+        handleClose() {
+            document.body.style.overflow = '';
+            this.onClose();
         },
     },
 };
 </script>
 
 <style scoped>
-.full-screen-modal {
-    background: var(--white-color);
+.modal-dialog {
+    margin-top: 6rem !important;
+    max-width: 35rem;
 }
 
-.btn-close-top-left {
+.btn-close {
     position: absolute;
     top: 1rem;
-    left: 1rem;
+    right: 1rem;
     z-index: 1;
-}
-
-.not-allowed {
-    cursor: not-allowed;
-}
-
-.btn:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
 }
 </style>

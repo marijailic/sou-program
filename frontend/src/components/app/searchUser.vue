@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card mt-2 p-0 border-0">
+        <div class="card p-0 border-0">
             <input
                 type="text"
                 class="form-control"

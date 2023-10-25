@@ -36,6 +36,7 @@ export default {
             default: 'text',
         },
     },
+    name: 'Input',
     data() {
         return {
             errorMessages: [],
@@ -67,7 +68,7 @@ export default {
 .error-msg {
     margin-top: 0.25rem;
     font-size: 0.875rem;
-    color: #dc3545;
+    color: var(--red-color);
     transition: opacity 0.3s;
 }
 

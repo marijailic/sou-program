@@ -1,12 +1,10 @@
 <template>
-    <div class="nav-container">
+    <div class="nav-container text-dark">
         <div class="card p-0 text-center d-flex gap-3 my-0 my-md-3">
             <div class="pt-3">
                 <img
-                    class="profile-image rounded-circle mx-auto"
-                    :src="
-                        userProfilePictureSrc || require('@/assets/sp-icon.png')
-                    "
+                    class="nav-image rounded-circle mx-auto"
+                    src="@/assets/sp-icon.png"
                 />
                 <h5 class="card-title mt-2 d-none d-md-block">
                     {{ username }}
@@ -67,13 +65,13 @@
                     > -->
                 </nav>
             </div>
-            <div class="pb-3 px-3">
+            <div class="pb-2 px-2">
                 <div class="mb-2">
-                    <router-link to="/resources" class="resources-link">
+                    <router-link to="/resources" class="text-dark">
                         Resursi
                     </router-link>
                 </div>
-                <button class="btn btn-primary px-3 w-100" @click="logout">
+                <button class="btn btn-primary w-100" @click="logout">
                     Odjavi me
                 </button>
             </div>
@@ -93,11 +91,10 @@ const props = {
 };
 
 export default {
-    name: 'navigation',
+    name: 'Navigation',
     props,
     data: () => ({
         username: '',
-        userProfilePictureSrc: '',
         storeUser: useStoreUser(),
     }),
     async created() {
@@ -107,7 +104,6 @@ export default {
         );
 
         this.username = currentUser.username;
-        this.userProfilePictureSrc = currentUser.profilePictureSrc;
     },
     methods: {
         isRouteActive(routeName) {
@@ -132,22 +128,25 @@ export default {
     overflow-y: auto;
     margin-left: 0;
     z-index: 1;
-    &.slide-in {
-        transform: translateX(0);
-    }
 }
-.profile-image {
-    width: 60px;
-    height: 60px;
+
+.slide-in {
+    transform: translateX(0);
 }
+
+.nav-image {
+    width: 4rem;
+    height: 4rem;
+    min-width: 4rem;
+    min-height: 4rem;
+}
+
 .card {
     height: calc(100vh - 4rem);
     border: solid 1px lightgray;
     border-radius: 0;
 }
-.nav-link-active {
-    background-color: var(--white-color);
-}
+
 .nav-link {
     display: flex;
     align-items: center;
@@ -165,12 +164,14 @@ export default {
         margin-left: 0.5rem;
     }
 }
+
+.nav-link-active {
+    background-color: var(--white-color);
+}
+
 .material-icons {
     margin-left: 1.2rem;
     margin-right: 0.5rem;
-}
-.resources-link {
-    color: var(--black-color);
 }
 
 @media (min-width: 768px) {
@@ -180,15 +181,18 @@ export default {
         width: 18rem;
         margin-left: 1rem;
     }
+
     .card {
         height: calc(100vh - 2rem);
         border: none;
         border-radius: 0.5rem;
     }
-    .profile-image {
+
+    .nav-image {
         width: 100px;
         height: 100px;
     }
+
     .nav-link::after {
         display: block;
     }

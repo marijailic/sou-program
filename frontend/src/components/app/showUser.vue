@@ -1,9 +1,9 @@
 <template>
     <div>
-        <div class="card">
-            <div class="d-flex align-items-center">
+        <div class="card border-0">
+            <div class="card-body p-2 d-flex align-items-center gap-3">
                 <img
-                    class="user-profile-image rounded-circle"
+                    class="icon rounded-circle"
                     :src="
                         user.profilePictureSrc ||
                         require('@/assets/sp-icon.png')
@@ -12,7 +12,7 @@
                 <div class="flex-grow-1">
                     <router-link
                         :to="'/user-profile/' + user.id"
-                        class="user-name"
+                        class="text-dark"
                     >
                         {{ user.fullName }}
                     </router-link>
@@ -20,9 +20,12 @@
                         {{ user.username }}
                     </div>
                 </div>
-                <div v-if="isAuthUserDemos" class="d-flex justify-content-end">
+                <div
+                    v-if="isAuthUserDemos"
+                    class="d-flex justify-content-end gap-2"
+                >
                     <button
-                        class="btn btn-primary me-2"
+                        class="btn btn-primary"
                         @click="deleteUser(user.id)"
                     >
                         Izbriši
@@ -83,28 +86,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-div,
-button {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.card {
-    border: none;
-    padding: 0.5rem;
-    margin-top: 1rem;
-}
-.user-profile-image {
-    width: 50px;
-    min-width: 50px;
-    height: 50px;
-    min-height: 50px;
-    margin-right: 1rem;
-}
-.user-name {
-    color: var(--black-color);
-}
-</style>

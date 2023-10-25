@@ -7,27 +7,27 @@
             title="Dodaj korisnika"
             :disabled="!isFormValid"
         >
-            <DynamicInput
+            <Input
                 :label="'Ime'"
                 v-model="user.name"
                 :validations="validationRules.name"
             />
-            <DynamicInput
+            <Input
                 :label="'Prezime'"
                 v-model="user.surname"
                 :validations="validationRules.surname"
             />
-            <DynamicInput
+            <Input
                 :label="'Email'"
                 v-model="user.email"
                 :validations="validationRules.email"
             />
-            <DynamicInput
+            <Input
                 :label="'Korisničko ime'"
                 v-model="user.username"
                 :validations="validationRules.username"
             />
-            <DynamicInput
+            <Input
                 :label="'Lozinka'"
                 v-model="user.password"
                 :type="'password'"
@@ -76,7 +76,7 @@ import { useStoreGallery } from '@/stores/gallery.store';
 import { useStoreUser } from '@/stores/user.store';
 
 import ModalForm from '@/components/app/ModalForm.vue';
-import DynamicInput from '@/components/app/DynamicInput.vue';
+import Input from '@/components/app/Input.vue';
 
 import {
     required,
@@ -100,7 +100,7 @@ export default {
     props,
     components: {
         ModalForm,
-        DynamicInput,
+        Input,
     },
     data: function () {
         return {
@@ -166,16 +166,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.error-msg {
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: #dc3545;
-    transition: opacity 0.3s;
-}
-
-.error-msg span {
-    display: block;
-}
-</style>

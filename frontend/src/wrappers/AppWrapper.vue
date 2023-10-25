@@ -1,8 +1,8 @@
 <template>
     <div @click="closeNav">
         <div class="w-full d-flex">
-            <div id="nav">
-                <navigation
+            <div class="nav-wrapper">
+                <Navigation
                     class="position-fixed"
                     :class="{ 'slide-in': isNavOpened }"
                     :toggleNav="toggleNav"
@@ -13,10 +13,9 @@
                 <router-view></router-view>
             </div>
         </div>
-        <div class="menu-footer position-fixed w-100">
+        <div class="menu-footer position-fixed w-100 p-2">
             <img
-                id="menu-button"
-                class="icon p-3 rounded-circle"
+                class="icon rounded-circle cursor-pointer"
                 :src="require('@/assets/sp-icon.png')"
                 @click.stop="toggleNav"
             />
@@ -25,12 +24,12 @@
 </template>
 
 <script>
-import navigation from '@/components/app/navigation.vue';
+import Navigation from '@/components/app/Navigation.vue';
 
 export default {
     name: 'AppWrapper',
     components: {
-        navigation,
+        Navigation,
     },
     data: () => ({
         isNavOpened: false,
@@ -49,9 +48,7 @@ export default {
 <style lang="scss">
 :root {
     --primary-color: #66ccff;
-    --primary-color-disabled: #c0eaff;
     --white-color: #f5f5f5;
-    --white-color-2: #eaeaea;
     --black-color: #212529;
     --red-color: #dc3545;
 }
@@ -60,22 +57,33 @@ html,
 body {
     background-color: var(--white-color);
 }
+
 .btn-primary {
     background-color: var(--primary-color);
     border: var(--primary-color);
 }
+
 .btn-primary:hover {
     background-color: var(--primary-color);
 }
+
 .btn-primary:active {
     background-color: var(--primary-color) !important;
 }
+
 .btn-primary:focus {
     background-color: var(--primary-color);
 }
+
 .btn-primary:disabled {
-    background-color: var(--primary-color-disabled);
+    background-color: var(--primary-color);
 }
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .w-full {
     min-height: 100vh;
 }
@@ -90,29 +98,31 @@ body {
         display: block;
     }
 }
-#menu-button {
+
+.cursor-pointer {
     cursor: pointer;
 }
-#nav {
+
+.nav-wrapper {
     z-index: 2;
     left: 0;
 
-    @media (min-width: 768px) {
+    @media (min-width: 769px) {
         position: static;
         margin-top: 1rem;
     }
 }
+
 .main-content {
-    @media (min-width: 768px) {
+    @media (min-width: 769px) {
         margin-left: 19rem;
     }
 }
+
 .icon {
-    width: 4rem;
-    height: 4rem;
-}
-.card {
-    padding: 0.5rem;
-    border: none;
+    width: 3rem;
+    height: 3rem;
+    min-width: 3rem;
+    min-height: 3rem;
 }
 </style>

@@ -1,15 +1,17 @@
 <template>
     <div>
-        <div class="card">
-            <div class="d-flex justify-content-center gap-3">
-                <img
-                    class="profile-pic rounded-circle"
-                    :src="
-                        user.profilePictureSrc ||
-                        require('@/assets/sp-icon.png')
-                    "
-                />
-                <div class="flex-grow-1 d-flex align-items-center text-start">
+        <div class="card border-0 p-0 mt-1">
+            <div class="card-body d-flex justify-content-center gap-3 p-2">
+                <div>
+                    <img
+                        class="icon rounded-circle"
+                        :src="
+                            user.profilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
+                    />
+                </div>
+                <div class="flex-grow-1 d-flex align-items-center">
                     <div class="text-start">
                         <h6 class="d-inline m-0">
                             {{ user.fullName }}
@@ -23,10 +25,13 @@
                 </div>
             </div>
 
-            <div class="card-footer text-end" v-if="canEdit">
+            <div
+                class="card-footer bg-white d-flex gap-2 justify-content-end p-2"
+                v-if="canEdit"
+            >
                 <button
                     @click="deleteProfilePost(profilePost.id)"
-                    class="btn btn-primary me-2"
+                    class="btn btn-primary"
                 >
                     Izbriši
                 </button>
@@ -49,7 +54,6 @@
 
 <script>
 import { useStoreProfilePost } from '@/stores/profilepost.store';
-import { useStoreUser } from '@/stores/user.store';
 
 import editProfilePost from './editProfilePost.vue';
 
@@ -114,27 +118,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    margin-top: 1em;
-}
-.row {
-    padding: 1em;
-}
-.second-col {
-    padding-left: 0;
-}
-.card-right {
-    padding-left: 0;
-}
-.card-footer {
-    padding: 0.7em;
-    background-color: white;
-}
-.profile-pic {
-    width: 50px;
-    height: 50px;
-}
-</style>

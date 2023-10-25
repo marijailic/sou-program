@@ -7,9 +7,9 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
         profilePosts: [],
     }),
     actions: {
-        async fetchProfilePosts(authorID) {
+        async fetchProfilePosts(authorID, pageCount) {
             const res = await backendApiService.get({
-                url: `/profile-post/${authorID}`,
+                url: `/profile-post/${authorID}?page_count=${pageCount}`,
             });
 
             if (!res.ok) {

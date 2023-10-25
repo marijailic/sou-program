@@ -60,21 +60,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.card,
-.card-footer {
-    background-color: var(--white-color-2);
-}
-.card {
-    border: none;
-    padding: 0;
-    margin-top: 1em;
-}
-.card-footer {
-    padding: 0.7em;
-}
-.escape-btn {
-    margin-right: 1em;
-}
-</style>
