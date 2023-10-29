@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import Navigation from '@/components/app/Navigation.vue';
+import Navigation from '@/components/app/navigation.vue';
 
 export default {
     name: 'AppWrapper',
