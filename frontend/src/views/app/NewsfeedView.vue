@@ -1,6 +1,6 @@
 <template>
-    <div class="d-flex flex-column gap-3 h-100">
-        <div class="card border-0">
+    <div class="d-flex flex-column gap-2 h-100">
+        <div class="card p-2 p-sm-3">
             <h1>Naslovnica</h1>
         </div>
 

@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card border-0 p-0">
-            <div class="card-body d-flex gap-3 p-2">
+        <div class="card p-0">
+            <div class="card-body d-flex gap-3">
                 <div>
                     <img
                         class="icon rounded-circle"
@@ -16,11 +16,11 @@
                         <h5 class="card-title d-inline">
                             {{ authorFullName }}
                         </h5>
-                        <span class="text-muted">
+                        <small class="text-muted">
                             •
                             {{ announcement.posted_at }}
                             ago
-                        </span>
+                        </small>
                         <p class="mt-2 mb-1">
                             {{ announcement.text }}
                         </p>

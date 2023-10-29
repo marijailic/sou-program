@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card border-0">
+        <div class="card">
             <div class="card-body p-2 d-flex align-items-center gap-3">
                 <img
                     class="icon rounded-circle"

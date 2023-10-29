@@ -1,8 +1,8 @@
 <template>
     <div>
         <form @submit.prevent="postProfilePost">
-            <div class="card border-0 p-0">
-                <div class="align-items-center flex-grow-1 p-2">
+            <div class="card p-0">
+                <div class="align-items-center flex-grow-1 p-3">
                     <textarea
                         v-model.trim="profilePost.text"
                         class="form-control"

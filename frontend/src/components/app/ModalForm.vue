@@ -4,15 +4,19 @@
         tabindex="-1"
         :class="{ 'show d-block': isOpen }"
     >
-        <button type="button" class="btn-close" @click="handleClose"></button>
-        <div class="modal-dialog">
+        <button
+            type="button"
+            class="btn-close position-absolute z-1 top-0 end-0 m-3"
+            @click="handleClose"
+        ></button>
+        <div class="modal-dialog mt-sm-5">
             <form
-                class="p-0 d-flex flex-column gap-3 modal-content border-0"
+                class="modal-content d-flex flex-column gap-3 border-0 p-2"
                 autocomplete="off"
                 @submit.prevent="handleConfirm"
             >
                 <div class="modal-body d-flex flex-column gap-3 p-0">
-                    <h3 class="modal-title mt-sm-0 mt-4">{{ title }}</h3>
+                    <h3 class="modal-title">{{ title }}</h3>
                     <slot></slot>
                 </div>
                 <div class="modal-footer border-0 p-0">
@@ -30,29 +34,31 @@
 </template>
 
 <script>
-export default {
-    props: {
-        title: {
-            type: String,
-            default: 'Modal Title',
-        },
-        isOpen: {
-            type: Boolean,
-            default: false,
-        },
-        onClose: {
-            type: Function,
-            default: () => {},
-        },
-        onConfirm: {
-            type: Function,
-            default: () => {},
-        },
-        disabled: {
-            type: Boolean,
-            default: false,
-        },
+const props = {
+    title: {
+        type: String,
+        default: 'Modal Title',
     },
+    isOpen: {
+        type: Boolean,
+        default: false,
+    },
+    onClose: {
+        type: Function,
+        default: () => {},
+    },
+    onConfirm: {
+        type: Function,
+        default: () => {},
+    },
+    disabled: {
+        type: Boolean,
+        default: false,
+    },
+};
+
+export default {
+    props,
     data() {
         return {
             isDisabled: this.disabled,
@@ -75,14 +81,14 @@ export default {
 
 <style scoped>
 .modal-dialog {
-    margin-top: 6rem !important;
-    max-width: 35rem;
+    max-width: 80%;
+    min-height: calc(100vh-4rem);
 }
 
-.btn-close {
+/* .btn-close {
     position: absolute;
     top: 1rem;
     right: 1rem;
     z-index: 1;
-}
+} */
 </style>

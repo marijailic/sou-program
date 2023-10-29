@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="card border-0 p-0 mt-1">
-            <div class="card-body d-flex justify-content-center gap-3 p-2">
+        <div class="card p-0 mt-1">
+            <div class="card-body d-flex justify-content-center gap-3">
                 <div>
                     <img
                         class="icon rounded-circle"
@@ -16,10 +16,10 @@
                         <h6 class="d-inline m-0">
                             {{ user.fullName }}
                         </h6>
-                        <span class="text-muted">
+                        <small class="text-muted">
                             •
                             {{ profilePost.posted_at }} ago
-                        </span>
+                        </small>
                         <p class="card-text mt-2">{{ profilePost.text }}</p>
                     </div>
                 </div>

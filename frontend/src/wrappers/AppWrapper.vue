@@ -13,10 +13,10 @@
                 <router-view></router-view>
             </div>
         </div>
-        <div class="menu-footer position-fixed w-100 p-1">
+        <div class="menu-footer position-fixed w-100 p-2 p-sm-3">
             <div class="d-flex h-100">
                 <img
-                    class="icon rounded-circle cursor-pointer align-self-center"
+                    class="menu-icon rounded-circle cursor-pointer align-self-center"
                     :src="require('@/assets/sp-icon.png')"
                     @click.stop="toggleNav"
                 />
@@ -53,11 +53,25 @@ export default {
     --white-color: #f5f5f5;
     --black-color: #212529;
     --red-color: #dc3545;
+    --menu-bg: #22729a;
 }
 
 html,
 body {
     background-color: var(--white-color);
+}
+
+div,
+p,
+button,
+h1 {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+div:has(textarea) {
+    overflow: visible;
 }
 
 .btn-primary {
@@ -78,20 +92,20 @@ body {
 }
 
 .btn-primary:disabled {
+    opacity: 70%;
     background-color: var(--primary-color);
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
 }
 
 .w-full {
     min-height: 100vh;
 }
 
+.card {
+    border: none;
+}
+
 .menu-footer {
-    background-color: lightgray;
+    background-color: var(--menu-bg);
     bottom: 0;
     height: 4rem;
     display: none;
@@ -129,5 +143,12 @@ body {
     height: 3rem;
     min-width: 3rem;
     min-height: 3rem;
+}
+
+.menu-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
 }
 </style>

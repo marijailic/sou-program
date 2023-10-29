@@ -1,7 +1,7 @@
 <template>
     <div class="nav-container text-dark">
         <div class="card p-0 text-center d-flex gap-3 my-0 my-md-3">
-            <div class="pt-3">
+            <div class="p-3">
                 <img
                     class="nav-image rounded-circle mx-auto"
                     src="@/assets/sp-icon.png"
@@ -11,7 +11,7 @@
                 </h5>
             </div>
             <div class="card-body p-0 flex-grow-1">
-                <nav class="nav mt-2 flex-column">
+                <nav class="nav flex-column">
                     <router-link
                         to="/newsfeed"
                         class="nav-link"
@@ -151,7 +151,7 @@ export default {
     display: flex;
     align-items: center;
     color: var(--black-color);
-    padding: 0;
+    padding: 1rem;
     height: 3rem;
 
     &:hover {
@@ -170,8 +170,7 @@ export default {
 }
 
 .material-icons {
-    margin-left: 1.2rem;
-    margin-right: 0.5rem;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -195,6 +194,10 @@ export default {
 
     .nav-link::after {
         display: block;
+    }
+
+    .material-icons {
+        width: auto;
     }
 }
 </style>

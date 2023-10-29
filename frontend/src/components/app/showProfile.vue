@@ -1,7 +1,7 @@
 <template>
-    <div class="card border-0">
+    <div class="card">
         <div
-            class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 p-2"
+            class="card-body d-flex flex-column flex-sm-row justify-content-sm-start justify-content-center align-items-center gap-3"
         >
             <div>
                 <img
@@ -12,18 +12,14 @@
                     "
                 />
             </div>
-            <div class="flex-grow-1 d-flex align-items-center">
-                <div class="text-start">
-                    <h1 class="card-title">
-                        {{ user.fullName }}
-                    </h1>
-                    <p class="card-text" v-if="user.username && user.type">
-                        {{ user.username }} -
-                        {{ user.type }}
-                    </p>
-                    <p class="card-text">{{ user.email }}</p>
-                    <p class="card-text">{{ user.bio }}</p>
-                </div>
+            <div>
+                <h1 class="card-title">{{ user.fullName }}</h1>
+
+                <p v-if="user.username && user.type">
+                    {{ user.username }} - {{ user.type }}
+                </p>
+                <p>{{ user.email }}</p>
+                <p>{{ user.bio }}</p>
             </div>
         </div>
     </div>
