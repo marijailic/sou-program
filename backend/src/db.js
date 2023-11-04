@@ -1,8 +1,8 @@
-require("dotenv").config();
-import knex from "knex";
+require('dotenv').config();
+import knex from 'knex';
 
 export default knex({
-    client: "pg",
+    client: 'pg',
     connection: {
         connectionString: process.env.CONNECTION_STRING,
         ssl: {
