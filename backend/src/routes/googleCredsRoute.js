@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 
-import { googleAuth } from "../services/googleAuth.service";
+import { googleAuth } from "../services/googleAuthService";
 
 router.get("/google/auth", async (req, res) => {
     const oauth2Client = googleAuth();

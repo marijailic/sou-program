@@ -3,10 +3,10 @@ const express = require("express");
 const router = express.Router();
 
 import db from "../db";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { demosMiddleware } from "../middlewares/demos.middleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { demosMiddleware } from "../middlewares/demosMiddleware";
 
-const { getPopulatedCompetitions } = require("../services/competition.service");
+const { getPopulatedCompetitions } = require("../services/competitionService");
 
 router.get("/competition", authMiddleware, async (req, res) => {
     try {
