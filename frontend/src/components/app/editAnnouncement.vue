@@ -1,10 +1,9 @@
 <template>
     <div>
-        <ModalForm
-            :isOpen="true"
-            :onClose="closeEditing"
+        <FormModal
+            title="Uredi obavijest"
+            :onClose="onClose"
             :onConfirm="updateAnnouncement"
-            title="Uredi oglas"
             :disabled="!announcementText"
         >
             <div class="form-group">
@@ -13,25 +12,25 @@
                     id="text"
                     v-model.trim="announcementText"
                     class="form-control"
-                    rows="3"
+                    rows="9"
                     required
                 ></textarea>
             </div>
-        </ModalForm>
+        </FormModal>
     </div>
 </template>
 
 <script>
 import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import ModalForm from '@/components/app/ModalForm.vue';
+import FormModal from '@/components/app/FormModal.vue';
 
 const props = {
     announcement: {
         type: Object,
         required: true,
     },
-    closeEditing: {
+    onClose: {
         type: Function,
         required: true,
     },
@@ -41,7 +40,7 @@ export default {
     name: 'editAnnouncement',
     props,
     components: {
-        ModalForm,
+        FormModal,
     },
     data() {
         return {

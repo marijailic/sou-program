@@ -1,60 +1,64 @@
 <template>
     <div>
-        <ModalForm
-            :isOpen="true"
-            :onClose="closeEditingUser"
-            :onConfirm="updateUser"
+        <FormModal
             title="Uredi korisnika"
+            :onClose="onClose"
+            :onConfirm="updateUser"
             :disabled="!isFormValid"
         >
-            <DynamicInput
-                :label="'Ime'"
-                v-model="user.name"
+            <Input
+                label="Ime"
+                v-model="updatedUser.name"
                 :validations="validationRules.name"
             />
-            <DynamicInput
-                :label="'Prezime'"
-                v-model="user.surname"
+            <Input
+                label="Prezime"
+                v-model="updatedUser.surname"
                 :validations="validationRules.surname"
             />
-            <DynamicInput
-                :label="'Email'"
-                v-model="user.email"
+            <Input
+                label="Email"
+                v-model="updatedUser.email"
                 :validations="validationRules.email"
             />
             <div class="form-group">
                 <label for="bio">Opis</label>
                 <textarea
-                    v-model.trim="user.bio"
+                    v-model.trim="updatedUser.bio"
+                    rows="4"
                     class="form-control"
                     id="bio"
                 ></textarea>
             </div>
             <div class="form-group">
                 <label for="type">Tip korisnika</label>
-                <select v-model="user.type" class="form-control" id="type">
+                <select
+                    v-model="updatedUser.type"
+                    class="form-control"
+                    id="type"
+                >
                     <option value="demonstrator">Demonstrator</option>
                     <option value="student">Student</option>
                 </select>
             </div>
-        </ModalForm>
+        </FormModal>
     </div>
 </template>
 
 <script>
 import { useStoreUser } from '@/stores/user.store';
 
-import ModalForm from '@/components/app/ModalForm.vue';
-import DynamicInput from '@/components/app/DynamicInput.vue';
+import FormModal from '@/components/app/FormModal.vue';
+import Input from '@/components/app/Input.vue';
 
 import { required, email, maxLength } from '@/utils/validations.js';
 
 const props = {
-    userID: {
-        type: Number,
+    user: {
+        type: Object,
         required: true,
     },
-    closeEditingUser: {
+    onClose: {
         type: Function,
         required: true,
     },
@@ -64,17 +68,19 @@ export default {
     name: 'editUser',
     props,
     components: {
-        ModalForm,
-        DynamicInput,
+        FormModal,
+        Input,
     },
     data() {
-        const storeUser = useStoreUser();
-        const user = storeUser.getUserByID(this.userID);
-        user.email = user.e_mail;
-
         return {
-            storeUser,
-            user,
+            updatedUser: {
+                id: this.user.id,
+                name: this.user.name,
+                surname: this.user.surname,
+                email: this.user.email,
+                bio: this.user.bio,
+                type: this.user.type,
+            },
             validationRules: {
                 name: [required, maxLength(30)],
                 surname: [required, maxLength(30)],
@@ -87,7 +93,7 @@ export default {
         isFormValid() {
             return Object.keys(this.validationRules).every((key) =>
                 this.validationRules[key].every(
-                    (validation) => validation(this.user[key]) === true
+                    (validation) => validation(this.updatedUser[key]) === true
                 )
             );
         },
@@ -98,30 +104,9 @@ export default {
                 return;
             }
 
-            const cleanUser = {
-                id: this.user.id,
-                name: this.user.name,
-                surname: this.user.surname,
-                email: this.user.email,
-                bio: this.user.bio,
-                type: this.user.type,
-            };
-
-            await this.storeUser.updateUser(cleanUser);
+            const storeUser = useStoreUser();
+            await storeUser.updateUser(updatedUser);
         },
     },
 };
 </script>
-
-<style scoped>
-.card {
-    min-width: 15rem;
-}
-.row {
-    padding: 1em;
-}
-.card,
-.card-footer {
-    background-color: var(--white-color-2);
-}
-</style>

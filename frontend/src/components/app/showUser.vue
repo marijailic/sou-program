@@ -1,18 +1,25 @@
 <template>
     <div>
         <div class="card">
-            <div class="d-flex align-items-center">
-                <img
-                    class="user-profile-image rounded-circle"
-                    :src="
-                        user.profilePictureSrc ||
-                        require('@/assets/sp-icon.png')
-                    "
-                />
+            <div class="card-body d-flex gap-3">
+                <div>
+                    <router-link
+                        :to="'/user-profile/' + user.id"
+                        class="text-dark d-block icon rounded-circle"
+                    >
+                        <img
+                            class="icon rounded-circle"
+                            :src="
+                                user.profilePictureSrc ||
+                                require('@/assets/sp-icon.png')
+                            "
+                        />
+                    </router-link>
+                </div>
                 <div class="flex-grow-1">
                     <router-link
                         :to="'/user-profile/' + user.id"
-                        class="user-name"
+                        class="text-dark"
                     >
                         {{ user.fullName }}
                     </router-link>
@@ -20,22 +27,29 @@
                         {{ user.username }}
                     </div>
                 </div>
-                <div v-if="isAuthUserDemos" class="d-flex justify-content-end">
-                    <button
-                        class="btn btn-primary me-2"
-                        @click="deleteUser(user.id)"
-                    >
-                        Izbriši
+                <div
+                    v-if="isAuthUserDemos"
+                    class="h-fit d-flex justify-content-end gap-1"
+                >
+                    <button class="btn btn-edit" @click="openEditingUser">
+                        <i class="fa-solid fa-pen"></i>
                     </button>
-                    <button
-                        class="edit-btn btn btn-primary"
-                        @click="openEditingUser(user.id)"
-                    >
-                        Uredi
+                    <button class="btn btn-delete" @click="openDeletingUser">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </div>
         </div>
+
+        <edit-user v-if="isEditing" :user="user" :onClose="closeEditingUser" />
+
+        <ConfirmationModal
+            v-if="isConfirming"
+            title="Izbriši korisnika"
+            message="Jesi li siguran/na da želiš izbrisati korisnika?"
+            :onConfirm="confirmDeleteUser"
+            :onCancel="cancelDeleteUser"
+        />
     </div>
 </template>
 
@@ -43,13 +57,12 @@
 import { useStoreUser } from '@/stores/user.store';
 import authService from '@/services/authService';
 
+import ConfirmationModal from '@/components/app/ConfirmationModal.vue';
+import editUser from '@/components/app/editUser.vue';
+
 const props = {
     user: {
         type: Object,
-        required: true,
-    },
-    setEditingUserID: {
-        type: Function,
         required: true,
     },
 };
@@ -57,54 +70,40 @@ const props = {
 export default {
     name: 'showUser',
     props,
+    components: {
+        ConfirmationModal,
+        editUser,
+    },
+    data() {
+        return {
+            isConfirming: false,
+            isEditing: false,
+        };
+    },
     computed: {
         isAuthUserDemos() {
             return authService.isAuthUserDemos();
         },
     },
     methods: {
-        async deleteUser(userID) {
-            const storeUser = useStoreUser();
-
-            const isConfirmed = window.confirm(
-                'Jeste li sigurni da želite izbrisati korisnika?'
-            );
-
-            if (isConfirmed) {
-                await storeUser.deleteUser(userID);
-            }
+        openDeletingUser() {
+            this.isConfirming = true;
         },
-        openEditingUser(editingUserID) {
-            this.setEditingUserID(editingUserID);
+        async confirmDeleteUser() {
+            const storeUser = useStoreUser();
+            await storeUser.deleteUser(this.user.id);
+
+            this.isConfirming = false;
+        },
+        cancelDeleteUser() {
+            this.isConfirming = false;
+        },
+        openEditingUser() {
+            this.isEditing = true;
         },
         closeEditingUser() {
-            this.setEditingUserID(0);
+            this.isEditing = false;
         },
     },
 };
 </script>
-
-<style scoped>
-div,
-button {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.card {
-    border: none;
-    padding: 0.5rem;
-    margin-top: 1rem;
-}
-.user-profile-image {
-    width: 50px;
-    min-width: 50px;
-    height: 50px;
-    min-height: 50px;
-    margin-right: 1rem;
-}
-.user-name {
-    color: var(--black-color);
-}
-</style>

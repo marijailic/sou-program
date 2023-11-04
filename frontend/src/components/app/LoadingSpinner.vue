@@ -1,30 +1,29 @@
 <template>
-    <div v-if="isLoading" class="spinner"></div>
+    <div class="spinner"></div>
 </template>
 
 <script>
-const props = {
-    isLoading: {
-        type: Boolean,
-    },
-};
 export default {
-    props,
+    name: 'LoadingSpinner',
 };
 </script>
+
 <style scoped>
 .spinner {
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
+    border: 0.25rem solid transparent;
+    border-top: 0.25rem solid var(--primary-color);
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 3rem;
+    height: 3rem;
     animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
     0% {
         transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(130deg);
     }
     100% {
         transform: rotate(360deg);
