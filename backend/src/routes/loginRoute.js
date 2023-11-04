@@ -1,9 +1,9 @@
-const express = require("express");
-const router = express.Router();
+import { getAuthUserData } from '../services/authService';
+import { Router } from 'express';
 
-import { getAuthUserData } from "../middlewares/authMiddleware";
+const router = Router();
 
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {

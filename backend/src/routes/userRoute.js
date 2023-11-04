@@ -1,37 +1,38 @@
-const moment = require("moment-timezone");
-const express = require("express");
+const moment = require('moment-timezone');
+const express = require('express');
 const router = express.Router();
 
-import { demosMiddleware } from "../middlewares/demosMiddleware";
-import { hashPassword, authMiddleware } from "../middlewares/authMiddleware";
-import db from "../db";
+import { demosMiddleware } from '../middlewares/demosMiddleware';
+import { hashPassword, authMiddleware } from '../middlewares/authMiddleware';
+import db from '../db';
+import { hashPassword } from '../services/authService';
 
-router.get("/user", [authMiddleware], async (req, res, next) => {
+router.get('/user', [authMiddleware], async (req, res, next) => {
     try {
-        const users = await db("user").orderBy("id", "desc");
+        const users = await db('user').orderBy('id', 'desc');
         res.json({
-            message: "User fetched successfully",
+            message: 'User fetched successfully',
             data: users,
         });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", data: {} });
+        res.status(500).json({ message: 'Internal server error', data: {} });
     }
 });
 
 router.delete(
-    "/delete-user",
+    '/delete-user',
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
         try {
-            await db("user").where({ id: req.body.id }).del();
+            await db('user').where({ id: req.body.id }).del();
             res.json({
-                message: "User deleted successfully",
+                message: 'User deleted successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -39,11 +40,11 @@ router.delete(
 );
 
 router.post(
-    "/create-user",
+    '/create-user',
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
-        const timezone = "Europe/Amsterdam";
-        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+        const timezone = 'Europe/Amsterdam';
+        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
         const passwordHash = await hashPassword(req.body.password);
 
@@ -60,15 +61,15 @@ router.post(
         };
 
         try {
-            await db("user").insert(userData);
+            await db('user').insert(userData);
             res.json({
-                message: "User created successfully",
+                message: 'User created successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -76,7 +77,7 @@ router.post(
 );
 
 router.post(
-    "/update-user",
+    '/update-user',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const id = req.body.id;
@@ -93,15 +94,15 @@ router.post(
         };
 
         try {
-            await db("user").where({ id: id }).update(userData);
+            await db('user').where({ id: id }).update(userData);
             res.json({
-                message: "User updated successfully",
+                message: 'User updated successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }

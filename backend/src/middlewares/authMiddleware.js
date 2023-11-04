@@ -1,59 +1,6 @@
-import db from "../db";
+import { validateToken } from "../services/authService";
 
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-
-async function hashPassword(passwordInput) {
-    const passwordHash = await bcrypt.hash(passwordInput, 8);
-    return passwordHash;
-}
-
-async function getAuthUserData(username, password) {
-    const user = await db("user").select().where("username", username).first();
-
-    if (!user) {
-        throw new Error("No user");
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-        throw new Error("Password fail");
-    }
-
-    const authenticatedUser = {
-        username,
-        type: user.type,
-    };
-
-    const token = jwt.sign(authenticatedUser, process.env.ACCESS_TOKEN_SECRET, {
-        algorithm: "HS512",
-        expiresIn: "30s",
-    });
-
-    const refreshToken = jwt.sign(
-        authenticatedUser,
-        process.env.REFRESH_TOKEN_SECRET,
-        {
-            algorithm: "HS512",
-        }
-    );
-
-    return { token, refreshToken, type: user.type };
-}
-
-function validateToken({ username, userType, token, secret }) {
-    try {
-        const tokenPayload = jwt.verify(token, secret);
-        const oldUsername = tokenPayload.username;
-        const oldUserType = tokenPayload.type;
-
-        return username === oldUsername && userType === oldUserType;
-    } catch (err) {
-        return false;
-    }
-}
-
-function authMiddleware(req, res, next) {
+export const authMiddleware = (req, res, next) => {
     const authorization = req.headers["authorization"].split(" ");
     const authorizationType = authorization[0];
     const token = authorization[1];
@@ -92,6 +39,4 @@ function authMiddleware(req, res, next) {
     }
 
     return res.status(401).json({ error: "Unauthorized" });
-}
-
-export { hashPassword, getAuthUserData, authMiddleware };
+};
