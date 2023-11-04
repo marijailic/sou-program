@@ -1,34 +1,33 @@
 <template>
     <div>
-        <ModalForm
-            :isOpen="true"
-            :onClose="closeAddingUser"
-            :onConfirm="createUser"
+        <FormModal
             title="Dodaj korisnika"
+            :onClose="onClose"
+            :onConfirm="createUser"
             :disabled="!isFormValid"
         >
             <Input
-                :label="'Ime'"
+                label="Ime"
                 v-model="user.name"
                 :validations="validationRules.name"
             />
             <Input
-                :label="'Prezime'"
+                label="Prezime"
                 v-model="user.surname"
                 :validations="validationRules.surname"
             />
             <Input
-                :label="'Email'"
+                label="Email"
                 v-model="user.email"
                 :validations="validationRules.email"
             />
             <Input
-                :label="'Korisničko ime'"
+                label="Korisničko ime"
                 v-model="user.username"
                 :validations="validationRules.username"
             />
             <Input
-                :label="'Lozinka'"
+                label="Lozinka"
                 v-model="user.password"
                 :type="'password'"
                 :validations="validationRules.password"
@@ -49,7 +48,7 @@
                     v-model.trim="user.bio"
                     class="form-control"
                     id="bio"
-                    maxlength="250"
+                    rows="4"
                 ></textarea>
             </div>
             <div class="form-group">
@@ -67,7 +66,7 @@
                     <option value="student">Student</option>
                 </select>
             </div>
-        </ModalForm>
+        </FormModal>
     </div>
 </template>
 
@@ -75,7 +74,7 @@
 import { useStoreGallery } from '@/stores/gallery.store';
 import { useStoreUser } from '@/stores/user.store';
 
-import ModalForm from '@/components/app/ModalForm.vue';
+import FormModal from '@/components/app/FormModal.vue';
 import Input from '@/components/app/Input.vue';
 
 import {
@@ -89,7 +88,7 @@ import {
 } from '@/utils/validations.js';
 
 const props = {
-    closeAddingUser: {
+    onClose: {
         type: Function,
         required: true,
     },
@@ -99,7 +98,7 @@ export default {
     name: 'addUser',
     props,
     components: {
-        ModalForm,
+        FormModal,
         Input,
     },
     data: function () {
@@ -149,7 +148,7 @@ export default {
             }
 
             if (this.selectedImage) {
-                console.log('uploading images...');
+                console.log('Uploading images...');
                 const profilePictureKey = (
                     await this.storeGallery.googleUploadImages({
                         images: [this.selectedImage],
@@ -161,7 +160,7 @@ export default {
 
             await this.storeUser.createUser(this.user);
 
-            this.closeAddingUser();
+            this.onClose();
         },
     },
 };

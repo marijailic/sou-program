@@ -42,7 +42,7 @@ export const useStoreAuth = defineStore('storeAuth', {
             });
 
             if (!res.ok) {
-                window.location.href = '/error';
+                this.$router.push('/error');
                 return;
             }
 
@@ -54,7 +54,7 @@ export const useStoreAuth = defineStore('storeAuth', {
 
             localStorage.setItem('token', this.token);
 
-            window.location.href = '/newsfeed';
+            this.$router.push('/newsfeed');
         },
         logout() {
             this.username = '';
@@ -62,7 +62,7 @@ export const useStoreAuth = defineStore('storeAuth', {
 
             localStorage.removeItem('token');
 
-            window.location.href = '/login';
+            this.$router.push('/login');
         },
         checkToken() {
             const tokenFromLocalStorage = localStorage.getItem('token');

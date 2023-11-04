@@ -1,19 +1,19 @@
 <template>
-    <div class="d-flex flex-column gap-3 h-100">
+    <div class="d-flex flex-column gap-2 h-100">
         <show-profile :user="currentUser" />
         <add-profile-post :profilePictureSrc="currentUser.profilePictureSrc" />
 
-        <h1 class="mt-5 mx-auto" v-if="profilePosts.length === 0 && !isLoading">
-            Nema objava...
-        </h1>
+        <div class="card" v-if="!profilePosts.length && !isLoading">
+            <div class="card-body text-center">
+                <h4>Nema objava 😢</h4>
+            </div>
+        </div>
 
         <show-profile-post
             v-for="profilePost in profilePosts"
             :key="profilePost.id"
             :user="currentUser"
             :profilePost="profilePost"
-            :setEditingProfilePostID="setEditingProfilePostID"
-            :getEditingProfilePostID="getEditingProfilePostID"
         />
 
         <div
@@ -50,7 +50,6 @@ export default {
         isLoading: false,
         currentUser: {},
         profilePosts: [],
-        activeEditingProfilePostID: 0,
         storeUser: useStoreUser(),
         storeProfilePost: useStoreProfilePost(),
     }),
@@ -70,12 +69,6 @@ export default {
         this.handleScroll();
     },
     methods: {
-        getEditingProfilePostID() {
-            return this.activeEditingProfilePostID;
-        },
-        setEditingProfilePostID(editingProfilePostID) {
-            this.activeEditingProfilePostID = editingProfilePostID;
-        },
         handleScroll() {
             window.onscroll = async () => {
                 const OFFSET = 100;

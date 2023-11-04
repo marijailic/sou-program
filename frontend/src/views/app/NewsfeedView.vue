@@ -1,7 +1,9 @@
 <template>
     <div class="d-flex flex-column gap-2 h-100">
-        <div class="card p-2 p-sm-3">
-            <h1>Naslovnica</h1>
+        <div class="card">
+            <div class="card-body">
+                <h1>Naslovnica</h1>
+            </div>
         </div>
 
         <add-announcement
@@ -20,8 +22,6 @@
             v-for="announcement in announcements"
             :key="announcement.id"
             :announcement="announcement"
-            :getEditingAnnouncementID="getEditingAnnouncementID"
-            :setEditingAnnouncementID="setEditingAnnouncementID"
         />
 
         <div
@@ -58,7 +58,6 @@ export default {
         announcements: [],
         storeAnnouncement: useStoreAnnouncement(),
         storeUser: useStoreUser(),
-        activeEditingAnnouncementID: 0,
     }),
     async created() {
         this.isLoading = true;
@@ -93,12 +92,6 @@ export default {
                     this.isLoading = false;
                 }
             };
-        },
-        getEditingAnnouncementID() {
-            return this.activeEditingAnnouncementID;
-        },
-        setEditingAnnouncementID(editingAnnouncementID) {
-            this.activeEditingAnnouncementID = editingAnnouncementID;
         },
         async getAnnouncementsWithAuthor(announcements) {
             return await Promise.all(

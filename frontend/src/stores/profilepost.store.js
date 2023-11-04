@@ -13,7 +13,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
             });
 
             if (!res.ok) {
-                window.location.href = '/error';
+                this.$router.push('/error');
                 return;
             }
 
@@ -37,7 +37,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                 body: JSON.stringify(profilePost),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async deleteProfilePost(profilePostID) {
             const res = await backendApiService.delete({
@@ -46,7 +46,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                 body: JSON.stringify({ id: profilePostID }),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async updateProfilePost(profilePost) {
             const res = await backendApiService.post({
@@ -55,7 +55,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                 body: JSON.stringify(profilePost),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
     },
 });

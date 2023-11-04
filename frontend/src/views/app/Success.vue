@@ -1,6 +1,6 @@
 <template>
     <div
-        class="w-full d-flex flex-column justify-content-center align-items-center"
+        class="h-full d-flex flex-column justify-content-center align-items-center"
     >
         <h1>YAS! :)</h1>
         <button class="btn btn-primary mt-3" @click="goBack">
@@ -22,6 +22,9 @@ export default {
 </script>
 
 <style scoped>
+.h-full {
+    height: 100vh;
+}
 .btn-primary {
     background-color: #66ccff;
     border: #66ccff;

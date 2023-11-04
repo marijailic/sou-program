@@ -1,6 +1,6 @@
 <template>
     <div>
-        <form @submit.prevent="postAnnouncement" class="card border-0">
+        <form @submit.prevent="postAnnouncement" class="card">
             <div class="card-body d-flex gap-3">
                 <div>
                     <img
@@ -15,7 +15,7 @@
                     <textarea
                         v-model.trim="announcement.text"
                         class="form-control"
-                        rows="3"
+                        rows="9"
                         placeholder="Napiši obavijest..."
                         required
                     ></textarea>

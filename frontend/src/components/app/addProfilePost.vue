@@ -1,12 +1,12 @@
 <template>
     <div>
         <form @submit.prevent="postProfilePost">
-            <div class="card p-0">
+            <div class="card">
                 <div class="align-items-center flex-grow-1 p-3">
                     <textarea
                         v-model.trim="profilePost.text"
                         class="form-control"
-                        rows="3"
+                        rows="9"
                         placeholder="Napiši objavu..."
                         required
                     ></textarea>

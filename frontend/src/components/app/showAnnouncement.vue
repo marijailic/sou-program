@@ -1,8 +1,11 @@
 <template>
-    <div>
-        <div class="card p-0">
-            <div class="card-body d-flex gap-3">
-                <div>
+    <div class="card">
+        <div class="card-body d-flex gap-3">
+            <div>
+                <router-link
+                    :to="'/user-profile/' + announcement.author.id"
+                    class="text-dark d-block icon rounded-circle"
+                >
                     <img
                         class="icon rounded-circle"
                         :src="
@@ -10,47 +13,52 @@
                             require('@/assets/sp-icon.png')
                         "
                     />
-                </div>
-                <div class="flex-grow-1">
-                    <div class="card-right">
-                        <h5 class="card-title d-inline">
-                            {{ authorFullName }}
-                        </h5>
-                        <small class="text-muted">
-                            •
-                            {{ announcement.posted_at }}
-                            ago
-                        </small>
-                        <p class="mt-2 mb-1">
-                            {{ announcement.text }}
-                        </p>
-                    </div>
-                </div>
+                </router-link>
             </div>
-
+            <div class="flex-grow-1">
+                <div class="d-flex flex-wrap gap-1">
+                    <h6 class="card-title mb-0 d-inline author-full-name">
+                        {{ announcement.author.fullName }}
+                    </h6>
+                    <small class="text-muted posted-at">
+                        <span class="dot">•</span>
+                        {{ announcement.posted_at }}
+                        ago
+                    </small>
+                </div>
+                <p
+                    v-html="formatTextWithLineBreaks(announcement.text)"
+                    class="card-text mt-1"
+                ></p>
+            </div>
             <div
                 v-if="isAuthUserDemos"
-                class="card-footer bg-white d-flex gap-2 justify-content-end p-2"
+                class="h-fit d-flex justify-content-end gap-1"
             >
-                <button
-                    @click="deleteAnnouncement(announcement.id)"
-                    class="btn btn-primary"
-                >
-                    Izbriši
+                <button class="btn btn-edit" @click="openEditingAnnouncement">
+                    <i class="fa-solid fa-pen"></i>
                 </button>
                 <button
-                    class="btn btn-primary"
-                    @click="openEditing(announcement.id)"
+                    class="btn btn-delete"
+                    @click="openDeletingAnnouncement"
                 >
-                    Uredi
+                    <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
         </div>
 
         <edit-announcement
-            v-if="isAuthUserDemos && isEditingActive"
+            v-if="isAuthUserDemos && isEditing"
             :announcement="announcement"
-            :closeEditing="closeEditing"
+            :onClose="closeEditingAnnouncement"
+        />
+
+        <ConfirmationModal
+            v-if="isConfirming"
+            title="Izbriši objavu"
+            message="Jesi li siguran/na da želiš izbrisati objavu?"
+            :onConfirm="confirmDeleteAnnouncement"
+            :onCancel="cancelDeleteAnnouncement"
         />
     </div>
 </template>
@@ -60,19 +68,12 @@ import { useStoreAnnouncement } from '@/stores/announcement.store';
 
 import authService from '@/services/authService';
 
-import editAnnouncement from './editAnnouncement.vue';
+import editAnnouncement from '@/components/app/editAnnouncement.vue';
+import ConfirmationModal from '@/components/app/ConfirmationModal.vue';
 
 const props = {
     announcement: {
         type: Object,
-        required: true,
-    },
-    setEditingAnnouncementID: {
-        type: Function,
-        required: true,
-    },
-    getEditingAnnouncementID: {
-        type: Function,
         required: true,
     },
 };
@@ -82,40 +83,68 @@ export default {
     props,
     components: {
         editAnnouncement,
+        ConfirmationModal,
     },
     data: () => ({
         isAuthUserDemos: authService.isAuthUserDemos(),
         userProfilePictureSrc: '',
         storeAnnouncement: useStoreAnnouncement(),
+        isConfirming: false,
+        isEditing: false,
     }),
-    async created() {
-        this.userProfilePictureSrc = await this.announcement.author
-            .profilePictureSrc;
-    },
-    computed: {
-        isEditingActive() {
-            return this.announcement.id === this.getEditingAnnouncementID();
-        },
-        authorFullName() {
-            return `${this.announcement.author.name} ${this.announcement.author.surname}`;
-        },
+    created() {
+        this.userProfilePictureSrc = this.announcement.author.profilePictureSrc;
+
+        const authorFullNames =
+            document.getElementsByClassName('author-full-name');
+        const postedAts = document.getElementsByClassName('posted-at');
+        const dots = document.getElementsByClassName('dot');
+
+        const checkLine = () => {
+            for (let i = 0; i < authorFullNames.length; i++) {
+                const authorRect = authorFullNames[i].getBoundingClientRect();
+                const postedAtRect = postedAts[i].getBoundingClientRect();
+
+                if (authorRect.bottom <= postedAtRect.top) {
+                    dots[i].classList.add('hide-dot');
+                } else {
+                    dots[i].classList.remove('hide-dot');
+                }
+            }
+        };
+
+        window.onload = checkLine;
+        window.onresize = checkLine;
     },
     methods: {
-        async deleteAnnouncement(announcementID) {
-            const isConfirmed = window.confirm(
-                'Jeste li sigurni da želite izbrisati objavu?'
+        formatTextWithLineBreaks(text) {
+            return text.replace(/\n/g, '<br>');
+        },
+        openDeletingAnnouncement() {
+            this.isConfirming = true;
+        },
+        async confirmDeleteAnnouncement() {
+            await this.storeAnnouncement.deleteAnnouncement(
+                this.announcement.id
             );
 
-            if (isConfirmed) {
-                await this.storeAnnouncement.deleteAnnouncement(announcementID);
-            }
+            this.isConfirming = false;
         },
-        openEditing(editingAnnouncementID) {
-            this.setEditingAnnouncementID(editingAnnouncementID);
+        cancelDeleteAnnouncement() {
+            this.isConfirming = false;
         },
-        closeEditing() {
-            this.setEditingAnnouncementID(0);
+        openEditingAnnouncement() {
+            this.isEditing = true;
+        },
+        closeEditingAnnouncement() {
+            this.isEditing = false;
         },
     },
 };
 </script>
+
+<style scoped>
+.hide-dot {
+    display: none;
+}
+</style>

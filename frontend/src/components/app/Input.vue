@@ -57,7 +57,7 @@ export default {
         },
         updateValue(event) {
             const value = event.target.value;
-            this.validateInput(value);
+            this.validateInput(value.trim());
             this.$emit('update:modelValue', value);
         },
     },

@@ -13,7 +13,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
             });
 
             if (!res.ok) {
-                window.location.href = '/error';
+                this.$router.push('/error');
                 return;
             }
 
@@ -22,6 +22,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
             this.announcements = resObj.data.map((announcement) => ({
                 ...announcement,
                 posted_at: dateService.getRelativeTime(announcement.timestamp),
+                text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
             }));
 
             return this.announcements;
@@ -33,7 +34,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 body: JSON.stringify({ id: announcementID }),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async createAnnouncement(announcement) {
             const res = await backendApiService.post({
@@ -42,7 +43,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 body: JSON.stringify(announcement),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async updateAnnouncement(announcement) {
             const res = await backendApiService.post({
@@ -51,7 +52,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 body: JSON.stringify(announcement),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
     },
 });
