@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <div class="card border-0">
-            <h1>Naslovnica</h1>
+    <div class="d-flex flex-column gap-2 h-100">
+        <div class="card">
+            <div class="card-body">
+                <h1>Naslovnica</h1>
+            </div>
         </div>
 
         <add-announcement
@@ -9,23 +11,24 @@
             :userProfilePictureSrc="currentUser.profilePictureSrc"
         />
 
-        <div
-            class="d-flex justify-content-center"
-            v-if="announcements.length === 0"
+        <h1
+            class="mt-5 mx-auto"
+            v-if="announcements.length === 0 && !isLoading"
         >
-            <h1 class="mt-5">Nema obavijesti...</h1>
-        </div>
+            Nema obavijesti...
+        </h1>
 
         <show-announcement
             v-for="announcement in announcements"
             :key="announcement.id"
             :announcement="announcement"
-            :getEditingAnnouncementID="getEditingAnnouncementID"
-            :setEditingAnnouncementID="setEditingAnnouncementID"
         />
 
-        <div class="mt-2 d-flex justify-content-center">
-            <LoadingSpinner :isLoading="isLoading" />
+        <div
+            class="d-flex align-items-center justify-content-center flex-grow-1"
+            v-if="isLoading"
+        >
+            <LoadingSpinner />
         </div>
     </div>
 </template>
@@ -55,14 +58,17 @@ export default {
         announcements: [],
         storeAnnouncement: useStoreAnnouncement(),
         storeUser: useStoreUser(),
-        activeEditingAnnouncementID: 0,
     }),
     async created() {
+        this.isLoading = true;
+
         await this.storeUser.fetchUsers();
         this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
         );
         await this.loadMoreAnnouncements();
+
+        this.isLoading = false;
     },
     mounted() {
         this.handleScroll();
@@ -86,12 +92,6 @@ export default {
                     this.isLoading = false;
                 }
             };
-        },
-        getEditingAnnouncementID() {
-            return this.activeEditingAnnouncementID;
-        },
-        setEditingAnnouncementID(editingAnnouncementID) {
-            this.activeEditingAnnouncementID = editingAnnouncementID;
         },
         async getAnnouncementsWithAuthor(announcements) {
             return await Promise.all(

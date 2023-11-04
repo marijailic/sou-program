@@ -1,36 +1,36 @@
 <template>
     <div>
-        <ModalForm
-            :isOpen="true"
-            :onClose="closeEditing"
-            :onConfirm="updateProfilePost"
+        <FormModal
             title="Uredi profilnu objavu"
+            :onClose="onClose"
+            :onConfirm="updateProfilePost"
+            :disabled="!profilePostText"
         >
             <div class="form-group">
                 <label for="text">Opis</label>
                 <textarea
                     id="text"
-                    v-model.trim="profilePost.text"
+                    v-model.trim="profilePostText"
                     class="form-control"
-                    rows="3"
+                    rows="9"
                     required
                 ></textarea>
             </div>
-        </ModalForm>
+        </FormModal>
     </div>
 </template>
 
 <script>
 import { useStoreProfilePost } from '@/stores/profilepost.store';
 
-import ModalForm from '@/components/app/ModalForm.vue';
+import FormModal from '@/components/app/FormModal.vue';
 
 const props = {
     profilePost: {
         type: Object,
         required: true,
     },
-    closeEditing: {
+    onClose: {
         type: Function,
         required: true,
     },
@@ -40,35 +40,22 @@ export default {
     name: 'editProfilePost',
     props,
     components: {
-        ModalForm,
+        FormModal,
     },
     data() {
         return {
+            profilePostText: this.profilePost.text,
             storeProfilePost: useStoreProfilePost(),
         };
     },
     methods: {
         async updateProfilePost() {
-            await this.storeProfilePost.updateProfilePost(this.profilePost);
+            const updatedProfilePost = {
+                id: this.profilePost.id,
+                text: this.profilePostText,
+            };
+            await this.storeProfilePost.updateProfilePost(updatedProfilePost);
         },
     },
 };
 </script>
-
-<style scoped>
-.card,
-.card-footer {
-    background-color: var(--white-color-2);
-}
-.card {
-    border: none;
-    padding: 0;
-    margin-top: 1em;
-}
-.card-footer {
-    padding: 0.7em;
-}
-.escape-btn {
-    margin-right: 1em;
-}
-</style>

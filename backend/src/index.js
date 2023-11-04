@@ -10,16 +10,16 @@ app.use(express.json());
 
 // APP ROUTES
 //////////////////////////////////////////////////////////////////////////////
-const loginRoute = require("./routes/login.route");
-const userRoute = require("./routes/user.route");
-const announcementRoute = require("./routes/announcement.route");
-const profilePostRoute = require("./routes/profilepost.route");
-const galleryRoute = require("./routes/gallery.route");
-const competitionRoute = require("./routes/competition.route");
+const loginRoute = require("./routes/loginRoute");
+const userRoute = require("./routes/userRoute");
+const announcementRoute = require("./routes/announcementRoute");
+const profilePostRoute = require("./routes/profilePostRoute");
+const galleryRoute = require("./routes/galleryRoute");
+const competitionRoute = require("./routes/competitionRoute");
 
 // GOOGLE
-const googleDriveRoute = require("./routes/googleDrive.route");
-const googleCredsRoute = require("./routes/googleCreds.route");
+const googleDriveRoute = require("./routes/googleDriveRoute");
+const googleCredsRoute = require("./routes/googleCredsRoute");
 
 app.use(express.json({ limit: "5mb" }));
 app.use(express.urlencoded({ limit: "5mb", extended: true }));

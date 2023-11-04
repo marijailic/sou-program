@@ -3,8 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 import db from "../db";
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { demosMiddleware } from "../middlewares/demos.middleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { demosMiddleware } from "../middlewares/demosMiddleware";
 import { Galleries, GalleryItems } from "../models/models";
 
 router.get("/gallery-item/:gallery_id", authMiddleware, async (req, res) => {

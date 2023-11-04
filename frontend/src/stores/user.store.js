@@ -14,6 +14,7 @@ const formatUserData = async (user) => {
     return {
         ...user,
         fullName: `${user.name} ${user.surname}`,
+        email: user.e_mail,
         profilePictureSrc,
     };
 };
@@ -57,7 +58,7 @@ export const useStoreUser = defineStore('storeUser', {
             });
 
             if (!res.ok) {
-                window.location.href = '/error';
+                this.$router.push('/error');
                 return;
             }
 
@@ -73,7 +74,7 @@ export const useStoreUser = defineStore('storeUser', {
                 body: JSON.stringify({ id: userID }),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async createUser(user) {
             const res = await backendApiService.post({
@@ -82,7 +83,7 @@ export const useStoreUser = defineStore('storeUser', {
                 body: JSON.stringify(user),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
         async updateUser(user) {
             const res = await backendApiService.post({
@@ -91,7 +92,7 @@ export const useStoreUser = defineStore('storeUser', {
                 body: JSON.stringify(user),
             });
 
-            window.location.href = res.ok ? '/success' : '/error';
+            this.$router.push(res.ok ? '/success' : '/error');
         },
     },
 });

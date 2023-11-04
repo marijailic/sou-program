@@ -162,7 +162,7 @@ router.beforeEach((to, _from, next) => {
 const DEFAULT_TITLE = 'Šou program';
 
 router.afterEach((to, _from) => {
-    document.title = `│ ${to.meta.title || DEFAULT_TITLE}`;
+    document.title = to.meta.title ? `| ${to.meta.title}` : DEFAULT_TITLE;
 });
 
 export default router;

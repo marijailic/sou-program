@@ -1,13 +1,12 @@
 <template>
-    <div>
+    <div class="d-flex flex-column gap-2 h-100">
         <show-profile :user="currentUser" />
         <add-profile-post :profilePictureSrc="currentUser.profilePictureSrc" />
 
-        <div
-            class="d-flex justify-content-center"
-            v-if="profilePosts.length === 0"
-        >
-            <h1 class="mt-5">Nema objava...</h1>
+        <div class="card" v-if="!profilePosts.length && !isLoading">
+            <div class="card-body text-center">
+                <h4>Nema objava 😢</h4>
+            </div>
         </div>
 
         <show-profile-post
@@ -15,15 +14,22 @@
             :key="profilePost.id"
             :user="currentUser"
             :profilePost="profilePost"
-            :setEditingProfilePostID="setEditingProfilePostID"
-            :getEditingProfilePostID="getEditingProfilePostID"
         />
+
+        <div
+            class="d-flex align-items-center justify-content-center flex-grow-1"
+            v-if="isLoading"
+        >
+            <LoadingSpinner />
+        </div>
     </div>
 </template>
 
 <script>
 import { useStoreUser } from '@/stores/user.store';
 import { useStoreProfilePost } from '@/stores/profilepost.store';
+
+import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
 
 import authService from '@/services/authService';
 
@@ -33,30 +39,60 @@ import showProfilePost from '@/components/app/showProfilePost.vue';
 
 export default {
     name: 'MyProfileView',
-    components: { showProfile, addProfilePost, showProfilePost },
+    components: {
+        showProfile,
+        addProfilePost,
+        showProfilePost,
+        LoadingSpinner,
+    },
     data: () => ({
+        pageCount: 0,
+        isLoading: false,
         currentUser: {},
         profilePosts: [],
-        activeEditingProfilePostID: 0,
         storeUser: useStoreUser(),
         storeProfilePost: useStoreProfilePost(),
     }),
     async created() {
+        this.isLoading = true;
+
         await this.storeUser.fetchUsers();
         this.currentUser = await this.storeUser.getUserByUsername(
             authService.getAuthUsername()
         );
 
-        this.profilePosts = await this.storeProfilePost.fetchProfilePosts(
-            this.currentUser.id
-        );
+        await this.loadMoreProfilePosts();
+
+        this.isLoading = false;
+    },
+    mounted() {
+        this.handleScroll();
     },
     methods: {
-        getEditingProfilePostID() {
-            return this.activeEditingProfilePostID;
+        handleScroll() {
+            window.onscroll = async () => {
+                const OFFSET = 100;
+                const bottomOfWindow =
+                    document.documentElement.scrollTop + window.innerHeight >=
+                    document.documentElement.offsetHeight - OFFSET;
+
+                if (bottomOfWindow && !this.isLoading) {
+                    this.isLoading = true;
+                    await this.loadMoreProfilePosts();
+                    this.isLoading = false;
+                }
+            };
         },
-        setEditingProfilePostID(editingProfilePostID) {
-            this.activeEditingProfilePostID = editingProfilePostID;
+        async loadMoreProfilePosts() {
+            this.pageCount++;
+
+            const moreProfilePosts =
+                await this.storeProfilePost.fetchProfilePosts(
+                    this.currentUser.id,
+                    this.pageCount
+                );
+
+            this.profilePosts.push(...moreProfilePosts);
         },
     },
 };

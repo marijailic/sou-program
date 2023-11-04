@@ -1,76 +1,81 @@
 <template>
     <div>
         <div class="card">
-            <div class="d-flex justify-content-center gap-3">
-                <img
-                    class="profile-pic rounded-circle"
-                    :src="
-                        user.profilePictureSrc ||
-                        require('@/assets/sp-icon.png')
-                    "
-                />
-                <div class="flex-grow-1 d-flex align-items-center text-start">
-                    <div class="text-start">
-                        <h6 class="d-inline m-0">
-                            {{ user.fullName }}
-                        </h6>
-                        <span class="text-muted">
-                            •
-                            {{ profilePost.posted_at }} ago
-                        </span>
-                        <p class="card-text mt-2">{{ profilePost.text }}</p>
-                    </div>
+            <div class="card-body d-flex gap-3">
+                <div>
+                    <img
+                        class="icon rounded-circle"
+                        :src="
+                            user.profilePictureSrc ||
+                            require('@/assets/sp-icon.png')
+                        "
+                    />
                 </div>
-            </div>
+                <div class="flex-grow-1">
+                    <h6 class="card-title d-inline m-0">
+                        {{ user.fullName }}
+                    </h6>
+                    <small class="text-muted">
+                        •
+                        {{ profilePost.posted_at }} ago
+                    </small>
+                    <p class="card-text mt-1">{{ profilePost.text }}</p>
+                </div>
 
-            <div class="card-footer text-end" v-if="canEdit">
-                <button
-                    @click="deleteProfilePost(profilePost.id)"
-                    class="btn btn-primary me-2"
+                <div
+                    v-if="canEdit"
+                    class="h-fit d-flex justify-content-end gap-1"
                 >
-                    Izbriši
-                </button>
-                <button
-                    class="btn btn-primary"
-                    @click="openEditing(profilePost.id)"
-                >
-                    Uredi
-                </button>
+                    <button
+                        class="btn btn-edit"
+                        @click="openEditingProfilePost"
+                    >
+                        <i class="fa-solid fa-pen"></i>
+                    </button>
+                    <button
+                        class="btn btn-delete"
+                        @click="openDeletingProfilePost"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
         <edit-profile-post
+            v-if="isEditing"
             :profilePost="profilePost"
-            :closeEditing="closeEditing"
-            v-if="canEdit && isEditingActive"
+            :onClose="closeEditingProfilePost"
+        />
+
+        <ConfirmationModal
+            v-if="isConfirming"
+            title="Izbriši profilnu objavu"
+            message="Jesi li siguran/na da želiš izbrisati profilnu objavu?"
+            :onConfirm="confirmDeleteProfilePost"
+            :onCancel="cancelDeleteProfilePost"
         />
     </div>
 </template>
 
 <script>
 import { useStoreProfilePost } from '@/stores/profilepost.store';
-import { useStoreUser } from '@/stores/user.store';
 
-import editProfilePost from './editProfilePost.vue';
+import editProfilePost from '@/components/app/editProfilePost.vue';
+import ConfirmationModal from '@/components/app/ConfirmationModal.vue';
 
 const props = {
     user: {
-        type: Number,
+        type: Object,
         required: true,
     },
     profilePost: {
         type: Object,
         required: true,
     },
-    setEditingProfilePostID: {
-        type: Function,
-        required: false,
-        default: null,
-    },
-    getEditingProfilePostID: {
-        type: Function,
-        required: false,
-        default: null,
+    canEdit: {
+        type: Boolean,
+        default: true,
     },
 };
 
@@ -79,63 +84,32 @@ export default {
     props,
     components: {
         editProfilePost,
+        ConfirmationModal,
     },
     data() {
         return {
-            isEditingActive: false,
-            canEdit:
-                this.setEditingProfilePostID && this.getEditingProfilePostID,
-            storeProfilePost: useStoreProfilePost(),
+            isConfirming: false,
+            isEditing: false,
         };
     },
-    computed: {
-        isEditingActive() {
-            return (
-                this.getEditingProfilePostID !== null &&
-                this.profilePost.id === this.getEditingProfilePostID()
-            );
-        },
-    },
     methods: {
-        async deleteProfilePost(profilePostID) {
-            const isConfirmed = window.confirm(
-                'Jeste li sigurni da želite izbrisati objavu?'
-            );
-
-            if (isConfirmed) {
-                await this.storeProfilePost.deleteProfilePost(profilePostID);
-            }
+        openDeletingProfilePost() {
+            this.isConfirming = true;
         },
-        openEditing(editingProfilePostID) {
-            this.setEditingProfilePostID(editingProfilePostID);
+        async confirmDeleteProfilePost() {
+            const storeProfilePost = useStoreProfilePost();
+            await storeProfilePost.deleteProfilePost(profilePostID);
+            this.isConfirming = false;
         },
-        closeEditing() {
-            this.setEditingProfilePostID(0);
+        cancelDeleteProfilePost() {
+            this.isConfirming = false;
+        },
+        openEditingProfilePost() {
+            this.isEditing = true;
+        },
+        closeEditingProfilePost() {
+            this.isEditing = false;
         },
     },
 };
 </script>
-
-<style scoped>
-.card {
-    border: none;
-    margin-top: 1em;
-}
-.row {
-    padding: 1em;
-}
-.second-col {
-    padding-left: 0;
-}
-.card-right {
-    padding-left: 0;
-}
-.card-footer {
-    padding: 0.7em;
-    background-color: white;
-}
-.profile-pic {
-    width: 50px;
-    height: 50px;
-}
-</style>

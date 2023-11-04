@@ -1,34 +1,33 @@
 <template>
     <div>
-        <ModalForm
-            :isOpen="true"
-            :onClose="closeAddingUser"
-            :onConfirm="createUser"
+        <FormModal
             title="Dodaj korisnika"
-            :isConfirmDisabled="!isFormValid"
+            :onClose="onClose"
+            :onConfirm="createUser"
+            :disabled="!isFormValid"
         >
-            <DynamicInput
-                :label="'Ime'"
+            <Input
+                label="Ime"
                 v-model="user.name"
                 :validations="validationRules.name"
             />
-            <DynamicInput
-                :label="'Prezime'"
+            <Input
+                label="Prezime"
                 v-model="user.surname"
                 :validations="validationRules.surname"
             />
-            <DynamicInput
-                :label="'Email'"
+            <Input
+                label="Email"
                 v-model="user.email"
                 :validations="validationRules.email"
             />
-            <DynamicInput
-                :label="'Korisničko ime'"
+            <Input
+                label="Korisničko ime"
                 v-model="user.username"
                 :validations="validationRules.username"
             />
-            <DynamicInput
-                :label="'Lozinka'"
+            <Input
+                label="Lozinka"
                 v-model="user.password"
                 :type="'password'"
                 :validations="validationRules.password"
@@ -49,7 +48,7 @@
                     v-model.trim="user.bio"
                     class="form-control"
                     id="bio"
-                    maxlength="250"
+                    rows="4"
                 ></textarea>
             </div>
             <div class="form-group">
@@ -67,7 +66,7 @@
                     <option value="student">Student</option>
                 </select>
             </div>
-        </ModalForm>
+        </FormModal>
     </div>
 </template>
 
@@ -75,8 +74,8 @@
 import { useStoreGallery } from '@/stores/gallery.store';
 import { useStoreUser } from '@/stores/user.store';
 
-import ModalForm from '@/components/app/ModalForm.vue';
-import DynamicInput from '@/components/app/DynamicInput.vue';
+import FormModal from '@/components/app/FormModal.vue';
+import Input from '@/components/app/Input.vue';
 
 import {
     required,
@@ -89,7 +88,7 @@ import {
 } from '@/utils/validations.js';
 
 const props = {
-    closeAddingUser: {
+    onClose: {
         type: Function,
         required: true,
     },
@@ -99,8 +98,8 @@ export default {
     name: 'addUser',
     props,
     components: {
-        ModalForm,
-        DynamicInput,
+        FormModal,
+        Input,
     },
     data: function () {
         return {
@@ -149,7 +148,7 @@ export default {
             }
 
             if (this.selectedImage) {
-                console.log('uploading images...');
+                console.log('Uploading images...');
                 const profilePictureKey = (
                     await this.storeGallery.googleUploadImages({
                         images: [this.selectedImage],
@@ -161,21 +160,8 @@ export default {
 
             await this.storeUser.createUser(this.user);
 
-            this.closeAddingUser();
+            this.onClose();
         },
     },
 };
 </script>
-
-<style scoped>
-.error-msg {
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: #dc3545;
-    transition: opacity 0.3s;
-}
-
-.error-msg span {
-    display: block;
-}
-</style>
