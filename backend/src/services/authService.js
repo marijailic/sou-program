@@ -1,6 +1,6 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Users } from "../models/models";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Users } from '../models/models';
 
 export const hashPassword = async (passwordInput) => {
     const passwordHash = await bcrypt.hash(passwordInput, 8);
@@ -8,15 +8,15 @@ export const hashPassword = async (passwordInput) => {
 };
 
 export const getAuthUserData = async (username, password) => {
-    const user = await Users().select().where("username", username).first();
+    const user = await Users().select().where('username', username).first();
 
     if (!user) {
-        throw new Error("No user");
+        throw new Error('No user');
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-        throw new Error("Password fail");
+        throw new Error('Password fail');
     }
 
     const authenticatedUser = {
@@ -25,15 +25,15 @@ export const getAuthUserData = async (username, password) => {
     };
 
     const token = jwt.sign(authenticatedUser, process.env.ACCESS_TOKEN_SECRET, {
-        algorithm: "HS512",
-        expiresIn: "30s",
+        algorithm: 'HS512',
+        expiresIn: '30s',
     });
 
     const refreshToken = jwt.sign(
         authenticatedUser,
         process.env.REFRESH_TOKEN_SECRET,
         {
-            algorithm: "HS512",
+            algorithm: 'HS512',
         }
     );
 

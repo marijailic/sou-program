@@ -1,11 +1,11 @@
-const { google } = require("googleapis");
-const { Readable } = require("stream");
+const { google } = require('googleapis');
+const { Readable } = require('stream');
 
-import { googleAuth } from "./googleAuthService";
+import { googleAuth } from './googleAuthService';
 
 let drive;
 try {
-    drive = google.drive({ version: "v3", auth: googleAuth() });
+    drive = google.drive({ version: 'v3', auth: googleAuth() });
 } catch (error) {
     console.log(error.message);
     drive = null;
@@ -19,7 +19,7 @@ function getFolderID(folder) {
         profile_post: process.env.PROFILE_POST_FOLDER_ID,
     };
 
-    return folderIDs[folder] || "";
+    return folderIDs[folder] || '';
 }
 
 async function uploadImage(folder, imageName, imageBuffer) {
@@ -29,13 +29,13 @@ async function uploadImage(folder, imageName, imageBuffer) {
         parents: [folderID],
     };
     const media = {
-        mimeType: "image/jpeg",
+        mimeType: 'image/jpeg',
         body: Readable.from(imageBuffer),
     };
     const image = await drive.files.create({
         resource: fileMetadata,
         media: media,
-        fields: "id",
+        fields: 'id',
     });
 
     return image.data.id;

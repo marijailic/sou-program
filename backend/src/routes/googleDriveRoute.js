@@ -1,24 +1,24 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const { google } = require("googleapis");
+const { google } = require('googleapis');
 
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { googleAuth } from "../services/googleAuthService";
-import { uploadImage } from "../services/googleDriveService";
+import { authMiddleware } from '../middlewares/authMiddleware';
+import { googleAuth } from '../services/googleAuthService';
+import { uploadImage } from '../services/googleDriveService';
 
 let drive;
 try {
-    drive = google.drive({ version: "v3", auth: googleAuth() });
+    drive = google.drive({ version: 'v3', auth: googleAuth() });
 } catch (error) {
     console.log(error.message);
     drive = null;
 }
 
-router.use(express.raw({ limit: "30MB", type: "text/plain" }));
+router.use(express.raw({ limit: '30MB', type: 'text/plain' }));
 
 router.post(
-    "/upload-image/:folder_name/:image_name",
+    '/upload-image/:folder_name/:image_name',
     authMiddleware,
     async (req, res) => {
         const folderName = req.params.folder_name;
@@ -26,7 +26,7 @@ router.post(
         const imageBuffer = req.body;
 
         if (!imageBuffer) {
-            res.status(400).json({ message: "Client error", data: {} });
+            res.status(400).json({ message: 'Client error', data: {} });
         }
 
         try {
@@ -39,27 +39,27 @@ router.post(
             );
 
             res.json({
-                message: "Image uploaded successfully",
+                message: 'Image uploaded successfully',
                 data: imageID,
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
     }
 );
 
-router.get("/image/:image_id", async (req, res) => {
+router.get('/image/:image_id', async (req, res) => {
     const imageID = req.params.image_id;
     try {
         googleAuth();
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
         return res.status(500).json({
-            message: "Internal server error",
+            message: 'Internal server error',
             data: {},
         });
     }
@@ -68,31 +68,31 @@ router.get("/image/:image_id", async (req, res) => {
         image = await drive.files.get(
             {
                 fileId: imageID,
-                alt: "media",
+                alt: 'media',
             },
             {
-                responseType: "arraybuffer",
+                responseType: 'arraybuffer',
             }
         );
     } catch (error) {
         return res.json({
             message: "Image doesn't exist",
-            data: "",
+            data: '',
         });
     }
 
     try {
         const imageBuffer = Buffer.from(image.data);
-        const imageBase64 = imageBuffer.toString("base64");
+        const imageBase64 = imageBuffer.toString('base64');
 
         res.json({
-            message: "Image retrieved successfully",
+            message: 'Image retrieved successfully',
             data: imageBase64,
         });
     } catch (error) {
-        console.log("Error:", error);
+        console.log('Error:', error);
         return res.status(500).json({
-            message: "Internal server error",
+            message: 'Internal server error',
             data: {},
         });
     }
