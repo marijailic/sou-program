@@ -4,12 +4,12 @@ const router = express.Router();
 
 import { demosMiddleware } from '../middlewares/demosMiddleware';
 import { hashPassword, authMiddleware } from '../middlewares/authMiddleware';
-import db from '../db';
 import { hashPassword } from '../services/authService';
+import { Users } from '../models/models';
 
 router.get('/user', [authMiddleware], async (req, res, next) => {
     try {
-        const users = await db('user').orderBy('id', 'desc');
+        const users = await Users().orderBy('id', 'desc');
         res.json({
             message: 'User fetched successfully',
             data: users,
@@ -24,7 +24,7 @@ router.delete(
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
         try {
-            await db('user').where({ id: req.body.id }).del();
+            await Users().where({ id: req.body.id }).del();
             res.json({
                 message: 'User deleted successfully',
                 data: {},
@@ -61,7 +61,7 @@ router.post(
         };
 
         try {
-            await db('user').insert(userData);
+            await Users().insert(userData);
             res.json({
                 message: 'User created successfully',
                 data: {},
@@ -94,7 +94,7 @@ router.post(
         };
 
         try {
-            await db('user').where({ id: id }).update(userData);
+            await Users().where({ id: id }).update(userData);
             res.json({
                 message: 'User updated successfully',
                 data: {},

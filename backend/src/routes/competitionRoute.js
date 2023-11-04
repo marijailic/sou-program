@@ -1,42 +1,42 @@
-const moment = require("moment-timezone");
-const express = require("express");
+const moment = require('moment-timezone');
+const express = require('express');
 const router = express.Router();
 
-import db from "../db";
-import { authMiddleware } from "../middlewares/authMiddleware";
-import { demosMiddleware } from "../middlewares/demosMiddleware";
+import { authMiddleware } from '../middlewares/authMiddleware';
+import { demosMiddleware } from '../middlewares/demosMiddleware';
+import { Competitions, TeamMembers, Teams } from '../models/models';
 
-const { getPopulatedCompetitions } = require("../services/competitionService");
+const { getPopulatedCompetitions } = require('../services/competitionService');
 
-router.get("/competition", authMiddleware, async (req, res) => {
+router.get('/competition', authMiddleware, async (req, res) => {
     try {
-        const competitions = await db("competition")
-            .orderBy("timestamp", "desc")
+        const competitions = await Competitions()
+            .orderBy('timestamp', 'desc')
             .limit(10);
 
         res.json({
-            message: "Competitions fetched successfully",
+            message: 'Competitions fetched successfully',
             data: await getPopulatedCompetitions(competitions),
         });
     } catch (error) {
-        console.log("Error:", error);
-        res.status(500).json({ message: "Internal server error", data: {} });
+        console.log('Error:', error);
+        res.status(500).json({ message: 'Internal server error', data: {} });
     }
 });
 
 router.delete(
-    "/competition/:id",
+    '/competition/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idCompetition = req.params.id;
 
         try {
-            await db("competition").where({ id: idCompetition }).del();
-            res.json({ message: "Competition deleted successfully", data: {} });
+            await Competitions().where({ id: idCompetition }).del();
+            res.json({ message: 'Competition deleted successfully', data: {} });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -44,18 +44,18 @@ router.delete(
 );
 
 router.delete(
-    "/competition/team/:id",
+    '/competition/team/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idTeam = req.params.id;
 
         try {
-            await db("team").where({ id: idTeam }).del();
-            res.json({ message: "Team deleted successfully", data: {} });
+            await Teams().where({ id: idTeam }).del();
+            res.json({ message: 'Team deleted successfully', data: {} });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -63,18 +63,18 @@ router.delete(
 );
 
 router.delete(
-    "/competition/team/member/:id",
+    '/competition/team/member/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idTeamMember = req.params.id;
 
         try {
-            await db("team_member").where({ id: idTeamMember }).del();
-            res.json({ message: "Team member deleted successfully", data: {} });
+            await TeamMembers().where({ id: idTeamMember }).del();
+            res.json({ message: 'Team member deleted successfully', data: {} });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -82,13 +82,13 @@ router.delete(
 );
 
 router.post(
-    "/competition/team/member",
+    '/competition/team/member',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const { team_id, member_id } = req.body;
 
-        const timezone = "Europe/Amsterdam";
-        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+        const timezone = 'Europe/Amsterdam';
+        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
         const teamMember = {
             team_id: team_id,
@@ -97,17 +97,17 @@ router.post(
         };
 
         try {
-            const teamId = await db("team_member").insert(teamMember, "id");
+            const teamId = await TeamMembers().insert(teamMember, 'id');
             res.json({
-                message: "Team member created successfully",
+                message: 'Team member created successfully',
                 data: {
                     teamId: teamId,
                 },
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -115,16 +115,16 @@ router.post(
 );
 
 router.post(
-    "/competition/team",
+    '/competition/team',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const { competition_id, name } = req.body;
 
-        const timezone = "Europe/Amsterdam";
-        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+        const timezone = 'Europe/Amsterdam';
+        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
-        const competition = await db("competition")
-            .where("id", competition_id)
+        const competition = await Competitions()
+            .where('id', competition_id)
             .first();
 
         const team = {
@@ -134,17 +134,17 @@ router.post(
         };
 
         try {
-            const teamId = await db("team").insert(team, "id");
+            const teamId = await Teams().insert(team, 'id');
             res.json({
-                message: "Team created successfully",
+                message: 'Team created successfully',
                 data: {
                     teamId: teamId,
                 },
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -152,13 +152,13 @@ router.post(
 );
 
 router.post(
-    "/competition",
+    '/competition',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const { name, description, start_date } = req.body;
 
-        const timezone = "Europe/Amsterdam";
-        const timestamp = moment().tz(timezone).format("YYYY-MM-DD HH:mm:ss");
+        const timezone = 'Europe/Amsterdam';
+        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
 
         const competitionData = {
             name: name,
@@ -168,20 +168,20 @@ router.post(
         };
 
         try {
-            const competitionId = await db("competition").insert(
+            const competitionId = await Competitions().insert(
                 competitionData,
-                "id"
+                'id'
             );
             res.json({
-                message: "Competition created successfully",
+                message: 'Competition created successfully',
                 data: {
                     competitionId: competitionId,
                 },
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -189,22 +189,22 @@ router.post(
 );
 
 router.patch(
-    "/competition/team/:id",
+    '/competition/team/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idTeam = req.params.id;
         const { name } = req.body;
 
         try {
-            await db("team").where({ id: idTeam }).update({ name: name });
+            await Teams().where({ id: idTeam }).update({ name: name });
             res.json({
-                message: "Team updated successfully",
+                message: 'Team updated successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }
@@ -212,26 +212,26 @@ router.patch(
 );
 
 router.patch(
-    "/competition",
+    '/competition',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
         const idCompetition = req.body.id;
         const { name, description, start_date } = req.body;
 
         try {
-            await db("competition").where({ id: idCompetition }).update({
+            await Competitions().where({ id: idCompetition }).update({
                 name: name,
                 description: description,
                 start_date: start_date,
             });
             res.json({
-                message: "Competition updated successfully",
+                message: 'Competition updated successfully',
                 data: {},
             });
         } catch (error) {
-            console.log("Error:", error);
+            console.log('Error:', error);
             res.status(500).json({
-                message: "Internal server error",
+                message: 'Internal server error',
                 data: {},
             });
         }

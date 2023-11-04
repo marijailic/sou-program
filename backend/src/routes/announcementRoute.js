@@ -2,9 +2,9 @@ const moment = require('moment-timezone');
 const express = require('express');
 const router = express.Router();
 
-import db from '../db';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { demosMiddleware } from '../middlewares/demosMiddleware';
+import { Announcements } from '../models/models';
 
 const { getUserByUsername } = require('../services/userService');
 const {
@@ -13,7 +13,7 @@ const {
 
 router.get('/announcement', authMiddleware, async (req, res) => {
     try {
-        const announcement = await db('announcement')
+        const announcement = await Announcements()
             .orderBy('timestamp', 'desc')
             .limit(10);
         res.json({
@@ -36,7 +36,7 @@ router.delete(
         const idAnnouncement = req.body.id;
 
         try {
-            await db('announcement')
+            await Announcements()
                 .where({
                     id: idAnnouncement,
                 })
@@ -77,7 +77,7 @@ router.post(
         };
 
         try {
-            await db('announcement').insert(announcementData);
+            await Announcements().insert(announcementData);
             await sendAnnouncements(text);
 
             res.json({
@@ -107,7 +107,7 @@ router.post(
         }
 
         try {
-            await db('announcement').where({ id: id }).update({
+            await Announcements().where({ id: id }).update({
                 text: text,
             });
 

@@ -1,7 +1,7 @@
-import db from "../db";
+import { Users } from '../models/models';
 
 async function getUserByUsername(username) {
-    return await db("user").where("username", username).first();
+    return await Users().where('username', username).first();
 }
 
 export { getUserByUsername };

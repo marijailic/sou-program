@@ -1,15 +1,15 @@
-import { validateToken } from "../services/authService";
+import { validateToken } from '../services/authService';
 
 export const authMiddleware = (req, res, next) => {
-    const authorization = req.headers["authorization"].split(" ");
+    const authorization = req.headers['authorization'].split(' ');
     const authorizationType = authorization[0];
     const token = authorization[1];
-    const refreshToken = req.headers["refreshtoken"];
-    const username = req.headers["username"];
-    const userType = req.headers["type"];
+    const refreshToken = req.headers['refreshtoken'];
+    const username = req.headers['username'];
+    const userType = req.headers['type'];
 
-    if (authorizationType !== "Bearer") {
-        return res.status(401).json({ error: "Unauthorized" });
+    if (authorizationType !== 'Bearer') {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
     // Validate token
@@ -38,5 +38,5 @@ export const authMiddleware = (req, res, next) => {
         return;
     }
 
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: 'Unauthorized' });
 };

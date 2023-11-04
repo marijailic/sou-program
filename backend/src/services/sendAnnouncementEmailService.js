@@ -1,8 +1,9 @@
-const db = require('../db');
+import { Users } from '../models/models';
+
 const { sendMail } = require('./emailService');
 
 const sendAnnouncements = async (text) => {
-    const emailObjArray = await db('user').select('e_mail');
+    const emailObjArray = await Users().select('e_mail');
     const emails = emailObjArray.map((emailObj) => emailObj.e_mail);
 
     function screwSendgrid(emails) {
