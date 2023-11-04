@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 import { demosMiddleware } from '../middlewares/demosMiddleware';
-import { hashPassword, authMiddleware } from '../middlewares/authMiddleware';
+import { authMiddleware } from '../middlewares/authMiddleware';
 import { hashPassword } from '../services/authService';
 import { Users } from '../models/models';
 
