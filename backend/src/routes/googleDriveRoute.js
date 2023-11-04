@@ -3,9 +3,9 @@ const router = express.Router();
 
 const { google } = require("googleapis");
 
-import { authMiddleware } from "../middlewares/auth.middleware";
-import { googleAuth } from "../services/googleAuth.service";
-import { uploadImage } from "../services/googleDrive.service";
+import { authMiddleware } from "../middlewares/authMiddleware";
+import { googleAuth } from "../services/googleAuthService";
+import { uploadImage } from "../services/googleDriveService";
 
 let drive;
 try {

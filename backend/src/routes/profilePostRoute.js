@@ -3,9 +3,9 @@ const express = require("express");
 const router = express.Router();
 
 import db from "../db";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
-const { getUserByUsername } = require("../services/user.service");
+const { getUserByUsername } = require("../services/userService");
 
 router.get("/profile-post/:authorid", authMiddleware, async (req, res) => {
     const authorId = req.params.authorid;

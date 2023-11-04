@@ -1,7 +1,7 @@
 const { google } = require("googleapis");
 const { Readable } = require("stream");
 
-import { googleAuth } from "../services/googleAuth.service";
+import { googleAuth } from "./googleAuthService";
 
 let drive;
 try {
