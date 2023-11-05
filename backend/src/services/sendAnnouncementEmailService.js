@@ -1,8 +1,7 @@
 import { Users } from '../models/models';
+import { sendMail } from './emailService';
 
-const { sendMail } = require('./emailService');
-
-const sendAnnouncements = async (text) => {
+export const sendAnnouncements = async (text) => {
     const emailObjArray = await Users().select('e_mail');
     const emails = emailObjArray.map((emailObj) => emailObj.e_mail);
 
@@ -18,5 +17,3 @@ const sendAnnouncements = async (text) => {
 
     screwSendgrid(emails);
 };
-
-export { sendAnnouncements };

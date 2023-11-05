@@ -1,39 +1,33 @@
 require('dotenv').config();
 
-const express = require('express');
+import cors from 'cors';
+import express from 'express';
+import { announcementRoutes } from './routes/announcementRoute';
+// import { competitionRoutes } from './routes/competitionRoute';
+// import { galleryRoutes } from './routes/galleryRoute';
+import { googleCredsRoutes } from './routes/googleCredsRoute';
+import { googleDriveRoutes } from './routes/googleDriveRoute';
+import { loginRoutes } from './routes/loginRoute';
+import { profilePostRoutes } from './routes/profilePostRoute';
+import { userRoutes } from './routes/userRoute';
+
 const app = express();
-const cors = require('cors');
 
 app.use(cors());
-
 app.use(express.json());
-
-// APP ROUTES
-//////////////////////////////////////////////////////////////////////////////
-const loginRoute = require('./routes/loginRoute');
-const userRoute = require('./routes/userRoute');
-const announcementRoute = require('./routes/announcementRoute');
-const profilePostRoute = require('./routes/profilePostRoute');
-const galleryRoute = require('./routes/galleryRoute');
-const competitionRoute = require('./routes/competitionRoute');
-
-// GOOGLE
-const googleDriveRoute = require('./routes/googleDriveRoute');
-const googleCredsRoute = require('./routes/googleCredsRoute');
-
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
-app.use('/', loginRoute); // login
-app.use('/', userRoute); // user (user table)
-app.use('/', announcementRoute); // announcement (announcement table)
-app.use('/', profilePostRoute); // profile-post (profile_post table && comment table)
-app.use('/', galleryRoute); // gallery (gallery table && gallery_item table)
-app.use('/', competitionRoute); // competition (competition table && team table && team_member table)
+app.use('/', loginRoutes()); // login
+app.use('/', userRoutes()); // user (user table)
+app.use('/', announcementRoutes()); // announcement (announcement table)
+app.use('/', profilePostRoutes()); // profile-post (profile_post table && comment table)
+// app.use('/', galleryRoutes()); // gallery (gallery table && gallery_item table)
+// app.use('/', competitionRoutes()); // competition (competition table && team table && team_member table)
 
 // GOOGLE
-app.use('/', googleDriveRoute);
-app.use('/', googleCredsRoute);
+app.use('/', googleDriveRoutes());
+app.use('/', googleCredsRoutes());
 
 // APP START
 //////////////////////////////////////////////////////////////////////////////

@@ -1,28 +1,31 @@
-const express = require('express');
-const router = express.Router();
-const fs = require('fs');
-
+import { Router } from 'express';
+import fs from 'fs';
 import { googleAuth } from '../services/googleAuthService';
 
-router.get('/google/auth', async (req, res) => {
-    const oauth2Client = googleAuth();
-    const url = oauth2Client.generateAuthUrl({
-        access_type: 'offline',
-        scope: [
-            'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/drive',
-        ],
+export const googleCredsRoutes = () => {
+    const router = Router();
+
+    router.get('/google/auth', async (req, res) => {
+        const oauth2Client = googleAuth();
+        const url = oauth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: [
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/drive',
+            ],
+        });
+        return res.redirect(url);
     });
-    res.redirect(url);
-});
 
-router.get('/google/redirect', async (req, res) => {
-    const oauth2Client = googleAuth();
-    const { code } = req.query;
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
-    fs.writeFileSync('creds.json', JSON.stringify(tokens));
-    res.send('Success');
-});
+    router.get('/google/redirect', async (req, res) => {
+        const oauth2Client = googleAuth();
+        const { code } = req.query;
+        const { tokens } = await oauth2Client.getToken(code);
+        oauth2Client.setCredentials(tokens);
+        fs.writeFileSync('creds.json', JSON.stringify(tokens));
 
-module.exports = router;
+        return res.send('Success');
+    });
+
+    return router;
+};
