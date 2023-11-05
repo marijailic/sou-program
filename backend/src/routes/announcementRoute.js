@@ -11,115 +11,182 @@ const {
     sendAnnouncements,
 } = require('../services/sendAnnouncementEmailService');
 
-router.get('/announcement', authMiddleware, async (req, res) => {
+router.get('/announcements', authMiddleware, async (req, res) => {
     try {
-        const announcement = await Announcements()
+        const page = parseInt(req.query.page) || 1;
+        const LIMIT = 15;
+
+        const offset = (page - 1) * LIMIT;
+
+        const totalAnnouncementsCount = await Announcements().count().first();
+        const totalPages = Math.ceil(totalAnnouncementsCount / LIMIT);
+
+        const announcements = await Announcements()
             .orderBy('timestamp', 'desc')
-            .limit(10);
-        res.json({
-            message: 'Announcement fetched successfully',
-            data: announcement,
+            .offset(offset)
+            .limit(LIMIT);
+
+        res.status(200).json({
+            message: 'Announcements fetched successfully',
+            data: announcements,
+            metadata: {
+                totalPages: totalPages,
+                currentPage: page,
+            },
         });
     } catch (error) {
-        console.log('Error:', error);
+        console.error('[GET] Announcement error:', error);
         res.status(500).json({
-            message: 'Internal server error',
-            data: {},
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
         });
     }
 });
 
-router.delete(
-    '/delete-announcement',
-    [authMiddleware, demosMiddleware],
-    async (req, res) => {
-        const idAnnouncement = req.body.id;
-
-        try {
-            await Announcements()
-                .where({
-                    id: idAnnouncement,
-                })
-                .del();
-            res.json({
-                message: 'Announcement deleted successfully',
-                data: {},
-            });
-        } catch (error) {
-            console.log('Error:', error);
-            res.status(500).json({
-                message: 'Internal server error',
-                data: {},
-            });
-        }
-    }
-);
-
 router.post(
-    '/create-announcement',
+    '/announcements',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
-        const text = req.body.text;
-        const idUser = (await getUserByUsername(req.headers['username'])).id;
-
-        const timezone = 'Europe/Amsterdam';
-        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-
-        if (text.trim() === '') {
-            res.status(400).json({ message: 'Client error', data: {} });
-        }
-
-        const announcementData = {
-            text: text,
-            picture_key: '',
-            author_id: idUser,
-            timestamp: timestamp,
-        };
-
         try {
-            await Announcements().insert(announcementData);
+            const text = req.body.text;
+
+            if (!text && text.trim() === '') {
+                res.status(400).json({
+                    error: {
+                        code: 'InvalidInput',
+                        message: 'Announcement text is required.',
+                    },
+                });
+            }
+
+            const username = req.headers['username'];
+            const user = await getUserByUsername(username);
+            if (!user) {
+                return res.status(404).json({
+                    error: {
+                        code: 'UserNotFound',
+                        message: 'User not found.',
+                    },
+                });
+            }
+
+            const timestamp = moment()
+                .tz('Europe/Amsterdam')
+                .format('YYYY-MM-DD HH:mm:ss');
+
+            const newAnnouncement = {
+                text: text,
+                picture_key: '',
+                author_id: user.id,
+                timestamp: timestamp,
+            };
+
+            const [id] = await Announcements()
+                .insert(newAnnouncement)
+                .returning(['id']);
+            newAnnouncement.id = id;
+
             await sendAnnouncements(text);
 
-            res.json({
+            res.status(201).json({
                 message: 'Announcement created successfully',
-                data: {},
+                data: newAnnouncement,
             });
         } catch (error) {
-            console.log('Error:', error);
+            console.log('[POST] Announcement error:', error.message);
             res.status(500).json({
-                message: 'Internal server error',
-                data: {},
+                error: {
+                    code: 'InvalidServerError',
+                    message: error.message,
+                },
             });
         }
     }
 );
 
-router.post(
-    '/update-announcement',
+router.patch(
+    '/announcements/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
-        const id = req.body.id;
-        const text = req.body.text;
-
-        if (text.trim() === '') {
-            res.status(400).json({ message: 'Client error', data: {} });
-            return;
-        }
-
         try {
+            const id = req.params.id;
+            const text = req.body.text;
+
+            if (!text || text.trim() === '') {
+                return res.status(400).json({
+                    error: {
+                        code: 'InvalidInput',
+                        message: 'Announcement text is required.',
+                    },
+                });
+            }
+
+            const announcement = await Announcements()
+                .where({ id: id })
+                .first();
+            if (!announcement) {
+                return res.status(404).json({
+                    error: {
+                        code: 'AnnouncementNotFound',
+                        message: 'Announcement not found.',
+                    },
+                });
+            }
+
             await Announcements().where({ id: id }).update({
                 text: text,
             });
 
-            res.json({
+            const updatedAnnouncement = await Announcements()
+                .where({ id: id })
+                .first();
+
+            res.status(200).json({
                 message: 'Announcement updated successfully',
-                data: {},
+                data: updatedAnnouncement,
             });
         } catch (error) {
-            console.log('Error:', error);
+            console.error('[PATCH] Announcement error:', error.message);
             res.status(500).json({
-                message: 'Internal server error',
-                data: {},
+                error: {
+                    code: 'InternalServerError',
+                    message: error.message,
+                },
+            });
+        }
+    }
+);
+
+router.delete(
+    '/announcements/:id',
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        try {
+            const id = req.params.id;
+
+            const announcement = await Announcements()
+                .where({ id: id })
+                .first();
+            if (!announcement) {
+                return res.status(404).json({
+                    error: {
+                        code: 'AnnouncementNotFound',
+                        message: 'Announcement not found.',
+                    },
+                });
+            }
+
+            await Announcements().where({ id: id }).del();
+            res.status(204).end();
+        } catch (error) {
+            console.error('[DELETE] Announcement error:', error.message);
+            res.status(500).json({
+                error: {
+                    code: 'InternalServerError',
+                    message: 'Something went wrong on the server.',
+                },
             });
         }
     }

@@ -16,14 +16,6 @@ export default {
         });
     },
     post: async ({ url, headers, body }) => {
-        console.log({
-            method: 'POST',
-            headers: {
-                ...headers,
-                ...authService.getAuthHeaders(),
-            },
-            body,
-        });
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: 'POST',
             headers: {

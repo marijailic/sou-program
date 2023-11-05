@@ -9,7 +9,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
     actions: {
         async fetchProfilePosts(authorID, pageCount) {
             const res = await backendApiService.get({
-                url: `/profile-post/${authorID}?page_count=${pageCount}`,
+                url: `/profile-posts/?page=${pageCount}&author_id=${authorID}`,
             });
 
             if (!res.ok) {
@@ -32,7 +32,16 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
         },
         async createProfilePost(profilePost) {
             const res = await backendApiService.post({
-                url: '/create-profile-post',
+                url: '/profile-posts',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(profilePost),
+            });
+
+            this.$router.push(res.ok ? '/success' : '/error');
+        },
+        async updateProfilePost(profilePost) {
+            const res = await backendApiService.patch({
+                url: `/profile-posts/${profilePost.id}`,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(profilePost),
             });
@@ -41,18 +50,8 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
         },
         async deleteProfilePost(profilePostID) {
             const res = await backendApiService.delete({
-                url: '/delete-profile-post',
+                url: `/profile-posts/${profilePostID}`,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: profilePostID }),
-            });
-
-            this.$router.push(res.ok ? '/success' : '/error');
-        },
-        async updateProfilePost(profilePost) {
-            const res = await backendApiService.post({
-                url: '/update-profile-post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(profilePost),
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

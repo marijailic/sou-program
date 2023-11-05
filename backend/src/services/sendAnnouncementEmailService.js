@@ -3,8 +3,8 @@ import { Users } from '../models/models';
 const { sendMail } = require('./emailService');
 
 const sendAnnouncements = async (text) => {
-    const emailObjArray = await Users().select('e_mail');
-    const emails = emailObjArray.map((emailObj) => emailObj.e_mail);
+    const users = await Users().select('e_mail');
+    const emails = users.map((user) => user.e_mail);
 
     function screwSendgrid(emails) {
         if (emails.length === 0) return;

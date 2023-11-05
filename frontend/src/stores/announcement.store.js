@@ -9,7 +9,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
     actions: {
         async fetchAnnouncements(pageCount) {
             const res = await backendApiService.get({
-                url: `/announcement?page_count=${pageCount}`,
+                url: `/announcements?page=${pageCount}`,
             });
 
             if (!res.ok) {
@@ -27,18 +27,9 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
 
             return this.announcements;
         },
-        async deleteAnnouncement(announcementID) {
-            const res = await backendApiService.delete({
-                url: '/delete-announcement',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: announcementID }),
-            });
-
-            this.$router.push(res.ok ? '/success' : '/error');
-        },
         async createAnnouncement(announcement) {
             const res = await backendApiService.post({
-                url: '/create-announcement',
+                url: '/announcements',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(announcement),
             });
@@ -46,10 +37,18 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
             this.$router.push(res.ok ? '/success' : '/error');
         },
         async updateAnnouncement(announcement) {
-            const res = await backendApiService.post({
-                url: '/update-announcement',
+            const res = await backendApiService.patch({
+                url: `/announcements/${announcement.id}`,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(announcement),
+            });
+
+            this.$router.push(res.ok ? '/success' : '/error');
+        },
+        async deleteAnnouncement(announcementID) {
+            const res = await backendApiService.delete({
+                url: `/announcements/${announcementID}`,
+                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

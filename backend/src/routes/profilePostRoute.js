@@ -7,88 +7,168 @@ import { ProfilePosts } from '../models/models';
 
 const { getUserByUsername } = require('../services/userService');
 
-router.get('/profile-post/:authorid', authMiddleware, async (req, res) => {
-    const authorId = req.params.authorid;
-
+router.get('/profile-posts', authMiddleware, async (req, res) => {
     try {
-        const profilePost = await ProfilePosts()
-            .where('author_id', authorId)
-            .orderBy('timestamp', 'desc')
-            .limit(10);
+        const authorID = req.query.author_id;
+        const page = parseInt(req.query.page) || 1;
 
-        res.json({
-            message: 'Profile post fetched successfully',
-            data: profilePost,
+        const LIMIT = 15;
+        const offset = (page - 1) * LIMIT;
+
+        const totalProfilePostsCount = await ProfilePosts()
+            .where({ author_id: authorID })
+            .count()
+            .first();
+        const totalPages = Math.ceil(totalProfilePostsCount / LIMIT);
+
+        const profilePosts = await ProfilePosts()
+            .where({ author_id: authorID })
+            .orderBy('timestamp', 'desc')
+            .offset(offset)
+            .limit(LIMIT);
+
+        res.status(200).json({
+            message: 'Profile posts fetched successfully',
+            data: profilePosts,
+            metadata: {
+                totalPages: totalPages,
+                currentPage: page,
+            },
         });
     } catch (error) {
-        console.log('Error:', error);
-        res.status(500).json({ message: 'Internal server error', data: {} });
+        console.error('[GET] Profile post error:', error.message);
+        res.status(500).json({
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
+        });
     }
 });
 
-router.post('/create-profile-post', authMiddleware, async (req, res) => {
-    const text = req.body.text;
-    const idUser = (await getUserByUsername(req.headers['username'])).id;
-
-    const timezone = 'Europe/Amsterdam';
-    const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-
-    if (text.trim() === '') {
-        res.status(400).json({ message: 'Client error', data: {} });
-    }
-
-    const profilePostData = {
-        text: text,
-        picture_key: '',
-        author_id: idUser,
-        timestamp: timestamp,
-    };
-
+router.post('/profile-posts', authMiddleware, async (req, res) => {
     try {
-        await ProfilePosts().insert(profilePostData);
+        const text = req.body.text;
+        const authorID = (await getUserByUsername(req.headers['username'])).id;
+
+        const timestamp = moment()
+            .tz('Europe/Amsterdam')
+            .format('YYYY-MM-DD HH:mm:ss');
+
+        if (!text && text.trim() === '') {
+            return res.status(400).json({
+                error: {
+                    code: 'InvalidInput',
+                    message: 'Profile post text is required',
+                },
+            });
+        }
+
+        const newProfilePost = {
+            text: text,
+            picture_key: '',
+            author_id: authorID,
+            timestamp: timestamp,
+        };
+
+        const [id] = await ProfilePosts()
+            .insert(newProfilePost)
+            .returning(['id']);
+        newProfilePost.id = id;
+
         res.json({
             message: 'Profile post created successfully',
-            data: {},
+            data: newProfilePost,
         });
     } catch (error) {
-        console.log('Error:', error);
-        res.status(500).json({ message: 'Internal server error', data: {} });
+        console.log('[POST] Profile post error:', error.message);
+        res.status(500).json({
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
+        });
     }
 });
 
-router.delete('/delete-profile-post', authMiddleware, async (req, res) => {
-    const idPost = req.body.id;
-    const idUser = (await getUserByUsername(req.headers['username'])).id;
-
+router.patch('/profile-posts/:id', authMiddleware, async (req, res) => {
     try {
-        await ProfilePosts().where({ id: idPost, author_id: idUser }).del();
-        res.json({ message: 'Profile post deleted successfully', data: {} });
-    } catch (error) {
-        console.log('Error:', error);
-        res.status(500).json({ message: 'Internal server error', data: {} });
-    }
-});
+        const id = req.params.id;
+        const text = req.body.text;
+        const authorID = (await getUserByUsername(req.headers['username'])).id;
 
-router.post('/update-profile-post', authMiddleware, async (req, res) => {
-    const id = req.body.id;
-    const text = req.body.text;
-    const idUser = (await getUserByUsername(req.headers['username'])).id;
+        if (!text || text.trim() === '') {
+            return res.status(400).json({
+                error: {
+                    code: 'InvalidInput',
+                    message: 'Profile post text is required.',
+                },
+            });
+        }
 
-    if (text.trim() === '') {
-        res.status(400).json({ message: 'Client error', data: {} });
-    }
+        const profilePost = await ProfilePosts()
+            .where({ id: id, author_id: authorID })
+            .first();
+        if (!profilePost) {
+            return res.status(404).json({
+                error: {
+                    code: 'ProfilePostNotFound',
+                    message: 'Profile post not found for the current user.',
+                },
+            });
+        }
 
-    try {
-        await ProfilePosts().where({ id: id, author_id: idUser }).update({
+        await ProfilePosts().where({ id: id, author_id: authorID }).update({
             text: text,
         });
+
+        const updatedProfilePost = await ProfilePosts()
+            .where({ id: id, author_id: authorID })
+            .first();
+
         res.json({
             message: 'Profile post updated successfully',
-            data: {},
+            data: updatedProfilePost,
         });
     } catch (error) {
-        console.log('Error:', error);
-        res.status(500).json({ message: 'Internal server error', data: {} });
+        console.log('[PATCH] Profile post error:', error.message);
+        res.status(500).json({
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
+        });
+    }
+});
+
+router.delete('/profile-posts/:id', authMiddleware, async (req, res) => {
+    try {
+        const id = req.params.id;
+        const authorID = (await getUserByUsername(req.headers['username'])).id;
+
+        const profilePost = await ProfilePosts()
+            .where({ id: id, author_id: authorID })
+            .first();
+        if (!profilePost) {
+            return res.status(404).json({
+                error: {
+                    code: 'ProfilePostNotFound',
+                    message: 'Profile post not found for the user.',
+                },
+            });
+        }
+
+        await ProfilePosts().where({ id: id, author_id: authorID }).del();
+
+        res.status(204).end();
+    } catch (error) {
+        console.log('[DELETE] Profile post error:', error.message);
+        res.status(500).json({
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
+        });
     }
 });
 

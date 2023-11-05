@@ -7,103 +7,137 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import { hashPassword } from '../services/authService';
 import { Users } from '../models/models';
 
-router.get('/user', [authMiddleware], async (req, res, next) => {
+router.get('/users', [authMiddleware], async (req, res, next) => {
     try {
         const users = await Users().orderBy('id', 'desc');
-        res.json({
+        res.status(200).json({
             message: 'User fetched successfully',
             data: users,
         });
     } catch (error) {
-        res.status(500).json({ message: 'Internal server error', data: {} });
+        console.log('[GET] User error:', error.message);
+        res.status(500).json({
+            error: {
+                code: 'InternalServerError',
+                message: error.message,
+            },
+        });
     }
 });
 
-router.delete(
-    '/delete-user',
-    [authMiddleware, demosMiddleware],
-    async (req, res, next) => {
-        try {
-            await Users().where({ id: req.body.id }).del();
-            res.json({
-                message: 'User deleted successfully',
-                data: {},
-            });
-        } catch (error) {
-            console.log('Error:', error);
-            res.status(500).json({
-                message: 'Internal server error',
-                data: {},
-            });
-        }
-    }
-);
-
 router.post(
-    '/create-user',
+    '/users',
     [authMiddleware, demosMiddleware],
     async (req, res, next) => {
-        const timezone = 'Europe/Amsterdam';
-        const timestamp = moment().tz(timezone).format('YYYY-MM-DD HH:mm:ss');
-
-        const passwordHash = await hashPassword(req.body.password);
-
-        const userData = {
-            name: req.body.name,
-            surname: req.body.surname,
-            e_mail: req.body.email,
-            username: req.body.username,
-            password: passwordHash,
-            profile_picture_key: req.body.profile_picture_key,
-            bio: req.body.bio,
-            type: req.body.type,
-            join_date: timestamp,
-        };
-
         try {
-            await Users().insert(userData);
-            res.json({
+            const timestamp = moment()
+                .tz('Europe/Amsterdam')
+                .format('YYYY-MM-DD HH:mm:ss');
+
+            const passwordHash = await hashPassword(req.body.password);
+
+            const newUser = {
+                name: req.body.name,
+                surname: req.body.surname,
+                e_mail: req.body.email,
+                username: req.body.username,
+                password: passwordHash,
+                profile_picture_key: req.body.profile_picture_key,
+                bio: req.body.bio,
+                type: req.body.type,
+                join_date: timestamp,
+            };
+
+            const [id] = await Users().insert(newUser).returning(['id']);
+            newUser.id = id;
+
+            res.status(201).json({
                 message: 'User created successfully',
-                data: {},
+                data: newUser,
             });
         } catch (error) {
-            console.log('Error:', error);
+            console.log('[POST] User error:', error.message);
             res.status(500).json({
-                message: 'Internal server error',
-                data: {},
+                error: {
+                    code: 'InternalServerError',
+                    message: error.message,
+                },
             });
         }
     }
 );
 
-router.post(
-    '/update-user',
+router.patch(
+    '/users/:id',
     [authMiddleware, demosMiddleware],
     async (req, res) => {
-        const id = req.body.id;
-
-        const userData = {
-            name: req.body.name,
-            surname: req.body.surname,
-            e_mail: req.body.email,
-            // username: req.body.username,
-            // password: req.body.password,
-            // profile_picture_key: "",
-            bio: req.body.bio,
-            type: req.body.type,
-        };
-
         try {
+            const id = req.params.id;
+
+            const userData = {
+                name: req.body.name,
+                surname: req.body.surname,
+                e_mail: req.body.email,
+                bio: req.body.bio,
+                type: req.body.type,
+            };
+
+            const user = await Users().where({ id: id }).first();
+            if (!user) {
+                return res.status(404).json({
+                    error: {
+                        code: 'UserNotFound',
+                        message: 'User not found.',
+                    },
+                });
+            }
+
             await Users().where({ id: id }).update(userData);
-            res.json({
+
+            const updatedUser = await Users().where({ id: id }).first();
+
+            res.status(200).json({
                 message: 'User updated successfully',
-                data: {},
+                data: updatedUser,
             });
         } catch (error) {
-            console.log('Error:', error);
+            console.log('[PATCH] User error:', error.message);
             res.status(500).json({
-                message: 'Internal server error',
-                data: {},
+                error: {
+                    code: 'InternalServerError',
+                    message: error.message,
+                },
+            });
+        }
+    }
+);
+
+router.delete(
+    '/users/:id',
+    [authMiddleware, demosMiddleware],
+    async (req, res) => {
+        try {
+            const id = req.params.id;
+
+            const user = await Users().where({ id: id }).first();
+            if (!user) {
+                return res.status(404).json({
+                    error: {
+                        code: 'UserNotFound',
+                        message: 'User not found.',
+                    },
+                });
+            }
+
+            await Users().where({ id: id }).del();
+            res.status(204).end();
+        } catch (error) {
+            console.error('[DELETE] User error:', error.message);
+            res.status(500).json({
+                error: {
+                    code: 'InternalServerError',
+                    message: error.message,
+                },
             });
         }
     }

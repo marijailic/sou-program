@@ -3,13 +3,12 @@ import jwt from 'jsonwebtoken';
 import { Users } from '../models/models';
 
 export const hashPassword = async (passwordInput) => {
-    const passwordHash = await bcrypt.hash(passwordInput, 8);
-    return passwordHash;
+    const hashedPassword = await bcrypt.hash(passwordInput, 8);
+    return hashedPassword;
 };
 
 export const getAuthUserData = async (username, password) => {
     const user = await Users().select().where('username', username).first();
-
     if (!user) {
         throw new Error('No user');
     }
@@ -19,34 +18,33 @@ export const getAuthUserData = async (username, password) => {
         throw new Error('Password fail');
     }
 
-    const authenticatedUser = {
+    const tokenPayload = {
         username,
         type: user.type,
     };
 
-    const token = jwt.sign(authenticatedUser, process.env.ACCESS_TOKEN_SECRET, {
-        algorithm: 'HS512',
-        expiresIn: '30s',
-    });
-
-    const refreshToken = jwt.sign(
-        authenticatedUser,
-        process.env.REFRESH_TOKEN_SECRET,
-        {
-            algorithm: 'HS512',
-        }
+    const accessToken = jwt.sign(
+        tokenPayload,
+        process.env.ACCESS_TOKEN_SECRET,
+        { algorithm: 'HS512', expiresIn: '30s' }
     );
 
-    return { token, refreshToken, type: user.type };
+    const refreshToken = jwt.sign(
+        tokenPayload,
+        process.env.REFRESH_TOKEN_SECRET,
+        { algorithm: 'HS512' }
+    );
+
+    return { token: accessToken, refreshToken, type: user.type };
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {
     try {
-        const tokenPayload = jwt.verify(token, secret);
-        const oldUsername = tokenPayload.username;
-        const oldUserType = tokenPayload.type;
+        const decodedToken = jwt.verify(token, secret);
+        const tokenUsername = decodedToken.username;
+        const tokenUserType = decodedToken.type;
 
-        return username === oldUsername && userType === oldUserType;
+        return username === tokenUsername && userType === tokenUserType;
     } catch (err) {
         return false;
     }
