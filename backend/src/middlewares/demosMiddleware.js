@@ -1,7 +1,6 @@
 export const demosMiddleware = (req, res, next) => {
     if (req.headers['type'] === 'demonstrator') {
-        next();
-        return;
+        return next();
     }
 
     return res.status(401).json({ error: 'Unauthorized' });
