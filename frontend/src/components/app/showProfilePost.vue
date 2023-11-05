@@ -98,7 +98,7 @@ export default {
         },
         async confirmDeleteProfilePost() {
             const storeProfilePost = useStoreProfilePost();
-            await storeProfilePost.deleteProfilePost(profilePostID);
+            await storeProfilePost.deleteProfilePost(this.profilePost.id);
             this.isConfirming = false;
         },
         cancelDeleteProfilePost() {

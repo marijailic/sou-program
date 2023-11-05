@@ -132,8 +132,6 @@ export const announcementRoutes = () => {
 
                 await Announcements().where({ id: id }).update({
                     text: text,
-                    picture_key: '',
-                    author_id: idUser,
                     timestamp: getCurrentDatetime(),
                 });
 

@@ -118,6 +118,7 @@ export const profilePostRoutes = () => {
 
             await ProfilePosts().where({ id: id, author_id: authorID }).update({
                 text: text,
+                timestamp: getCurrentDatetime(),
             });
 
             const updatedProfilePost = await ProfilePosts()

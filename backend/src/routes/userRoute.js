@@ -74,21 +74,22 @@ export const userRoutes = () => {
         async (req, res) => {
             try {
                 const id = req.params.id;
-                const passwordHash = await hashPassword(req.body.password);
+                // const passwordHash = await hashPassword(req.body.password);
 
                 const userData = {
                     name: req.body.name,
                     surname: req.body.surname,
                     e_mail: req.body.email,
-                    username: req.body.username,
-                    password: passwordHash,
-                    profile_picture_key: req.body.profile_picture_key,
+                    // username: req.body.username,
+                    // password: passwordHash,
+                    // profile_picture_key: req.body.profile_picture_key,
                     bio: req.body.bio,
                     type: req.body.type,
                     join_date: getCurrentDatetime(),
                 };
 
                 const user = await Users().where({ id: id }).first();
+
                 if (!user) {
                     return res.status(404).json({
                         error: {
@@ -107,7 +108,7 @@ export const userRoutes = () => {
                     data: updatedUser,
                 });
             } catch (error) {
-                console.log('[PATCH] User error:', error.message);
+                console.log('[PATCH] User error:', error);
                 res.status(500).json({
                     error: {
                         code: 'InternalServerError',
