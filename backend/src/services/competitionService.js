@@ -1,9 +1,9 @@
-import db from '../db';
+import { TeamMembers, Teams } from '../models/models';
 
 async function getPopulatedTeams(teams) {
     return await Promise.all(
         teams.map(async (team) => {
-            const team_members = await db('team_member')
+            const team_members = await TeamMembers()
                 .select(
                     'team_member.id',
                     'team_member.team_id',
@@ -24,10 +24,7 @@ async function getPopulatedTeams(teams) {
 async function getPopulatedCompetitions(competitions) {
     return await Promise.all(
         competitions.map(async (competition) => {
-            const teams = await db('team').where(
-                'competition_id',
-                competition.id
-            );
+            const teams = await Teams().where('competition_id', competition.id);
             const populatedTeams = await getPopulatedTeams(teams);
 
             return {
@@ -38,4 +35,4 @@ async function getPopulatedCompetitions(competitions) {
     );
 }
 
-export { getPopulatedTeams, getPopulatedCompetitions };
+export { getPopulatedCompetitions, getPopulatedTeams };
