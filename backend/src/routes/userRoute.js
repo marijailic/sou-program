@@ -11,17 +11,15 @@ export const userRoutes = () => {
     router.get('/users', [authMiddleware], async (req, res) => {
         try {
             const users = await Users().orderBy('id', 'desc');
-            res.status(200).json({
+            return res.json({
                 message: 'User fetched successfully',
-                data: users,
+                data: { users },
             });
         } catch (error) {
-            console.log('[GET] User error:', error.message);
-            res.status(500).json({
-                error: {
-                    code: 'InternalServerError',
-                    message: error.message,
-                },
+            console.error(`[GET] User error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });
@@ -31,10 +29,6 @@ export const userRoutes = () => {
         [authMiddleware, demosMiddleware],
         async (req, res) => {
             try {
-                const timestamp = moment()
-                    .tz('Europe/Amsterdam')
-                    .format('YYYY-MM-DD HH:mm:ss');
-
                 const passwordHash = await hashPassword(req.body.password);
 
                 const newUser = {
@@ -46,23 +40,20 @@ export const userRoutes = () => {
                     profile_picture_key: req.body.profile_picture_key,
                     bio: req.body.bio,
                     type: req.body.type,
-                    join_date: timestamp,
+                    join_date: getCurrentDatetime(),
                 };
 
-                const [id] = await Users().insert(newUser).returning(['id']);
-                newUser.id = id;
+                await Users().insert(newUser);
 
-                res.status(201).json({
+                return res.status(201).json({
                     message: 'User created successfully',
-                    data: newUser,
+                    data: {},
                 });
             } catch (error) {
-                console.log('[POST] User error:', error.message);
-                res.status(500).json({
-                    error: {
-                        code: 'InternalServerError',
-                        message: error.message,
-                    },
+                console.error(`[POST] User error: ${error.message}`);
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
         }
@@ -82,38 +73,32 @@ export const userRoutes = () => {
                     e_mail: req.body.email,
                     // username: req.body.username,
                     // password: passwordHash,
-                    // profile_picture_key: req.body.profile_picture_key,
+                    profile_picture_key: req.body.profile_picture_key,
                     bio: req.body.bio,
                     type: req.body.type,
-                    join_date: getCurrentDatetime(),
                 };
 
-                const user = await Users().where({ id: id }).first();
+                const user = await Users().where({ id }).first();
 
                 if (!user) {
-                    return res.status(404).json({
-                        error: {
-                            code: 'UserNotFound',
-                            message: 'User not found.',
-                        },
+                    console.error('[PATCH] User error: User not found');
+                    return res.status(500).json({
+                        message: 'Internal server error',
+                        data: {},
                     });
                 }
 
-                await Users().where({ id: id }).update(userData);
+                await Users().where({ id }).update(userData);
 
-                const updatedUser = await Users().where({ id: id }).first();
-
-                res.status(200).json({
+                return res.json({
                     message: 'User updated successfully',
-                    data: updatedUser,
+                    data: {},
                 });
             } catch (error) {
-                console.log('[PATCH] User error:', error);
-                res.status(500).json({
-                    error: {
-                        code: 'InternalServerError',
-                        message: error.message,
-                    },
+                console.error(`[PATCH] User error: ${error.message}`);
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
         }
@@ -126,25 +111,22 @@ export const userRoutes = () => {
             try {
                 const id = req.params.id;
 
-                const user = await Users().where({ id: id }).first();
+                const user = await Users().where({ id }).first();
                 if (!user) {
-                    return res.status(404).json({
-                        error: {
-                            code: 'UserNotFound',
-                            message: 'User not found.',
-                        },
+                    console.error('[DELETE] User error: User not found');
+                    return res.status(500).json({
+                        message: 'Internal server error',
+                        data: {},
                     });
                 }
 
-                await Users().where({ id: id }).del();
-                res.status(204).end();
+                await Users().where({ id }).del();
+                return res.status(204).end();
             } catch (error) {
                 console.error('[DELETE] User error:', error.message);
-                res.status(500).json({
-                    error: {
-                        code: 'InternalServerError',
-                        message: error.message,
-                    },
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
         }

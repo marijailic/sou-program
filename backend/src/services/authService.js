@@ -35,16 +35,16 @@ export const getAuthUserData = async (username, password) => {
         { algorithm: 'HS512' }
     );
 
-    return { token: accessToken, refreshToken, type: user.type };
+    return { token: accessToken, refreshToken, username, type: user.type };
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {
     try {
-        const decodedToken = jwt.verify(token, secret);
-        const tokenUsername = decodedToken.username;
-        const tokenUserType = decodedToken.type;
+        const tokenPayload = jwt.verify(token, secret);
+        const oldUsername = tokenPayload.username;
+        const oldUserType = tokenPayload.type;
 
-        return username === tokenUsername && userType === tokenUserType;
+        return username === oldUsername && userType === oldUserType;
     } catch (err) {
         return false;
     }

@@ -20,13 +20,17 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
 
             const resObj = await res.json();
 
-            this.announcements = resObj.data.map((announcement) => ({
-                ...announcement,
-                posted_at: dateService.getRelativeTime(announcement.timestamp),
-                text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
-            }));
+            this.announcements = resObj.data.announcements.map(
+                (announcement) => ({
+                    ...announcement,
+                    posted_at: dateService.getRelativeTime(
+                        announcement.timestamp
+                    ),
+                    text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
+                })
+            );
 
-            this.totalPages = resObj.metadata.totalPages;
+            this.totalPages = resObj.data.totalPages;
 
             return this.announcements;
         },

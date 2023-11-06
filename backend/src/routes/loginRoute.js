@@ -8,30 +8,16 @@ export const loginRoutes = () => {
         const { username, password } = req.body;
 
         try {
-            const authData = await getAuthUserData(username, password);
-            res.status(200).json({
+            const authUserData = await getAuthUserData(username, password);
+            return res.json({
                 message: 'Login successful',
-                data: authData,
+                data: authUserData,
             });
         } catch (error) {
-            console.error('Login error:', error);
-
-            let statusCode = 401;
-            let errorMessage = 'Invalid username or password';
-
-            if (error.message === 'No user') {
-                statusCode = 404;
-                errorMessage = 'User not found';
-            } else if (error.message === 'Password fail') {
-                statusCode = 401;
-                errorMessage = 'Invalid password';
-            }
-
-            res.status(statusCode).json({
-                error: {
-                    code: 'AuthenticationError',
-                    message: errorMessage,
-                },
+            console.error('[POST] Login error:', error.message);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });

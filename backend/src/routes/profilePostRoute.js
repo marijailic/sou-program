@@ -7,7 +7,7 @@ import { getUserByUsername } from '../services/userService';
 export const profilePostRoutes = () => {
     const router = Router();
 
-    router.get('/profile-posts', authMiddleware, async (req, res) => {
+    router.get('/profile-posts', [authMiddleware], async (req, res) => {
         try {
             const authorID = req.query.author_id;
             const page = parseInt(req.query.page) || 1;
@@ -27,147 +27,135 @@ export const profilePostRoutes = () => {
                 .offset(offset)
                 .limit(LIMIT);
 
-            res.status(200).json({
+            return res.json({
                 message: 'Profile posts fetched successfully',
-                data: profilePosts,
-                metadata: {
-                    totalPages: totalPages,
+                data: {
+                    profilePosts,
+                    totalPages,
                     currentPage: page,
                 },
             });
         } catch (error) {
-            console.error('[GET] Profile post error:', error.message);
-            res.status(500).json({
-                error: {
-                    code: 'InternalServerError',
-                    message: error.message,
-                },
+            console.error(`[GET] Profile post error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });
 
-    router.post('/profile-posts', authMiddleware, async (req, res) => {
+    router.post('/profile-posts', [authMiddleware], async (req, res) => {
         try {
             const text = req.body.text;
-            const authorID = (await getUserByUsername(req.headers['username']))
-                .id;
+            const username = req.headers['username'];
+            const authorID = (await getUserByUsername(username)).id;
 
             if (!text && text.trim() === '') {
-                return res.status(400).json({
-                    error: {
-                        code: 'InvalidInput',
-                        message: 'Profile post text is required',
-                    },
+                console.error(
+                    '[POST] Profile post error: Profile post text is required'
+                );
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
 
             const newProfilePost = {
-                text: text,
+                text,
                 picture_key: '',
                 author_id: authorID,
                 timestamp: getCurrentDatetime(),
             };
 
-            const [id] = await ProfilePosts()
-                .insert(newProfilePost)
-                .returning(['id']);
-            newProfilePost.id = id;
+            await ProfilePosts().insert(newProfilePost);
 
-            res.json({
+            return res.status(201).json({
                 message: 'Profile post created successfully',
-                data: newProfilePost,
+                data: {},
             });
         } catch (error) {
-            console.log('[POST] Profile post error:', error.message);
-            res.status(500).json({
-                error: {
-                    code: 'InternalServerError',
-                    message: error.message,
-                },
+            console.error(`[POST] Profile post error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });
 
-    router.patch('/profile-posts/:id', authMiddleware, async (req, res) => {
+    router.patch('/profile-posts/:id', [authMiddleware], async (req, res) => {
         try {
             const id = req.params.id;
             const text = req.body.text;
-            const authorID = (await getUserByUsername(req.headers['username']))
-                .id;
+            const username = req.headers['username'];
+            const authorID = (await getUserByUsername(username)).id;
 
             if (!text || text.trim() === '') {
-                return res.status(400).json({
-                    error: {
-                        code: 'InvalidInput',
-                        message: 'Profile post text is required.',
-                    },
+                console.error(
+                    '[PATCH] Profile post error: Profile post text is required'
+                );
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
 
             const profilePost = await ProfilePosts()
-                .where({ id: id, author_id: authorID })
+                .where({ id, author_id: authorID })
                 .first();
             if (!profilePost) {
-                return res.status(404).json({
-                    error: {
-                        code: 'ProfilePostNotFound',
-                        message: 'Profile post not found for the current user.',
-                    },
+                console.error(
+                    '[PATCH] Profile post error: Profile post not found'
+                );
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
 
-            await ProfilePosts().where({ id: id, author_id: authorID }).update({
-                text: text,
-                timestamp: getCurrentDatetime(),
-            });
+            await ProfilePosts()
+                .where({ id, author_id: authorID })
+                .update({ text });
 
-            const updatedProfilePost = await ProfilePosts()
-                .where({ id: id, author_id: authorID })
-                .first();
-
-            res.json({
+            return res.json({
                 message: 'Profile post updated successfully',
-                data: updatedProfilePost,
+                data: {},
             });
         } catch (error) {
-            console.log('[PATCH] Profile post error:', error.message);
-            res.status(500).json({
-                error: {
-                    code: 'InternalServerError',
-                    message: error.message,
-                },
+            console.error(`[PATCH] Profile post error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });
 
-    router.delete('/profile-posts/:id', authMiddleware, async (req, res) => {
+    router.delete('/profile-posts/:id', [authMiddleware], async (req, res) => {
         try {
             const id = req.params.id;
-            const authorID = (await getUserByUsername(req.headers['username']))
-                .id;
+            const username = req.headers['username'];
+            const authorID = (await getUserByUsername(username)).id;
 
             const profilePost = await ProfilePosts()
-                .where({ id: id, author_id: authorID })
+                .where({ id, author_id: authorID })
                 .first();
             if (!profilePost) {
-                return res.status(404).json({
-                    error: {
-                        code: 'ProfilePostNotFound',
-                        message: 'Profile post not found for the user.',
-                    },
+                console.error(
+                    '[DELETE] Profile post error: Profile post not found'
+                );
+                return res.status(500).json({
+                    message: 'Internal server error',
+                    data: {},
                 });
             }
 
-            await ProfilePosts().where({ id: id, author_id: authorID }).del();
+            await ProfilePosts().where({ id, author_id: authorID }).del();
 
-            res.status(204).end();
+            return res.status(204).end();
         } catch (error) {
-            console.log('[DELETE] Profile post error:', error.message);
-            res.status(500).json({
-                error: {
-                    code: 'InternalServerError',
-                    message: error.message,
-                },
+            console.error(`[DELETE] Profile post error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });

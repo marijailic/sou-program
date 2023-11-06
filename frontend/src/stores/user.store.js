@@ -63,7 +63,9 @@ export const useStoreUser = defineStore('storeUser', {
             }
 
             const resObj = await res.json();
-            this.users = await Promise.all(resObj.data.map(formatUserData));
+            this.users = await Promise.all(
+                resObj.data.users.map(formatUserData)
+            );
 
             return this.users;
         },

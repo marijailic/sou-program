@@ -148,7 +148,6 @@ export default {
             }
 
             if (this.selectedImage) {
-                console.log('Uploading images...');
                 const profilePictureKey = (
                     await this.storeGallery.googleUploadImages({
                         images: [this.selectedImage],

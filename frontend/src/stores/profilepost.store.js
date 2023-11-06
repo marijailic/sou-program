@@ -21,7 +21,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
             const resObj = await res.json();
 
             this.profilePosts = await Promise.all(
-                resObj.data.map(async (profilePost) => ({
+                resObj.data.profilePosts.map(async (profilePost) => ({
                     ...profilePost,
                     posted_at: dateService.getRelativeTime(
                         profilePost.timestamp
@@ -29,7 +29,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                 }))
             );
 
-            this.totalPages = resObj.metadata.totalPages;
+            this.totalPages = resObj.data.totalPages;
 
             return this.profilePosts;
         },

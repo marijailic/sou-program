@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import authService from '@/services/authService'
+import authService from '@/services/authService';
 
 export default {
     name: 'LoginView',
@@ -44,14 +44,14 @@ export default {
         return {
             username: '',
             password: '',
-        }
+        };
     },
     methods: {
         async login() {
             const credentials = {
                 username: this.username,
                 password: this.password,
-            }
+            };
 
             const response = await fetch(`${process.env.VUE_APP_URL}/login`, {
                 method: 'POST',
@@ -59,26 +59,21 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(credentials),
-            })
+            });
 
             if (!response.ok) {
-                window.location.href = '/error'
-                return
+                window.location.href = '/error';
+                return;
             }
 
-            const data = await response.json()
+            const resObj = await response.json();
 
-            authService.saveAuthData({
-                username: data.username,
-                type: data.type,
-                token: data.token,
-                refreshToken: data.refreshToken,
-            })
+            authService.saveAuthData(resObj.data);
 
-            window.location.href = '/newsfeed'
+            window.location.href = '/newsfeed';
         },
     },
-}
+};
 </script>
 
 <style scoped>
