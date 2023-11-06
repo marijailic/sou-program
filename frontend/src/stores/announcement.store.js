@@ -5,6 +5,7 @@ import dateService from '@/services/dateService';
 export const useStoreAnnouncement = defineStore('storeAnnouncement', {
     state: () => ({
         announcements: [],
+        totalPages: 0,
     }),
     actions: {
         async fetchAnnouncements(pageCount) {
@@ -24,6 +25,8 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 posted_at: dateService.getRelativeTime(announcement.timestamp),
                 text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
             }));
+
+            this.totalPages = resObj.metadata.totalPages;
 
             return this.announcements;
         },

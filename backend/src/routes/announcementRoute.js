@@ -3,7 +3,7 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import { demosMiddleware } from '../middlewares/demosMiddleware';
 import { Announcements } from '../models/models';
 import { getCurrentDatetime } from '../services/datetimeService';
-import { sendAnnouncements } from '../services/sendAnnouncementEmailService';
+import { sendAnnouncementToAllUsers } from '../services/sendAnnouncementEmailService';
 import { getUserByUsername } from '../services/userService';
 
 export const announcementRoutes = () => {
@@ -83,7 +83,7 @@ export const announcementRoutes = () => {
                     .returning(['id']);
                 newAnnouncement.id = id;
 
-                await sendAnnouncements(text);
+                await sendAnnouncementToAllUsers(text);
 
                 res.status(201).json({
                     message: 'Announcement created successfully',

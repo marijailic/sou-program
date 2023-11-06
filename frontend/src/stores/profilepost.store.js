@@ -5,6 +5,7 @@ import dateService from '@/services/dateService';
 export const useStoreProfilePost = defineStore('storeProfilePost', {
     state: () => ({
         profilePosts: [],
+        totalPages: 0,
     }),
     actions: {
         async fetchProfilePosts(authorID, pageCount) {
@@ -27,6 +28,8 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                     ),
                 }))
             );
+
+            this.totalPages = resObj.metadata.totalPages;
 
             return this.profilePosts;
         },
