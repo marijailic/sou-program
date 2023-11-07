@@ -113,9 +113,8 @@ export const announcementRoutes = () => {
                     });
                 }
 
-                const announcement = await Announcements()
-                    .where({ id })
-                    .first();
+                const announcementQuery = Announcements().where({ id });
+                const announcement = await announcementQuery.first();
                 if (!announcement) {
                     console.error(
                         '[PATCH] Announcement error: Announcement not found'
@@ -126,7 +125,7 @@ export const announcementRoutes = () => {
                     });
                 }
 
-                await Announcements().where({ id }).update({ text });
+                await announcementQuery.update({ text });
 
                 return res.json({
                     message: 'Announcement updated successfully',
@@ -149,9 +148,9 @@ export const announcementRoutes = () => {
             try {
                 const id = req.params.id;
 
-                const announcement = await Announcements()
-                    .where({ id })
-                    .first();
+                const announcementQuery = Announcements().where({ id });
+                const announcement = await announcementQuery.first();
+
                 if (!announcement) {
                     console.error(
                         '[DELETE] Announcement error: Announcement not found'
@@ -162,7 +161,7 @@ export const announcementRoutes = () => {
                     });
                 }
 
-                await Announcements().where({ id }).del();
+                await announcementQuery.del();
                 return res.status(204).end();
             } catch (error) {
                 console.error(`[DELETE] Announcement error: ${error.message}`);

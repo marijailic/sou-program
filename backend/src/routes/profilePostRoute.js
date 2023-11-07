@@ -19,8 +19,7 @@ export const profilePostRoutes = () => {
                 .where({ author_id: authorID })
                 .count()
                 .first();
-            const totalPages = Math.ceil(totalProfilePostsCount / LIMIT);
-
+            const totalPages = Math.ceil(totalProfilePostsCount.count / LIMIT);
             const profilePosts = await ProfilePosts()
                 .where({ author_id: authorID })
                 .orderBy('timestamp', 'desc')
@@ -99,9 +98,11 @@ export const profilePostRoutes = () => {
                 });
             }
 
-            const profilePost = await ProfilePosts()
-                .where({ id, author_id: authorID })
-                .first();
+            const profilePostQuery = ProfilePosts().where({
+                id,
+                author_id: authorID,
+            });
+            const profilePost = await profilePostQuery.first();
             if (!profilePost) {
                 console.error(
                     '[PATCH] Profile post error: Profile post not found'
@@ -112,9 +113,7 @@ export const profilePostRoutes = () => {
                 });
             }
 
-            await ProfilePosts()
-                .where({ id, author_id: authorID })
-                .update({ text });
+            await profilePostQuery.update({ text });
 
             return res.json({
                 message: 'Profile post updated successfully',
@@ -135,9 +134,11 @@ export const profilePostRoutes = () => {
             const username = req.headers['username'];
             const authorID = (await getUserByUsername(username)).id;
 
-            const profilePost = await ProfilePosts()
-                .where({ id, author_id: authorID })
-                .first();
+            const profilePostQuery = ProfilePosts().where({
+                id,
+                author_id: authorID,
+            });
+            const profilePost = await profilePostQuery.first();
             if (!profilePost) {
                 console.error(
                     '[DELETE] Profile post error: Profile post not found'
@@ -148,7 +149,7 @@ export const profilePostRoutes = () => {
                 });
             }
 
-            await ProfilePosts().where({ id, author_id: authorID }).del();
+            await profilePostQuery.del();
 
             return res.status(204).end();
         } catch (error) {

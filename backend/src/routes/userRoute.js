@@ -78,7 +78,8 @@ export const userRoutes = () => {
                     type: req.body.type,
                 };
 
-                const user = await Users().where({ id }).first();
+                const userQuery = Users().where({ id });
+                const user = await userQuery.first();
 
                 if (!user) {
                     console.error('[PATCH] User error: User not found');
@@ -88,7 +89,7 @@ export const userRoutes = () => {
                     });
                 }
 
-                await Users().where({ id }).update(userData);
+                await userQuery.update(userData);
 
                 return res.json({
                     message: 'User updated successfully',
@@ -111,7 +112,8 @@ export const userRoutes = () => {
             try {
                 const id = req.params.id;
 
-                const user = await Users().where({ id }).first();
+                const userQuery = Users().where({ id });
+                const user = await userQuery.first();
                 if (!user) {
                     console.error('[DELETE] User error: User not found');
                     return res.status(500).json({
@@ -120,7 +122,7 @@ export const userRoutes = () => {
                     });
                 }
 
-                await Users().where({ id }).del();
+                await userQuery.del();
                 return res.status(204).end();
             } catch (error) {
                 console.error('[DELETE] User error:', error.message);
