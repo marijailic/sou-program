@@ -48,7 +48,6 @@ export const useStoreAuth = defineStore('storeAuth', {
 
             const resObj = await res.json();
 
-            console.log(resObj);
             this.user = resObj.user;
             this.token = resObj.token;
 

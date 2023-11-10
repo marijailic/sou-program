@@ -1,7 +1,7 @@
 import { Users } from '../models/models';
 import { sendMail } from './emailService';
 
-export const sendAnnouncements = async (text) => {
+export const sendAnnouncementToAllUsers = async (text) => {
     const emailObjArray = await Users().select('e_mail');
     const emails = emailObjArray.map((emailObj) => emailObj.e_mail);
 

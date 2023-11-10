@@ -76,7 +76,10 @@ export default {
                     document.documentElement.scrollTop + window.innerHeight >=
                     document.documentElement.offsetHeight - OFFSET;
 
-                if (bottomOfWindow && !this.isLoading) {
+                const isOverFinalPage =
+                    this.pageCount > this.storeProfilePost.totalPages;
+
+                if (bottomOfWindow && !this.isLoading && !isOverFinalPage) {
                     this.isLoading = true;
                     await this.loadMoreProfilePosts();
                     this.isLoading = false;

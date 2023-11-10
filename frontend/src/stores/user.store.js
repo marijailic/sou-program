@@ -54,7 +54,7 @@ export const useStoreUser = defineStore('storeUser', {
     actions: {
         async fetchUsers() {
             const res = await backendApiService.get({
-                url: '/user',
+                url: '/users',
             });
 
             if (!res.ok) {
@@ -63,22 +63,15 @@ export const useStoreUser = defineStore('storeUser', {
             }
 
             const resObj = await res.json();
-            this.users = await Promise.all(resObj.data.map(formatUserData));
+            this.users = await Promise.all(
+                resObj.data.users.map(formatUserData)
+            );
 
             return this.users;
         },
-        async deleteUser(userID) {
-            const res = await backendApiService.delete({
-                url: '/delete-user',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: userID }),
-            });
-
-            this.$router.push(res.ok ? '/success' : '/error');
-        },
         async createUser(user) {
             const res = await backendApiService.post({
-                url: '/create-user',
+                url: '/users',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user),
             });
@@ -86,10 +79,18 @@ export const useStoreUser = defineStore('storeUser', {
             this.$router.push(res.ok ? '/success' : '/error');
         },
         async updateUser(user) {
-            const res = await backendApiService.post({
-                url: '/update-user',
+            const res = await backendApiService.patch({
+                url: `/users/${user.id}`,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(user),
+            });
+
+            this.$router.push(res.ok ? '/success' : '/error');
+        },
+        async deleteUser(userID) {
+            const res = await backendApiService.delete({
+                url: `/users/${userID}`,
+                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

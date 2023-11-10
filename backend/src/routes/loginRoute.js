@@ -8,16 +8,16 @@ export const loginRoutes = () => {
         const { username, password } = req.body;
 
         try {
-            const { token, refreshToken, type } = await getAuthUserData(
-                username,
-                password
-            );
-            return res
-                .status(200)
-                .json({ token, refreshToken, username, type });
+            const authUserData = await getAuthUserData(username, password);
+            return res.json({
+                message: 'Login successful',
+                data: authUserData,
+            });
         } catch (error) {
-            return res.status(401).json({
-                error: error.message,
+            console.error('[POST] Login error:', error.message);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
             });
         }
     });

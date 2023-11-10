@@ -86,7 +86,10 @@ export default {
                     document.documentElement.scrollTop + window.innerHeight >=
                     document.documentElement.offsetHeight - OFFSET;
 
-                if (bottomOfWindow && !this.isLoading) {
+                const isOverFinalPage =
+                    this.pageCount > this.storeAnnouncement.totalPages;
+
+                if (bottomOfWindow && !this.isLoading && !isOverFinalPage) {
                     this.isLoading = true;
                     await this.loadMoreAnnouncements();
                     this.isLoading = false;
