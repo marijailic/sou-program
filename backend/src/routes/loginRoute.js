@@ -14,7 +14,7 @@ export const loginRoutes = () => {
                 data: authUserData,
             });
         } catch (error) {
-            console.error('[POST] Login error:', error.message);
+            console.error(`[POST] Login error: ${error.message}`);
             return res.status(500).json({
                 message: 'Internal server error',
                 data: {},
