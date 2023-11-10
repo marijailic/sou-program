@@ -1,0 +1,16 @@
+const containsUppercase = (value) => /[A-Z]/.test(value);
+const containsSpecialCharacter = (value) =>
+    /[!@#$%^&*(),.?":{}|<>]/.test(value);
+const containsWhitespace = (value) => !/\s/.test(value);
+
+export const password = (value) => {
+    return (
+        containsUppercase(value) &&
+        containsSpecialCharacter(value) &&
+        value.length >= 8
+    );
+};
+
+export const noWhitespace = (value) => {
+    return containsWhitespace(value);
+};

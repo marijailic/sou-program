@@ -3,6 +3,10 @@ import { getCurrentDatetime } from '../services/datetimeService';
 import { authMiddleware } from '../middlewares/authMiddleware';
 import { ProfilePosts } from '../models/models';
 import { getUserByUsername } from '../services/userService';
+import {
+    createProfilePostValidation,
+    updateProfilePostValidation,
+} from '../middlewares/validation/profilePostValidation';
 
 export const profilePostRoutes = () => {
     const router = Router();
@@ -43,113 +47,71 @@ export const profilePostRoutes = () => {
         }
     });
 
-    router.post('/profile-posts', [authMiddleware], async (req, res) => {
-        try {
-            const text = req.body.text;
-            const username = req.headers['username'];
-            const authorID = (await getUserByUsername(username)).id;
+    router.post(
+        '/profile-posts',
+        [authMiddleware, createProfilePostValidation],
+        async (req, res) => {
+            try {
+                const username = req.headers['username'];
+                await ProfilePosts().insert({
+                    text: req.body.text.trim(),
+                    picture_key: '',
+                    author_id: (await getUserByUsername(username)).id,
+                    timestamp: getCurrentDatetime(),
+                });
 
-            if (!text && text.trim() === '') {
-                console.error(
-                    '[POST] Profile post error: Profile post text is required'
-                );
+                return res.status(201).json({
+                    message: 'Profile post created successfully',
+                    data: {},
+                });
+            } catch (error) {
+                console.error(`[POST] Profile post error: ${error.message}`);
                 return res.status(500).json({
                     message: 'Internal server error',
                     data: {},
                 });
             }
-
-            const newProfilePost = {
-                text,
-                picture_key: '',
-                author_id: authorID,
-                timestamp: getCurrentDatetime(),
-            };
-
-            await ProfilePosts().insert(newProfilePost);
-
-            return res.status(201).json({
-                message: 'Profile post created successfully',
-                data: {},
-            });
-        } catch (error) {
-            console.error(`[POST] Profile post error: ${error.message}`);
-            return res.status(500).json({
-                message: 'Internal server error',
-                data: {},
-            });
         }
-    });
+    );
 
-    router.patch('/profile-posts/:id', [authMiddleware], async (req, res) => {
-        try {
-            const id = req.params.id;
-            const text = req.body.text;
-            const username = req.headers['username'];
-            const authorID = (await getUserByUsername(username)).id;
+    router.patch(
+        '/profile-posts/:id',
+        [authMiddleware, updateProfilePostValidation],
+        async (req, res) => {
+            try {
+                const username = req.headers['username'];
+                await ProfilePosts()
+                    .where({
+                        id: req.params.id,
+                        author_id: (await getUserByUsername(username)).id,
+                    })
+                    .update({
+                        text: req.body.text.trim(),
+                    });
 
-            if (!text || text.trim() === '') {
-                console.error(
-                    '[PATCH] Profile post error: Profile post text is required'
-                );
+                return res.json({
+                    message: 'Profile post updated successfully',
+                    data: {},
+                });
+            } catch (error) {
+                console.error(`[PATCH] Profile post error: ${error.message}`);
                 return res.status(500).json({
                     message: 'Internal server error',
                     data: {},
                 });
             }
-
-            const profilePostQuery = ProfilePosts().where({
-                id,
-                author_id: authorID,
-            });
-            const profilePost = await profilePostQuery.first();
-            if (!profilePost) {
-                console.error(
-                    '[PATCH] Profile post error: Profile post not found'
-                );
-                return res.status(500).json({
-                    message: 'Internal server error',
-                    data: {},
-                });
-            }
-
-            await profilePostQuery.update({ text });
-
-            return res.json({
-                message: 'Profile post updated successfully',
-                data: {},
-            });
-        } catch (error) {
-            console.error(`[PATCH] Profile post error: ${error.message}`);
-            return res.status(500).json({
-                message: 'Internal server error',
-                data: {},
-            });
         }
-    });
+    );
 
     router.delete('/profile-posts/:id', [authMiddleware], async (req, res) => {
         try {
-            const id = req.params.id;
             const username = req.headers['username'];
-            const authorID = (await getUserByUsername(username)).id;
-
-            const profilePostQuery = ProfilePosts().where({
-                id,
-                author_id: authorID,
-            });
-            const profilePost = await profilePostQuery.first();
-            if (!profilePost) {
-                console.error(
-                    '[DELETE] Profile post error: Profile post not found'
-                );
-                return res.status(500).json({
-                    message: 'Internal server error',
-                    data: {},
-                });
-            }
-
-            await profilePostQuery.del();
+            await ProfilePosts()
+                .where({
+                    id: req.params.id,
+                    author_id: (await getUserByUsername(username)).id,
+                })
+                .del();
 
             return res.status(204).end();
         } catch (error) {
