@@ -8,7 +8,7 @@ export const createUserValidation = async (req, res, next) => {
             surname: ['required', 'string', 'max:30'],
             email: ['required', 'email'],
             username: ['required', 'string', 'max:30', 'no_whitespace'],
-            password: ['required', 'string', 'between:8,100'],
+            password: ['required', 'string', 'password'],
             profile_picture_key: ['string'], // TODO: Zasto se slika ne salje u requestu? Staviti dodati 'present'
             bio: ['present', 'string'],
             type: ['required', 'string'],
