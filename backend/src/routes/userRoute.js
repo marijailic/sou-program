@@ -24,6 +24,26 @@ export const userRoutes = () => {
         }
     });
 
+    router.get('/users/:ids', [authMiddleware], async (req, res) => {
+        try {
+            const ids = req.params.ids;
+            const idsArray = ids.split(',').map((id) => parseInt(id));
+            const users = await Users()
+                .whereIn('id', idsArray)
+                .orderBy('id', 'desc');
+            return res.json({
+                message: 'Users fetched successfully',
+                data: { users },
+            });
+        } catch (error) {
+            console.error(`[GET] Users by ids error: ${error.message}`);
+            return res.status(500).json({
+                message: 'Internal server error',
+                data: {},
+            });
+        }
+    });
+
     router.post(
         '/users',
         [authMiddleware, demosMiddleware],

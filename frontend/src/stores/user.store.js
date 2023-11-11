@@ -90,7 +90,6 @@ export const useStoreUser = defineStore('storeUser', {
         async deleteUser(userID) {
             const res = await backendApiService.delete({
                 url: `/users/${userID}`,
-                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

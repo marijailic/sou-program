@@ -55,7 +55,6 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
         async deleteAnnouncement(announcementID) {
             const res = await backendApiService.delete({
                 url: `/announcements/${announcementID}`,
-                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

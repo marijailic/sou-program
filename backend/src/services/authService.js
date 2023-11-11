@@ -35,7 +35,13 @@ export const getAuthUserData = async (username, password) => {
         { algorithm: 'HS512' }
     );
 
-    return { token: accessToken, refreshToken, username, type: user.type };
+    return {
+        token: accessToken,
+        refreshToken,
+        username,
+        type: user.type,
+        userID: user.id,
+    };
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {

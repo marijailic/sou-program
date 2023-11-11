@@ -54,7 +54,6 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
         async deleteProfilePost(profilePostID) {
             const res = await backendApiService.delete({
                 url: `/profile-posts/${profilePostID}`,
-                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');
