@@ -5,6 +5,7 @@ import { Announcements } from '../models/models';
 import { getCurrentDatetime } from '../services/datetimeService';
 import { sendAnnouncementToAllUsers } from '../services/sendAnnouncementEmailService';
 import { getUserByUsername } from '../services/userService';
+import { createAnnouncementValidation } from '../middlewares/validation/announcementValidation';
 
 export const announcementRoutes = () => {
     const router = Router();
@@ -45,41 +46,19 @@ export const announcementRoutes = () => {
 
     router.post(
         '/announcements',
-        [authMiddleware, demosMiddleware],
+        [authMiddleware, demosMiddleware, createAnnouncementValidation],
         async (req, res) => {
             try {
-                const text = req.body.text;
-
-                if (!text && text.trim() === '') {
-                    console.error(
-                        '[POST] Announcement error: Announcement text is required'
-                    );
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
+                const text = req.body.text.trim();
                 const username = req.headers['username'];
-                const user = await getUserByUsername(username);
-                if (!user) {
-                    console.error('[POST] Announcement error: User not found');
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                const newAnnouncement = {
+                await Announcements().insert({
                     text,
                     picture_key: '',
-                    author_id: user.id,
+                    author_id: (await getUserByUsername(username)).id,
                     timestamp: getCurrentDatetime(),
-                };
+                });
 
-                await Announcements().insert(newAnnouncement);
-
-                await sendAnnouncementToAllUsers(text);
+                // await sendAnnouncementToAllUsers(text);
 
                 return res.status(201).json({
                     message: 'Announcement created successfully',
@@ -100,32 +79,9 @@ export const announcementRoutes = () => {
         [authMiddleware, demosMiddleware],
         async (req, res) => {
             try {
-                const id = req.params.id;
-                const text = req.body.text;
-
-                if (!text || text.trim() === '') {
-                    console.error(
-                        '[PATCH] Announcement error: Announcement text is required'
-                    );
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                const announcementQuery = Announcements().where({ id });
-                const announcement = await announcementQuery.first();
-                if (!announcement) {
-                    console.error(
-                        '[PATCH] Announcement error: Announcement not found'
-                    );
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                await announcementQuery.update({ text });
+                await Announcements()
+                    .where({ id: req.params.id })
+                    .update({ text: req.body.text.trim() });
 
                 return res.json({
                     message: 'Announcement updated successfully',
@@ -146,22 +102,7 @@ export const announcementRoutes = () => {
         [authMiddleware, demosMiddleware],
         async (req, res) => {
             try {
-                const id = req.params.id;
-
-                const announcementQuery = Announcements().where({ id });
-                const announcement = await announcementQuery.first();
-
-                if (!announcement) {
-                    console.error(
-                        '[DELETE] Announcement error: Announcement not found'
-                    );
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                await announcementQuery.del();
+                await Announcements().where({ id: req.params.id }).del();
                 return res.status(204).end();
             } catch (error) {
                 console.error(`[DELETE] Announcement error: ${error.message}`);

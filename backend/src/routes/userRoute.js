@@ -4,16 +4,19 @@ import { authMiddleware } from '../middlewares/authMiddleware';
 import { demosMiddleware } from '../middlewares/demosMiddleware';
 import { Users } from '../models/models';
 import { hashPassword } from '../services/authService';
+import {
+    updateUserValidation,
+    createUserValidation,
+} from '../middlewares/validation/userValidation';
 
 export const userRoutes = () => {
     const router = Router();
 
     router.get('/users', [authMiddleware], async (req, res) => {
         try {
-            const users = await Users().orderBy('id', 'desc');
             return res.json({
                 message: 'User fetched successfully',
-                data: { users },
+                data: { users: await Users().orderBy('id', 'desc') },
             });
         } catch (error) {
             console.error(`[GET] User error: ${error.message}`);
@@ -46,24 +49,20 @@ export const userRoutes = () => {
 
     router.post(
         '/users',
-        [authMiddleware, demosMiddleware],
+        [authMiddleware, demosMiddleware, createUserValidation],
         async (req, res) => {
             try {
-                const passwordHash = await hashPassword(req.body.password);
-
-                const newUser = {
-                    name: req.body.name,
-                    surname: req.body.surname,
-                    e_mail: req.body.email,
-                    username: req.body.username,
-                    password: passwordHash,
+                await Users().insert({
+                    name: req.body.name.trim(),
+                    surname: req.body.surname.trim(),
+                    e_mail: req.body.email.trim(),
+                    username: req.body.username.trim(),
+                    password: await hashPassword(req.body.password),
                     profile_picture_key: req.body.profile_picture_key,
-                    bio: req.body.bio,
+                    bio: req.body.bio.trim(),
                     type: req.body.type,
                     join_date: getCurrentDatetime(),
-                };
-
-                await Users().insert(newUser);
+                });
 
                 return res.status(201).json({
                     message: 'User created successfully',
@@ -81,35 +80,17 @@ export const userRoutes = () => {
 
     router.patch(
         '/users/:id',
-        [authMiddleware, demosMiddleware],
+        [authMiddleware, demosMiddleware, updateUserValidation],
         async (req, res) => {
             try {
-                const id = req.params.id;
-                // const passwordHash = await hashPassword(req.body.password);
-
-                const userData = {
-                    name: req.body.name,
-                    surname: req.body.surname,
-                    e_mail: req.body.email,
-                    // username: req.body.username,
-                    // password: passwordHash,
+                await Users().where({ id: req.params.id }).update({
+                    name: req.body.name.trim(),
+                    surname: req.body.surname.trim(),
+                    e_mail: req.body.email.trim(),
                     profile_picture_key: req.body.profile_picture_key,
-                    bio: req.body.bio,
+                    bio: req.body.bio.trim(),
                     type: req.body.type,
-                };
-
-                const userQuery = Users().where({ id });
-                const user = await userQuery.first();
-
-                if (!user) {
-                    console.error('[PATCH] User error: User not found');
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                await userQuery.update(userData);
+                });
 
                 return res.json({
                     message: 'User updated successfully',
@@ -130,19 +111,7 @@ export const userRoutes = () => {
         [authMiddleware, demosMiddleware],
         async (req, res) => {
             try {
-                const id = req.params.id;
-
-                const userQuery = Users().where({ id });
-                const user = await userQuery.first();
-                if (!user) {
-                    console.error('[DELETE] User error: User not found');
-                    return res.status(500).json({
-                        message: 'Internal server error',
-                        data: {},
-                    });
-                }
-
-                await userQuery.del();
+                await Users().where({ id: req.params.id }).del();
                 return res.status(204).end();
             } catch (error) {
                 console.error('[DELETE] User error:', error.message);
