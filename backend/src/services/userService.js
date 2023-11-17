@@ -1,4 +1,4 @@
-import { Users } from '../models/models';
+import db from '../db/connection.js';
 
 /**
  * Returns the user with specified username. If not found returns null.
@@ -7,7 +7,7 @@ import { Users } from '../models/models';
  */
 export const getUserByUsername = async (username) => {
     try {
-        return await Users().where('username', username).first();
+        return await db('user').where('username', username).first();
     } catch (error) {
         return null;
     }

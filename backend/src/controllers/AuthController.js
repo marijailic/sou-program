@@ -1,10 +1,7 @@
-import { Router } from 'express';
-import { getAuthUserData } from '../services/authService';
+import { getAuthUserData } from '../services/authService.js';
 
-export const loginRoutes = () => {
-    const router = Router();
-
-    router.post('/login', async (req, res) => {
+export default {
+    loginUser: async (req, res) => {
         const { username, password } = req.body;
 
         try {
@@ -20,7 +17,5 @@ export const loginRoutes = () => {
                 data: {},
             });
         }
-    });
-
-    return router;
+    },
 };

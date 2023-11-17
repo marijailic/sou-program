@@ -1,5 +1,5 @@
-import { getUserByUsername } from '../../services/userService';
-import { validatedRequest } from '../../validation/baseValidation';
+import { getUserByUsername } from '../services/userService.js';
+import { validatedRequest } from './baseValidation.js';
 
 const getValidationRules = () => {
     return {

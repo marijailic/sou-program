@@ -24,7 +24,7 @@ export const useStoreProfilePost = defineStore('storeProfilePost', {
                 resObj.data.profilePosts.map(async (profilePost) => ({
                     ...profilePost,
                     posted_at: dateService.getRelativeTime(
-                        profilePost.timestamp
+                        profilePost.created_at
                     ),
                 }))
             );

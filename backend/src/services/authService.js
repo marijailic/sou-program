@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Users } from '../models/models';
+import db from '../db/connection.js';
 
 export const hashPassword = async (passwordInput) => {
     const hashedPassword = await bcrypt.hash(passwordInput, 8);
@@ -8,7 +8,7 @@ export const hashPassword = async (passwordInput) => {
 };
 
 export const getAuthUserData = async (username, password) => {
-    const user = await Users().select().where('username', username).first();
+    const user = await db('user').select().where('username', username).first();
     if (!user) {
         throw new Error('No user');
     }

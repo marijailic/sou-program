@@ -15,3 +15,7 @@ export const password = (value) => {
 export const noWhitespace = (value) => {
     return !containsWhitespace(value);
 };
+
+export const array = (value) => {
+    return !value || (Array.isArray(value) && value.length > 0);
+};

@@ -24,7 +24,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 (announcement) => ({
                     ...announcement,
                     posted_at: dateService.getRelativeTime(
-                        announcement.timestamp
+                        announcement.created_at
                     ),
                     text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
                 })

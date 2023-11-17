@@ -1,8 +1,9 @@
 import Validator from 'validatorjs';
-import { noWhitespace, password } from './customValidations';
+import { noWhitespace, password, array } from './customValidations.js';
 
 Validator.register('password', password);
 Validator.register('no_whitespace', noWhitespace);
+Validator.register('array', array);
 
 export const validatedRequest = ({ data, rules, errorMessage, res, next }) => {
     const validator = new Validator(data, rules);

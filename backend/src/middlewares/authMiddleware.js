@@ -1,4 +1,4 @@
-import { validateToken } from '../services/authService';
+import { validateToken } from '../services/authService.js';
 
 export const authMiddleware = (req, res, next) => {
     const authorization = req.headers['authorization'].split(' ');
