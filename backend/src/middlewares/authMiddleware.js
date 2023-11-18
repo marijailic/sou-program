@@ -1,42 +1,21 @@
 import { validateToken } from '../services/authService';
+import { getCookieDataFromRequest } from '../services/cookieService';
 
 export const authMiddleware = (req, res, next) => {
-    const authorization = req.headers['authorization'].split(' ');
-    const authorizationType = authorization[0];
-    const token = authorization[1];
-    const refreshToken = req.headers['refreshtoken'];
-    const username = req.headers['username'];
-    const userType = req.headers['type'];
-
-    if (authorizationType !== 'Bearer') {
+    const authCookie = getCookieDataFromRequest(req);
+    if (!authCookie) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Validate token
-    let isTokenValid = validateToken({
-        username,
-        userType,
-        token,
-        secret: process.env.ACCESS_TOKEN_SECRET,
-    });
-
-    if (isTokenValid) {
-        next();
-        return;
+    const { username, userType, token } = authCookie;
+    const secret = process.env.ACCESS_TOKEN_SECRET;
+    const isTokenValid = validateToken({ username, userType, token, secret });
+    if (!isTokenValid) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Validate refresh token
-    let isRefreshTokenValid = validateToken({
-        username,
-        userType,
-        token: refreshToken,
-        secret: process.env.REFRESH_TOKEN_SECRET,
-    });
+    // TODO: Implement global state managment za current user
+    req.someData = { username, type };
 
-    if (isRefreshTokenValid) {
-        next();
-        return;
-    }
-
-    return res.status(401).json({ error: 'Unauthorized' });
+    return next();
 };

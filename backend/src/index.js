@@ -10,14 +10,20 @@ import { googleDriveRoutes } from './routes/googleDriveRoute';
 import { loginRoutes } from './routes/loginRoute';
 import { profilePostRoutes } from './routes/profilePostRoute';
 import { userRoutes } from './routes/userRoute';
+import moment from 'moment-timezone';
+import cookieParser from 'cookie-parser';
 
+moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 const app = express();
 
-app.use(cors());
+// CONFIG
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin: 'http://localhost:8080' }));
 app.use(express.json());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ limit: '5mb', extended: true }));
 
+// ROUTES
 app.use('/', loginRoutes()); // login
 app.use('/', userRoutes()); // user (user table)
 app.use('/', announcementRoutes()); // announcement (announcement table)
@@ -30,7 +36,6 @@ app.use('/', googleDriveRoutes());
 app.use('/', googleCredsRoutes());
 
 // APP START
-//////////////////////////////////////////////////////////////////////////////
 app.listen(process.env.PORT, () =>
     console.log(`Listening on port ${process.env.PORT}!`)
 );

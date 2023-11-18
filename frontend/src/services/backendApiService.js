@@ -46,12 +46,14 @@ export default {
         });
     },
     get: async ({ url, headers }) => {
+        console.log('GET WITH COOKIE');
         return await fetch(`${backendUrl}/${trimUrl(url)}`, {
             method: 'GET',
             headers: {
                 ...(headers ?? {}),
                 ...authService.getAuthHeaders(),
             },
+            credentials: 'include',
         });
     },
 };
