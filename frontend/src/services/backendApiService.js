@@ -1,5 +1,3 @@
-import authService from '@/services/authService';
-
 const backendUrl = process.env.VUE_APP_URL;
 
 const trimUrl = (url) => (url[0] === '/' ? url.slice(1) : url);
