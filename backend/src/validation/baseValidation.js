@@ -1,5 +1,5 @@
 import Validator from 'validatorjs';
-import { noWhitespace, password } from './customValidations';
+import { noWhitespace, password } from './customValidations.js';
 
 Validator.register('password', password);
 Validator.register('no_whitespace', noWhitespace);

@@ -1,9 +1,9 @@
-import { Users } from '../models/models';
-import { sendMail } from './emailService';
+import { db } from '../db/connection.js';
+import { sendMail } from './emailService.js';
 
 export const sendAnnouncementToAllUsers = async (text) => {
-    const emailObjArray = await Users().select('e_mail');
-    const emails = emailObjArray.map((emailObj) => emailObj.e_mail);
+    const emailObjArray = await db('user').select('email');
+    const emails = emailObjArray.map((emailObj) => emailObj.email);
 
     function screwSendgrid(emails) {
         if (emails.length === 0) return;

@@ -1,7 +1,11 @@
 {
+    "type": "module",
     "scripts": {
         "serve": "nodemon --exec babel-node src/index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "migrate": "npx knex migrate:latest",
+        "seed": "npx knex seed:run",
+        "seed-dev": "npx knex seed:run"
     },
     "dependencies": {
         "@babel/core": "^7.22.19",

@@ -1,8 +1,8 @@
 import { Router, raw } from 'express';
 import { google } from 'googleapis';
-import { authMiddleware } from '../middlewares/authMiddleware';
-import { googleAuth } from '../services/googleAuthService';
-import { uploadImage } from '../services/googleDriveService';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
+import { googleAuth } from '../services/googleAuthService.js';
+import { uploadImage } from '../services/googleDriveService.js';
 
 export const googleDriveRoutes = () => {
     const router = Router();
@@ -56,6 +56,12 @@ export const googleDriveRoutes = () => {
 
     router.get('/image/:image_id', async (req, res) => {
         const imageID = req.params.image_id;
+        if (!imageID) {
+            return res.json({
+                message: 'Image ID is empty',
+                data: '',
+            });
+        }
         try {
             googleAuth();
         } catch (error) {

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import fs from 'fs';
-import { googleAuth } from '../services/googleAuthService';
+import { googleAuth } from '../services/googleAuthService.js';
 
 export const googleCredsRoutes = () => {
     const router = Router();
