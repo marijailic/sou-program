@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Users } from '../models/models';
-import { getAuthUserData } from '../services/authService';
+import { Users } from '../models/models.js';
 import { addAuthCookieToRes } from '../services/cookieService.js';
 
 export const AuthService = class {

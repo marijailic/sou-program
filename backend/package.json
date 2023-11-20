@@ -3,9 +3,10 @@
     "scripts": {
         "serve": "nodemon --exec babel-node src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "migrate": "npx knex migrate:latest",
+        "migrate": "npx knex migrate:latest --esm",
         "seed": "npx knex seed:run",
-        "seed-dev": "npx knex seed:run"
+        "seed-dev": "npx knex seed:run",
+        "migrate:fresh": "npx knex migrate:rollback --all --esm && npx knex migrate:latest"
     },
     "dependencies": {
         "@babel/core": "^7.22.19",

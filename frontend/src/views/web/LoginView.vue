@@ -53,14 +53,18 @@ export default {
                 password: this.password,
             };
 
+            console.log(credentials);
+
             const response = await fetch(`${process.env.VUE_APP_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(credentials),
-                credentials: 'include',
+                // credentials: 'include',
             });
+
+            console.log(response);
 
             if (!response.ok) {
                 window.location.href = '/error';

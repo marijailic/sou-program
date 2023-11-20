@@ -1,6 +1,8 @@
-import { getAuthUserData } from '../services/authService.js';
+import { AuthService } from '../services/authService.js';
 
 export const login = async (req, res) => {
+    console.log('Hello world');
+
     const { username, password } = req.body;
     const authService = new AuthService(username, password);
 
