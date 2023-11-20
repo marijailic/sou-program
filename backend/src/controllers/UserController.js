@@ -5,7 +5,7 @@ export const index = async (req, res) => {
     try {
         return res.json({
             message: 'User fetched successfully',
-            data: await Users(),
+            data: { users: await Users() },
         });
     } catch (error) {
         console.error(`[GET] User error: ${error.message}`);

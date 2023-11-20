@@ -1,23 +1,41 @@
-import { AuthService } from '../services/authService.js';
+import {
+    generateTokenFromUser,
+    getAuthUserData,
+} from '../services/authService.js';
+import {
+    addAuthCookieToRes,
+    removeAuthCookieFromRes,
+} from '../services/cookieService.js';
 
 export const login = async (req, res) => {
-    console.log('Hello world');
-
     const { username, password } = req.body;
-    const authService = new AuthService(username, password);
 
-    if (authService.failed) {
+    try {
+        if (!username || !password) {
+            throw new Error('Username or password not defined');
+        }
+
+        const authUser = await getAuthUserData(username, password);
+        const token = generateTokenFromUser(authUser);
+        addAuthCookieToRes(res, token);
+
+        return res.json({
+            message: 'Login successful',
+            data: { authUser },
+        });
+    } catch (error) {
         console.error(`[POST] Login error: ${error.message}`);
         res.status(500).json({
             message: 'Internal server error',
             data: {},
         });
     }
+};
 
-    authService.addAuthCookieToRes();
-
+export const logout = async (req, res) => {
+    removeAuthCookieFromRes(res);
     return res.json({
-        message: 'Login successful',
-        data: authService.frontendData,
+        message: 'Logout successful',
+        data: {},
     });
 };

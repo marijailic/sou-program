@@ -1,38 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Users } from '../models/models.js';
-import { addAuthCookieToRes } from '../services/cookieService.js';
-
-export const AuthService = class {
-    fails;
-
-    constructor(reqBody) {
-        const { username, password } = reqBody;
-        this.fails = !username || !password;
-        this.username = username;
-        this.password = password;
-    }
-
-    // try {
-    //     const authUserData = await getAuthUserData(username, password);
-
-    //     addAuthCookieToRes(res);
-
-    //     return res.json({
-    //         message: 'Login successful',
-    //         data: {
-    //             username: authUserData.username,
-    //             type: authUserData.type,
-    //         },
-    //     });
-    // } catch (error) {
-    //     console.error(`[POST] Login error: ${error.message}`);
-    //     res.status(500).json({
-    //         message: 'Internal server error',
-    //         data: {},
-    //     });
-    // }
-};
 
 export const hashPassword = async (passwordInput) => {
     const hashedPassword = await bcrypt.hash(passwordInput, 8);
@@ -50,8 +18,13 @@ export const getAuthUserData = async (username, password) => {
         throw new Error('Password fail');
     }
 
+    return user;
+};
+
+export const generateTokenFromUser = (user) => {
     const tokenPayload = {
-        username,
+        id: user.id,
+        username: user.username,
         type: user.type,
     };
 
@@ -61,14 +34,7 @@ export const getAuthUserData = async (username, password) => {
         { algorithm: 'HS512', expiresIn: '1y' }
     );
 
-    // TODO: vratiti i userId da se lakse radi sa podacima
-
-    return {
-        token: accessToken,
-        username,
-        type: user.type,
-        userID: user.id,
-    };
+    return accessToken;
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {

@@ -1,22 +1,25 @@
-import { validateToken } from '../services/authService.js';
-import { getCookieDataFromRequest } from '../services/cookieService.js';
+import { getCookieTokenFromReq } from '../services/cookieService.js';
+import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req, res, next) => {
-    return next();
-    const authCookie = getCookieDataFromRequest(req);
-    if (!authCookie) {
+    const accessToken = getCookieTokenFromReq(req);
+    if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { username, userType, token } = authCookie;
-    const secret = process.env.ACCESS_TOKEN_SECRET;
-    const isTokenValid = validateToken({ username, userType, token, secret });
-    if (!isTokenValid) {
+    let tokenPayload;
+    try {
+        tokenPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    } catch (error) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // TODO: Implement global state managment za current user
-    req.someData = { username, type };
+    const { id, username, type } = tokenPayload;
+    req.authUser = { id, username, type };
+
+    if (!id || !username || !type) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
 
     return next();
 };

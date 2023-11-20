@@ -1,6 +1,5 @@
 import { Announcements } from '../models/models.js';
 import { sendAnnouncementToAllUsers } from '../services/sendAnnouncementEmailService.js';
-import { getUserByUsername } from '../services/userService.js';
 
 export const index = async (req, res) => {
     const currentPage = parseInt(req.query.page) || 1;
@@ -33,12 +32,11 @@ export const index = async (req, res) => {
 
 export const create = async (req, res) => {
     const text = req.body.text.trim();
-    const username = req.headers['username'];
 
     try {
         await Announcements().insert({
             text,
-            author_id: (await getUserByUsername(username)).id,
+            author_id: req.authUser.id,
         });
 
         await sendAnnouncementToAllUsers(text);
