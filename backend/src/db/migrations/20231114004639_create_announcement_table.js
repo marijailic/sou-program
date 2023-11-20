@@ -8,13 +8,13 @@ export const up = function (knex) {
 
         table.text('text');
         table.string('picture_key');
-        table.timestamps(true, true);
-
         table
             .uuid('author_id')
             .references('id')
             .inTable('user')
             .onDelete('set null');
+
+        table.timestamps(true, true);
     });
 };
 

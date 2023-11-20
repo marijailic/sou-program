@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import db from '../db/connection.js';
+import { db } from '../db/connection.js';
 
 export const hashPassword = async (passwordInput) => {
     const hashedPassword = await bcrypt.hash(passwordInput, 8);

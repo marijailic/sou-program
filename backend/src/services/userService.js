@@ -1,4 +1,4 @@
-import db from '../db/connection.js';
+import { db } from '../db/connection.js';
 
 /**
  * Returns the user with specified username. If not found returns null.

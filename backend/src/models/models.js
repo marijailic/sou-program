@@ -1,4 +1,4 @@
-import db from '../db/connection.js';
+import { db } from '../db/connection.js';
 
 export const Users = () => db('user');
 export const Competitions = () => db('competition');

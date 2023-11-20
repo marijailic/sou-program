@@ -1,1 +1,4 @@
-export default ['student', 'demonstrator'];
+export const userTypeEnum = {
+    STUDENT: 'student',
+    DEMONSTRATOR: 'demonstrator',
+};

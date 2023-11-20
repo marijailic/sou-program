@@ -1,4 +1,4 @@
-import db from '../db/connection.js';
+import { db } from '../db/connection.js';
 import { sendMail } from './emailService.js';
 
 export const sendAnnouncementToAllUsers = async (text) => {

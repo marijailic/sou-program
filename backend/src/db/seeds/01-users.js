@@ -1,5 +1,4 @@
-import bcrypt from 'bcrypt';
-// import { hashPassword } from '../../services/authService'; // Module not found
+import { hashPassword } from '../../services/authService.js';
 
 /**
  * @param { import("knex").Knex } knex
@@ -10,13 +9,13 @@ export const seed = async function (knex) {
 
     await knex('user').insert([
         {
-            name: 'Nikola',
-            surname: 'Tankovic',
-            email: 'nikolatankovic@gmail.com',
-            username: 'nikolatankovic',
-            password: await bcrypt.hash('pass123', 8),
+            name: 'Admin',
+            surname: 'Admin',
+            email: 'admin@gmail.com',
+            username: 'admin',
+            password: await hashPassword('admin'),
             profile_picture_key: null,
-            bio: 'Moj bio.',
+            bio: '',
             type: 'demonstrator',
         },
     ]);

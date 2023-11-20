@@ -7,10 +7,7 @@ export const up = async function (knex) {
         table.uuid('id', { primaryKey: true }).defaultTo(knex.fn.uuid());
 
         table.string('title').notNullable();
-        table.text('text');
         table.boolean('is_completed').notNullable();
-        table.timestamps(true, true);
-
         table
             .uuid('assignee_id')
             .references('id')
@@ -21,6 +18,8 @@ export const up = async function (knex) {
             .references('id')
             .inTable('todo_list')
             .onDelete('cascade');
+
+        table.timestamps(true, true);
     });
 };
 

@@ -1,5 +1,5 @@
-import { getUserByUsername } from '../services/userService.js';
-import { validatedRequest } from './baseValidation.js';
+import { getUserByUsername } from '../../services/userService.js';
+import { validatedRequest } from '../baseValidation.js';
 
 const getValidationRules = () => {
     return {
@@ -17,21 +17,21 @@ const getValidationData = async (req) => {
     };
 };
 
-export const createProfilePostValidation = async (req, res, next) => {
+export const createAnnouncementValidation = async (req, res, next) => {
     return validatedRequest({
         data: await getValidationData(req),
         rules: getValidationRules(),
-        errorMessage: '[POST] Create profile picture validation failed',
+        errorMessage: '[POST] Create announcement validation failed',
         res,
         next,
     });
 };
 
-export const updateProfilePostValidation = async (req, res, next) => {
+export const updateAnnouncementValidation = async (req, res, next) => {
     return validatedRequest({
         data: await getValidationData(req),
         rules: getValidationRules(),
-        errorMessage: '[PATCH] Update profile picture validation failed',
+        errorMessage: '[PATCH] Update announcement validation failed',
         res,
         next,
     });

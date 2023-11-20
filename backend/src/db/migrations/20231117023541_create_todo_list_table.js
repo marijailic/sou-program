@@ -8,13 +8,13 @@ export const up = async function (knex) {
 
         table.string('title').notNullable();
         table.text('text');
-        table.timestamps(true, true);
-
         table
             .uuid('created_by')
             .references('id')
             .inTable('user')
             .onDelete('set null');
+
+        table.timestamps(true, true);
     });
 };
 

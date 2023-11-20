@@ -1,9 +1,9 @@
-import { validatedRequest } from './baseValidation.js';
+import { validatedRequest } from '../baseValidation.js';
 
-export const getUsersValidation = async (req, res, next) => {
+export const getUsersByIDsValidation = async (req, res, next) => {
     return validatedRequest({
         data: req.body,
-        rules: { ids: ['array'] },
+        rules: { ids: ['required', 'array'] },
         errorMessage: '[GET] Get user validation failed',
         res,
         next,

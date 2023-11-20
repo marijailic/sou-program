@@ -1,21 +1,19 @@
 import { getAuthUserData } from '../services/authService.js';
 
-export default {
-    loginUser: async (req, res) => {
-        const { username, password } = req.body;
+export const login = async (req, res) => {
+    const { username, password } = req.body;
 
-        try {
-            const authUserData = await getAuthUserData(username, password);
-            return res.json({
-                message: 'Login successful',
-                data: authUserData,
-            });
-        } catch (error) {
-            console.error(`[POST] Login error: ${error.message}`);
-            return res.status(500).json({
-                message: 'Internal server error',
-                data: {},
-            });
-        }
-    },
+    try {
+        const authUserData = await getAuthUserData(username, password);
+        return res.json({
+            message: 'Login successful',
+            data: authUserData,
+        });
+    } catch (error) {
+        console.error(`[POST] Login error: ${error.message}`);
+        return res.status(500).json({
+            message: 'Internal server error',
+            data: {},
+        });
+    }
 };
