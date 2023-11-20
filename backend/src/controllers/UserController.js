@@ -5,7 +5,7 @@ export const index = async (req, res) => {
     try {
         return res.json({
             message: 'User fetched successfully',
-            data: await Users(),
+            data: { users: await Users() },
         });
     } catch (error) {
         console.error(`[GET] User error: ${error.message}`);
@@ -59,7 +59,7 @@ export const create = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
-        await Users().where({ id: userID }).update({
+        await Users().where({ id: req.params.id }).update({
             name: req.body.name.trim(),
             surname: req.body.surname.trim(),
             email: req.body.email.trim(),

@@ -1,5 +1,4 @@
 import { ProfilePosts } from '../models/models.js';
-import { getUserByUsername } from '../services/userService.js';
 
 export const index = async (req, res) => {
     const authorID = req.query.author_id;
@@ -36,12 +35,10 @@ export const index = async (req, res) => {
 };
 
 export const create = async (req, res) => {
-    const username = req.headers['username'];
-
     try {
         await ProfilePosts().insert({
             text: req.body.text.trim(),
-            author_id: (await getUserByUsername(username)).id,
+            author_id: req.authUser.id,
         });
 
         return res.status(201).json({
@@ -58,13 +55,11 @@ export const create = async (req, res) => {
 };
 
 export const update = async (req, res) => {
-    const username = req.headers['username'];
-
     try {
         await ProfilePosts()
             .where({
                 id: req.params.id,
-                author_id: (await getUserByUsername(username)).id,
+                author_id: req.authUser.id,
             })
             .update({
                 text: req.body.text.trim(),
@@ -84,13 +79,11 @@ export const update = async (req, res) => {
 };
 
 export const destroy = async (req, res) => {
-    const username = req.headers['username'];
-
     try {
         await ProfilePosts()
             .where({
                 id: req.params.id,
-                author_id: (await getUserByUsername(username)).id,
+                author_id: req.authUser.id,
             })
             .del();
         return res.status(204).end();

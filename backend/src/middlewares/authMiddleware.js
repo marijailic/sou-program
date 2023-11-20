@@ -1,42 +1,25 @@
-import { validateToken } from '../services/authService.js';
+import { getCookieTokenFromReq } from '../services/cookieService.js';
+import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req, res, next) => {
-    const authorization = req.headers['authorization'].split(' ');
-    const authorizationType = authorization[0];
-    const token = authorization[1];
-    const refreshToken = req.headers['refreshtoken'];
-    const username = req.headers['username'];
-    const userType = req.headers['type'];
-
-    if (authorizationType !== 'Bearer') {
+    const accessToken = getCookieTokenFromReq(req);
+    if (!accessToken) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Validate token
-    let isTokenValid = validateToken({
-        username,
-        userType,
-        token,
-        secret: process.env.ACCESS_TOKEN_SECRET,
-    });
-
-    if (isTokenValid) {
-        next();
-        return;
+    let tokenPayload;
+    try {
+        tokenPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    } catch (error) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Validate refresh token
-    let isRefreshTokenValid = validateToken({
-        username,
-        userType,
-        token: refreshToken,
-        secret: process.env.REFRESH_TOKEN_SECRET,
-    });
+    const { id, username, type } = tokenPayload;
+    req.authUser = { id, username, type };
 
-    if (isRefreshTokenValid) {
-        next();
-        return;
+    if (!id || !username || !type) {
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    return res.status(401).json({ error: 'Unauthorized' });
+    return next();
 };

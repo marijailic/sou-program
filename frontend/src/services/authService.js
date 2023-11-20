@@ -1,30 +1,23 @@
 import userTypeEnum from '@/enums/userTypeEnum';
 
 export default {
-    getAuthHeaders: () => {
-        const token = localStorage.getItem('token');
-        const refreshToken = localStorage.getItem('refreshToken');
-        const username = localStorage.getItem('username');
-        const type = localStorage.getItem('type');
-
-        return {
-            Authorization: `Bearer ${token}`,
-            RefreshToken: refreshToken,
-            username,
-            type,
-        };
-    },
-    saveAuthData: ({ username, type, token, refreshToken }) => {
-        localStorage.setItem('token', token);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('type', type);
+    saveAuthData: ({ authUser }) => {
+        const { id, name, surname, username, type, profile_picture_key } =
+            authUser;
+        localStorage.setItem('id', id);
+        localStorage.setItem('name', name);
+        localStorage.setItem('surname', surname);
         localStorage.setItem('username', username);
+        localStorage.setItem('type', type);
+        localStorage.setItem('profile_picture_key', profile_picture_key);
     },
     deleteAuthData: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('id');
+        localStorage.removeItem('name');
+        localStorage.removeItem('surname');
         localStorage.removeItem('username');
         localStorage.removeItem('type');
+        localStorage.removeItem('profile_picture_key');
     },
     getAuthUsername: () => localStorage.getItem('username'),
     isAuthUserDemos: () => localStorage.getItem('type') === userTypeEnum.DEMOS,

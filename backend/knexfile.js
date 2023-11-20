@@ -6,7 +6,7 @@ const { DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD } = process.env;
 /**
  * @type { import("knex").Knex.Config }
  */
-export const knexConfig = {
+export default {
     client: 'pg',
     connection: {
         host: DB_HOST,
@@ -14,7 +14,6 @@ export const knexConfig = {
         user: DB_USER,
         database: DB_NAME,
         password: DB_PASSWORD,
-        ssl: { rejectUnauthorized: false },
     },
     pool: {
         min: 2,

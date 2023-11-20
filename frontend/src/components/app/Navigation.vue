@@ -64,6 +64,7 @@
 <script>
 import { useStoreUser } from '@/stores/user.store';
 import authService from '@/services/authService';
+import backendApiService from '@/services/backendApiService';
 
 const props = {
     toggleNav: {
@@ -91,7 +92,14 @@ export default {
         isRouteActive(routeName) {
             return this.$route.path === routeName;
         },
-        logout() {
+        async logout() {
+            const res = await backendApiService.post({ url: '/logout' });
+
+            if (!res.ok) {
+                this.$router.push('/error');
+                return;
+            }
+
             authService.deleteAuthData();
             this.$router.push('/login');
         },

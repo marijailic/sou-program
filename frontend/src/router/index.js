@@ -139,8 +139,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _from, next) => {
-    const token = localStorage.getItem('token');
-    const isUserLoggedIn = token !== null;
+    // TODO: Implementirati servis za localstore spremanje u jedan kljuc sa JSON.stringify(data)
+    const id = localStorage.getItem('id');
+    const isUserLoggedIn = id !== null;
 
     // success and error
     let shouldRefresh = localStorage.getItem('shouldRefresh') === 'true';
@@ -162,7 +163,9 @@ router.beforeEach((to, _from, next) => {
 const DEFAULT_TITLE = 'Šou program';
 
 router.afterEach((to, _from) => {
-    document.title = to.meta.title ? `| ${to.meta.title}` : DEFAULT_TITLE;
+    document.title = to.meta.title
+        ? `${DEFAULT_TITLE} | ${to.meta.title}`
+        : DEFAULT_TITLE;
 });
 
 export default router;

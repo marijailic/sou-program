@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { db } from '../db/connection.js';
+import { Users } from '../models/models.js';
 
 export const hashPassword = async (passwordInput) => {
     const hashedPassword = await bcrypt.hash(passwordInput, 8);
@@ -8,7 +8,7 @@ export const hashPassword = async (passwordInput) => {
 };
 
 export const getAuthUserData = async (username, password) => {
-    const user = await db('user').select().where('username', username).first();
+    const user = await Users().select().where('username', username).first();
     if (!user) {
         throw new Error('No user');
     }
@@ -18,30 +18,23 @@ export const getAuthUserData = async (username, password) => {
         throw new Error('Password fail');
     }
 
+    return user;
+};
+
+export const generateTokenFromUser = (user) => {
     const tokenPayload = {
-        username,
+        id: user.id,
+        username: user.username,
         type: user.type,
     };
 
     const accessToken = jwt.sign(
         tokenPayload,
         process.env.ACCESS_TOKEN_SECRET,
-        { algorithm: 'HS512', expiresIn: '30s' }
+        { algorithm: 'HS512', expiresIn: '1y' }
     );
 
-    const refreshToken = jwt.sign(
-        tokenPayload,
-        process.env.REFRESH_TOKEN_SECRET,
-        { algorithm: 'HS512' }
-    );
-
-    return {
-        token: accessToken,
-        refreshToken,
-        username,
-        type: user.type,
-        userID: user.id,
-    };
+    return accessToken;
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {
