@@ -62,8 +62,6 @@ export default {
                 credentials: 'include',
             });
 
-            console.log(response);
-
             if (!response.ok) {
                 window.location.href = '/error';
                 return;
