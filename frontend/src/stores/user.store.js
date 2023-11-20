@@ -14,7 +14,6 @@ const formatUserData = async (user) => {
     return {
         ...user,
         fullName: `${user.name} ${user.surname}`,
-        email: user.e_mail,
         profilePictureSrc,
     };
 };
@@ -30,7 +29,7 @@ export const useStoreUser = defineStore('storeUser', {
             );
         },
         getUserByID: (state) => (userID) => {
-            return state.users.find((user) => user.id === Number(userID));
+            return state.users.find((user) => user.id === userID);
         },
         getSearchedUsersByUsername: (state) => (searchedUsername) => {
             const searchLowerCase = searchedUsername.toLowerCase();
@@ -90,7 +89,6 @@ export const useStoreUser = defineStore('storeUser', {
         async deleteUser(userID) {
             const res = await backendApiService.delete({
                 url: `/users/${userID}`,
-                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

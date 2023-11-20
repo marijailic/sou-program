@@ -24,7 +24,7 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
                 (announcement) => ({
                     ...announcement,
                     posted_at: dateService.getRelativeTime(
-                        announcement.timestamp
+                        announcement.created_at
                     ),
                     text_line_breaks: announcement.text.replace(/\n/g, '<br>'),
                 })
@@ -55,7 +55,6 @@ export const useStoreAnnouncement = defineStore('storeAnnouncement', {
         async deleteAnnouncement(announcementID) {
             const res = await backendApiService.delete({
                 url: `/announcements/${announcementID}`,
-                headers: { 'Content-Type': 'application/json' },
             });
 
             this.$router.push(res.ok ? '/success' : '/error');

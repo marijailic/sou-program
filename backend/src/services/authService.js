@@ -64,7 +64,12 @@ export const getAuthUserData = async (username, password) => {
 
     // TODO: vratiti i userId da se lakse radi sa podacima
 
-    return { token: accessToken, username, type: user.type };
+    return {
+        token: accessToken,
+        username,
+        type: user.type,
+        userID: user.id,
+    };
 };
 
 export const validateToken = ({ username, userType, token, secret }) => {

@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { Readable } from 'stream';
-import { googleAuth } from './googleAuthService';
+import { googleAuth } from './googleAuthService.js';
 
 let drive;
 try {
