@@ -4,9 +4,10 @@
         "serve": "nodemon --exec babel-node src/index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "migrate": "npx knex migrate:latest --esm",
+        "migrate:fresh": "npx knex migrate:rollback --all && npx knex migrate:latest",
         "seed": "npx knex seed:run",
-        "seed-dev": "npx knex seed:run",
-        "migrate:fresh": "npx knex migrate:rollback --all --esm && npx knex migrate:latest"
+        "seed:admin-user": "npx knex seed:run --specific=admin-user.js",
+        "seed:announcements": "npx knex seed:run --specific=announcements.js"
     },
     "dependencies": {
         "@babel/core": "^7.22.19",

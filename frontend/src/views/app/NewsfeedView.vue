@@ -63,9 +63,10 @@ export default {
         this.isLoading = true;
 
         await this.storeUser.fetchUsers();
-        this.currentUser = await this.storeUser.getUserByUsername(
-            authService.getAuthUsername()
+        this.currentUser = this.storeUser.getUserByID(
+            authService.getAuthUserID()
         );
+
         await this.loadMoreAnnouncements();
 
         this.isLoading = false;

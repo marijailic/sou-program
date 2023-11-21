@@ -1,5 +1,5 @@
+import { verifyToken } from '../services/authService.js';
 import { getCookieTokenFromReq } from '../services/cookieService.js';
-import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req, res, next) => {
     const accessToken = getCookieTokenFromReq(req);
@@ -7,10 +7,8 @@ export const authMiddleware = (req, res, next) => {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    let tokenPayload;
-    try {
-        tokenPayload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-    } catch (error) {
+    const tokenPayload = verifyToken(accessToken);
+    if (!tokenPayload) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 

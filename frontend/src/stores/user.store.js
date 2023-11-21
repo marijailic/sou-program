@@ -23,19 +23,12 @@ export const useStoreUser = defineStore('storeUser', {
         users: [],
     }),
     getters: {
-        getUserByUsername: (state) => (username) => {
-            return state.users.find(
-                (user) => user.username.toLowerCase() === username.toLowerCase()
-            );
-        },
         getUserByID: (state) => (userID) => {
             return state.users.find((user) => user.id === userID);
         },
         getSearchedUsersByUsername: (state) => (searchedUsername) => {
             const searchLowerCase = searchedUsername.toLowerCase();
-            const currentUser = state.getUserByUsername(
-                authService.getAuthUsername()
-            );
+            const currentUser = state.getUserByID(authService.getAuthUserID());
 
             return state.users.filter((user) => {
                 const fullNameLowerCase = user.fullName.toLowerCase();

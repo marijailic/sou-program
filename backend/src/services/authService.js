@@ -8,7 +8,7 @@ export const hashPassword = async (passwordInput) => {
 };
 
 export const getAuthUserData = async (username, password) => {
-    const user = await Users().select().where('username', username).first();
+    const user = await Users().where({ username }).first();
     if (!user) {
         throw new Error('No user');
     }
@@ -37,14 +37,14 @@ export const generateTokenFromUser = (user) => {
     return accessToken;
 };
 
-export const validateToken = ({ username, userType, token, secret }) => {
+export const verifyToken = (accessToken) => {
     try {
-        const tokenPayload = jwt.verify(token, secret);
-        const oldUsername = tokenPayload.username;
-        const oldUserType = tokenPayload.type;
-
-        return username === oldUsername && userType === oldUserType;
-    } catch (err) {
-        return false;
+        const tokenPayload = jwt.verify(
+            accessToken,
+            process.env.ACCESS_TOKEN_SECRET
+        );
+        return tokenPayload;
+    } catch (error) {
+        return null;
     }
 };

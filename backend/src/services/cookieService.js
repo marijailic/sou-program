@@ -1,9 +1,9 @@
-import moment from 'moment-timezone';
+import { now } from './datetimeService.js';
 
-const cookieName = 'sp_session';
+const COOKIE_NAME = 'sp_session';
 
 export const getCookieTokenFromReq = (req) => {
-    const authCookie = req.cookies?.[cookieName];
+    const authCookie = req.cookies?.[COOKIE_NAME];
     if (!authCookie) {
         return null;
     }
@@ -11,14 +11,15 @@ export const getCookieTokenFromReq = (req) => {
     return authCookie;
 };
 
-export const addAuthCookieToRes = (res, token) => {
-    res.cookie(cookieName, token, {
-        expires: moment().add(1, 'year').toDate(),
+export const addAuthCookieToRes = (res, accessToken) => {
+    res.cookie(COOKIE_NAME, accessToken, {
+        expires: now().add(1, 'year').toDate(),
         httpOnly: true,
         secure: true,
         sameSite: 'lax',
     });
 };
+
 export const removeAuthCookieFromRes = (res) => {
-    res.clearCookie(cookieName);
+    res.clearCookie(COOKIE_NAME);
 };
