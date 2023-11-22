@@ -129,8 +129,6 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes,
-
-    // TODO Check if we can apply this globaly
     scrollBehavior(_to, _from, _savedPosition) {
         return {
             top: -1,
@@ -139,7 +137,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, _from, next) => {
-    // TODO: Implementirati servis za localstore spremanje u jedan kljuc sa JSON.stringify(data)
     const id = localStorage.getItem('id');
     const isUserLoggedIn = id !== null;
 

@@ -14,7 +14,7 @@ import moment from 'moment-timezone';
 import { googleCredsRoutes } from './routers/googleCredsRouter.js';
 import { googleDriveRoutes } from './routers/googleDriveRouter.js';
 
-moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss';
+moment.defaultFormat = 'YYYY-MM-DD HH:mm:ss.SSSZ';
 const app = express();
 
 // CONFIG

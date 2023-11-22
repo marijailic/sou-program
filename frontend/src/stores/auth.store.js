@@ -67,7 +67,6 @@ export const useStoreAuth = defineStore('storeAuth', {
             const tokenFromLocalStorage = localStorage.getItem('token');
             if (tokenFromLocalStorage) {
                 this.token = tokenFromLocalStorage;
-                // TODO: Fetch the user data based on the token
             }
             return token;
         },
