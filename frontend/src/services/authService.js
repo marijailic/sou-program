@@ -19,6 +19,6 @@ export default {
         localStorage.removeItem('type');
         localStorage.removeItem('profile_picture_key');
     },
-    getAuthUsername: () => localStorage.getItem('username'),
+    getAuthUserID: () => localStorage.getItem('id'),
     isAuthUserDemos: () => localStorage.getItem('type') === userTypeEnum.DEMOS,
 };

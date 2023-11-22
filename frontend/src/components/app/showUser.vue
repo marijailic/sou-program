@@ -34,7 +34,11 @@
                     <button class="btn btn-edit" @click="openEditingUser">
                         <i class="fa-solid fa-pen"></i>
                     </button>
-                    <button class="btn btn-delete" @click="openDeletingUser">
+                    <button
+                        v-if="user.id != currentUserID"
+                        class="btn btn-delete"
+                        @click="openDeletingUser"
+                    >
                         <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
@@ -76,6 +80,7 @@ export default {
     },
     data() {
         return {
+            currentUserID: authService.getAuthUserID(),
             isConfirming: false,
             isEditing: false,
         };

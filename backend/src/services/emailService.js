@@ -2,10 +2,10 @@ import sgMail from '@sendgrid/mail';
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const sendMail = ({ mailTo, subject, content }) => {
+export const sendMail = ({ mailTo, subject, content }) => {
     const msg = {
         to: mailTo,
-        from: process.env.SENDGRID_EMAIL_FROM,
+        from: process.env.SENDGRID_EMAIL_FROM ?? '',
         subject: subject,
         text: content,
         // html: "<strong>and easy to do anywhere, even with Node.js</strong>",
@@ -20,5 +20,3 @@ const sendMail = ({ mailTo, subject, content }) => {
             console.error(`Send email error: ${error}`);
         });
 };
-
-export { sendMail };

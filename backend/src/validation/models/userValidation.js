@@ -19,7 +19,7 @@ export const createUserValidation = async (req, res, next) => {
             email: ['required', 'email'],
             username: ['required', 'string', 'max:30', 'no_whitespace'],
             password: ['required', 'string', 'password'],
-            profile_picture_key: ['string'], // TODO: Zasto se slika ne salje u requestu? Staviti dodati 'present'
+            profile_picture_key: ['present', 'string'],
             bio: ['present', 'string'],
             type: ['required', 'string'],
         },
@@ -36,7 +36,7 @@ export const updateUserValidation = async (req, res, next) => {
             name: ['required', 'string', 'max:30'],
             surname: ['required', 'string', 'max:30'],
             email: ['required', 'email'],
-            profile_picture_key: ['string'], // TODO: Zasto se slika ne salje u requestu? Staviti dodati 'present'
+            profile_picture_key: ['present', 'string'],
             bio: ['present', 'string'],
             type: ['required', 'string'],
         },

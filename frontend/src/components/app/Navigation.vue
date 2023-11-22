@@ -82,8 +82,8 @@ export default {
     }),
     async created() {
         await this.storeUser.fetchUsers();
-        const currentUser = await this.storeUser.getUserByUsername(
-            authService.getAuthUsername()
+        const currentUser = this.storeUser.getUserByID(
+            authService.getAuthUserID()
         );
 
         this.username = currentUser.username;

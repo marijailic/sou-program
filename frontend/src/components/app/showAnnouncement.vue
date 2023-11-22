@@ -3,22 +3,32 @@
         <div class="card-body d-flex gap-3">
             <div>
                 <router-link
+                    v-if="announcement.author"
                     :to="'/user-profile/' + announcement.author.id"
                     class="text-dark d-block icon rounded-circle"
                 >
                     <img
                         class="icon rounded-circle"
                         :src="
-                            userProfilePictureSrc ||
+                            announcement.author.profilePictureSrc ||
                             require('@/assets/sp-icon.png')
                         "
                     />
                 </router-link>
+                <img
+                    v-else
+                    class="icon rounded-circle"
+                    :src="require('@/assets/sp-icon.png')"
+                />
             </div>
             <div class="flex-grow-1">
                 <div class="d-flex flex-wrap gap-1">
                     <h6 class="card-title mb-0 d-inline author-full-name">
-                        {{ announcement.author.fullName }}
+                        {{
+                            announcement.author
+                                ? announcement.author.fullName
+                                : 'Deleted user'
+                        }}
                     </h6>
                     <small class="text-muted posted-at">
                         <span class="dot">•</span>
@@ -87,14 +97,11 @@ export default {
     },
     data: () => ({
         isAuthUserDemos: authService.isAuthUserDemos(),
-        userProfilePictureSrc: '',
         storeAnnouncement: useStoreAnnouncement(),
         isConfirming: false,
         isEditing: false,
     }),
     created() {
-        this.userProfilePictureSrc = this.announcement.author.profilePictureSrc;
-
         const authorFullNames =
             document.getElementsByClassName('author-full-name');
         const postedAts = document.getElementsByClassName('posted-at');
