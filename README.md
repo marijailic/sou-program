@@ -24,19 +24,13 @@ npm --version
 git --version
 ```
 
-## Postavljanje pgAdmin-a
+### Postavljanje pgAdmin-a
 
 Prije nego nastaviš, konfiguriraj pgAdmin za povezivanje s lokalno hostiranom bazom podataka:
 
-### 1. Izradi račun
-
-- Otvori pgAdmin i kreiraj račun ako ga nemaš.
-- Prijavi se.
-
-### 2. Poveži se na svoju lokalnu bazu podataka
-
-- Nakon što se prijaviš, poveži pgAdmin na poslužitelj baze podataka koji radi na tvom lokalnom hostu.
-- Ako još nisi izradio bazu podataka, slijedi upute u README-u da je izradiš.
+- Otvori pgAdmin i registriraj novi server ako ga nemaš.
+- Poveži se na server koji radi na tvom lokalnom hostu.
+- Kreiraj novu bazu za sou program aplikaciju
 
 ## Početak
 
@@ -58,13 +52,10 @@ npm install
 
 #### b. Postavi varijable okruženja za backend
 
-Napravi datoteku `.env` u mapi `backend` i dodaj vrijednosti na ključeve koji su navedeni u `.env.example` datoteci.
+- Napravi datoteku `.env` u mapi `backend` i dodaj vrijednosti na ključeve koji su navedeni u `.env.example` datoteci.
+- Također ispuni DB podatke da se poklapaju podacima tvog servera tako da se možeš spojiti na njega tj. svoju bazu podataka.
 
 ### 3. Pripremanje baze podataka
-
-#### a. Stvori bazu podataka
-
-Upotrijebi pgAdmin za stvaranje nove baze podataka s nazivom navedenim u tvojoj `.env` datoteci.
 
 #### b. Pokreni migracije
 
