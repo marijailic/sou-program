@@ -63,8 +63,8 @@
 
 <script>
 import { useStoreUser } from '@/stores/user.store';
-import authService from '@/services/authService';
 import backendApiService from '@/services/backendApiService';
+import { deleteAuthData, getAuthData } from '@/services/authService';
 
 const props = {
     toggleNav: {
@@ -82,9 +82,7 @@ export default {
     }),
     async created() {
         await this.storeUser.fetchUsers();
-        const currentUser = this.storeUser.getUserByID(
-            authService.getAuthUserID()
-        );
+        const currentUser = this.storeUser.getUserByID(getAuthData().id);
 
         this.username = currentUser.username;
     },
@@ -100,7 +98,7 @@ export default {
                 return;
             }
 
-            authService.deleteAuthData();
+            deleteAuthData();
             this.$router.push('/login');
         },
     },

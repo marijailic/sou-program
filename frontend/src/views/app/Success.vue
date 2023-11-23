@@ -10,11 +10,13 @@
 </template>
 
 <script>
+import { keys, storage } from '@/services/storageService';
+
 export default {
     name: 'Success',
     methods: {
         goBack() {
-            localStorage.setItem('shouldRefresh', true);
+            storage.set(keys.SHOULD_REFRESH, true);
             window.history.back();
         },
     },

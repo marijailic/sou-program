@@ -1,24 +1,24 @@
 import userTypeEnum from '@/enums/userTypeEnum';
+import { keys, storage } from './storageService';
 
-export default {
-    saveAuthData: ({ authUser }) => {
-        const { id, name, surname, username, type, profile_picture_key } =
-            authUser;
-        localStorage.setItem('id', id);
-        localStorage.setItem('name', name);
-        localStorage.setItem('surname', surname);
-        localStorage.setItem('username', username);
-        localStorage.setItem('type', type);
-        localStorage.setItem('profile_picture_key', profile_picture_key);
-    },
-    deleteAuthData: () => {
-        localStorage.removeItem('id');
-        localStorage.removeItem('name');
-        localStorage.removeItem('surname');
-        localStorage.removeItem('username');
-        localStorage.removeItem('type');
-        localStorage.removeItem('profile_picture_key');
-    },
-    getAuthUserID: () => localStorage.getItem('id'),
-    isAuthUserDemos: () => localStorage.getItem('type') === userTypeEnum.DEMOS,
+const authUserKey = keys.AUTH_USER;
+
+export const saveAuthData = ({ authUser }) => {
+    const { id, name, surname, username, type, profile_picture_key } = authUser;
+
+    storage.set(authUserKey, {
+        id,
+        name,
+        surname,
+        username,
+        type,
+        profile_picture_key,
+    });
 };
+
+export const deleteAuthData = () => storage.delete(authUserKey);
+/**
+ * @returns {{id:string, name:string, surname:string, username:string, type:string, profile_picture_key:string}}
+ */
+export const getAuthData = () => storage.get(authUserKey);
+export const isAuthUserDemos = () => getAuthData().type === userTypeEnum.DEMOS;

@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import authService from '@/services/authService';
+import { saveAuthData } from '@/services/authService';
 
 export default {
     name: 'LoginView',
@@ -69,7 +69,7 @@ export default {
 
             const resObj = await response.json();
 
-            authService.saveAuthData(resObj.data);
+            saveAuthData(resObj.data);
 
             window.location.href = '/newsfeed';
         },

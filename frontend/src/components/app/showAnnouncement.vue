@@ -76,10 +76,10 @@
 <script>
 import { useStoreAnnouncement } from '@/stores/announcement.store';
 
-import authService from '@/services/authService';
+import { isAuthUserDemos } from '@/services/authService';
 
-import editAnnouncement from '@/components/app/editAnnouncement.vue';
 import ConfirmationModal from '@/components/app/ConfirmationModal.vue';
+import editAnnouncement from '@/components/app/editAnnouncement.vue';
 
 const props = {
     announcement: {
@@ -96,7 +96,7 @@ export default {
         ConfirmationModal,
     },
     data: () => ({
-        isAuthUserDemos: authService.isAuthUserDemos(),
+        isAuthUserDemos: isAuthUserDemos(),
         storeAnnouncement: useStoreAnnouncement(),
         isConfirming: false,
         isEditing: false,

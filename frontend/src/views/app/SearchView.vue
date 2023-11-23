@@ -45,12 +45,12 @@
 <script>
 import { useStoreUser } from '@/stores/user.store';
 
-import authService from '@/services/authService';
+import { isAuthUserDemos } from '@/services/authService';
 
-import Search from '@/components/app/Search.vue';
-import showUser from '@/components/app/showUser.vue';
-import addUser from '@/components/app/addUser.vue';
 import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
+import Search from '@/components/app/Search.vue';
+import addUser from '@/components/app/addUser.vue';
+import showUser from '@/components/app/showUser.vue';
 
 export default {
     name: 'SearchView',
@@ -65,7 +65,7 @@ export default {
         users: [],
         isAddingUser: false,
         storeUser: useStoreUser(),
-        isAuthUserDemos: authService.isAuthUserDemos(),
+        isAuthUserDemos: isAuthUserDemos(),
     }),
     async created() {
         this.isLoading = true;

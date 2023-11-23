@@ -31,7 +31,7 @@ import { useStoreProfilePost } from '@/stores/profilepost.store';
 
 import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
 
-import authService from '@/services/authService';
+import authService, { getAuthData } from '@/services/authService';
 
 import showProfile from '@/components/app/showProfile.vue';
 import addProfilePost from '@/components/app/addProfilePost.vue';
@@ -57,9 +57,7 @@ export default {
         this.isLoading = true;
 
         await this.storeUser.fetchUsers();
-        this.currentUser = this.storeUser.getUserByID(
-            authService.getAuthUserID()
-        );
+        this.currentUser = this.storeUser.getUserByID(getAuthData().id);
 
         await this.loadMoreProfilePosts();
 
