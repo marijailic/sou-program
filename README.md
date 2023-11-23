@@ -37,7 +37,7 @@ Prije nego nastaviš, konfiguriraj pgAdmin za povezivanje s lokalno hostiranom b
 ### 1. Kloniraj repo
 
 ```bash
-git clone https://github.com/sou-program/sou-program.git
+git clone https://github.com/souprogram/sou-program.git
 cd sou-program
 ```
 
