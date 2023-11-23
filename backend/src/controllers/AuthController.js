@@ -1,3 +1,4 @@
+import { Users } from '../models/models.js';
 import {
     generateTokenFromUser,
     getAuthUserData,
@@ -37,5 +38,12 @@ export const logout = async (req, res) => {
     return res.json({
         message: 'Logout successful',
         data: {},
+    });
+};
+
+export const me = async (req, res) => {
+    return res.json({
+        message: 'Logout successful',
+        data: await Users().where({ id: req.authUser.id }),
     });
 };

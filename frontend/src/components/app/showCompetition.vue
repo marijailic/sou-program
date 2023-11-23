@@ -67,12 +67,12 @@
 </template>
 
 <script>
-import { useStoreCompetition } from '@/stores/competition.store'
-import editCompetition from './editCompetition.vue'
-import eventBus from '@/eventBus'
+import { useStoreCompetition } from '@/stores/competition.store';
+import editCompetition from './editCompetition.vue';
+import eventBus from '@/eventBus';
 
-import dateService from '@/services/dateService'
-import userTypeEnum from '@/enums/userTypeEnum'
+import dateService from '@/services/dateService';
+import userTypeEnum from '@/enums/userTypeEnum';
 
 export default {
     name: 'showCompetition',
@@ -80,7 +80,7 @@ export default {
         return {
             isDemos: userTypeEnum.DEMOS === localStorage.getItem('type'),
             editingTeamId: null,
-        }
+        };
     },
     components: {
         editCompetition,
@@ -92,8 +92,8 @@ export default {
         },
     },
     setup() {
-        const storeCompetition = useStoreCompetition()
-        return { storeCompetition }
+        const storeCompetition = useStoreCompetition();
+        return { storeCompetition };
     },
     computed: {
         editingTeamData() {
@@ -101,30 +101,30 @@ export default {
                 this.competitionData.teams.find(
                     (team) => team.id === this.editingTeamId
                 ) || null
-            )
+            );
         },
     },
     methods: {
         async deleteCompetition(idCompetition) {
             const isConfirmed = window.confirm(
                 'Jeste li sigurni da želite izbrisati natjecanje?'
-            )
+            );
 
             if (isConfirmed) {
-                await this.storeCompetition.deleteCompetition(idCompetition)
+                await this.storeCompetition.deleteCompetition(idCompetition);
             }
         },
         openEditCompetition() {
-            const editCompetition = true
-            const editCompetitionID = this.competitionData.id
+            const editCompetition = true;
+            const editCompetitionID = this.competitionData.id;
             const editObj = {
                 editCompetition,
                 editCompetitionID,
-            }
-            eventBus.emit('editCompetition', editObj)
+            };
+            eventBus.emit('editCompetition', editObj);
         },
     },
-}
+};
 </script>
 
 <style scoped>

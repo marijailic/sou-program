@@ -1,5 +1,10 @@
+import {
+    deleteAuthData,
+    fetchAuthData,
+    getAuthData,
+} from '@/services/authService';
+import { keys, storage } from '@/services/storageService';
 import { createRouter, createWebHistory } from 'vue-router';
-import { useStoreAuth } from '@/stores/auth.store';
 
 const routes = [
     {
@@ -136,18 +141,22 @@ const router = createRouter({
     },
 });
 
-router.beforeEach((to, _from, next) => {
-    const id = localStorage.getItem('id');
-    const isUserLoggedIn = id !== null;
-
-    // success and error
-    let shouldRefresh = localStorage.getItem('shouldRefresh') === 'true';
+router.beforeEach(async (to, _from, next) => {
+    const shouldRefresh = storage.get(keys.SHOULD_REFRESH) === 'true';
     if (shouldRefresh) {
-        localStorage.removeItem('shouldRefresh');
+        storage.delete(keys.SHOULD_REFRESH);
         location.reload();
     }
 
-    // provjera auth
+    const user = getAuthData();
+    const isUserLoggedIn = user !== null;
+
+    if (isUserLoggedIn) {
+        if (Date.now() > user.expires) {
+            await fetchAuthData();
+        }
+    }
+
     if (!isUserLoggedIn && to.meta.authRequired) {
         return next({ name: 'LoginView' });
     } else if (isUserLoggedIn && to.name === 'LoginView') {

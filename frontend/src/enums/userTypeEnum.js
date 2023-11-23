@@ -1,4 +1,4 @@
 export default {
-    STUDENT: "student",
-    DEMOS: "demonstrator",
+    STUDENT: 'student',
+    DEMOS: 'demonstrator',
 };

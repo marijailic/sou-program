@@ -34,15 +34,12 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store';
-import { useStoreAnnouncement } from '@/stores/announcement.store';
-
 import LoadingSpinner from '@/components/app/LoadingSpinner.vue';
-
-import authService from '@/services/authService';
-
 import addAnnouncement from '@/components/app/addAnnouncement.vue';
 import showAnnouncement from '@/components/app/showAnnouncement.vue';
+import { getAuthData, isAuthUserDemos } from '@/services/authService';
+import { useStoreAnnouncement } from '@/stores/announcement.store';
+import { useStoreUser } from '@/stores/user.store';
 
 export default {
     name: 'NewsfeedView',
@@ -55,6 +52,7 @@ export default {
         pageCount: 0,
         isLoading: false,
         currentUser: {},
+        isAuthUserDemos: isAuthUserDemos(),
         announcements: [],
         storeAnnouncement: useStoreAnnouncement(),
         storeUser: useStoreUser(),
@@ -63,21 +61,13 @@ export default {
         this.isLoading = true;
 
         await this.storeUser.fetchUsers();
-        this.currentUser = this.storeUser.getUserByID(
-            authService.getAuthUserID()
-        );
-
+        this.currentUser = this.storeUser.getUserByID(getAuthData().id);
         await this.loadMoreAnnouncements();
 
         this.isLoading = false;
     },
     mounted() {
         this.handleScroll();
-    },
-    computed: {
-        isAuthUserDemos() {
-            return authService.isAuthUserDemos();
-        },
     },
     methods: {
         handleScroll() {

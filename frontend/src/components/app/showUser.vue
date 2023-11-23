@@ -58,11 +58,10 @@
 </template>
 
 <script>
-import { useStoreUser } from '@/stores/user.store';
-import authService from '@/services/authService';
-
 import ConfirmationModal from '@/components/app/ConfirmationModal.vue';
 import editUser from '@/components/app/editUser.vue';
+import { getAuthData, isAuthUserDemos } from '@/services/authService';
+import { useStoreUser } from '@/stores/user.store';
 
 const props = {
     user: {
@@ -80,15 +79,11 @@ export default {
     },
     data() {
         return {
-            currentUserID: authService.getAuthUserID(),
+            currentUserID: getAuthData().id,
             isConfirming: false,
             isEditing: false,
+            isAuthUserDemos: isAuthUserDemos(),
         };
-    },
-    computed: {
-        isAuthUserDemos() {
-            return authService.isAuthUserDemos();
-        },
     },
     methods: {
         openDeletingUser() {

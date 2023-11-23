@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
+import { getAuthData, isAuthUserDemos } from '@/services/authService';
 import backendApiService from '@/services/backendApiService';
 import imageService from '@/services/imageService';
-import authService from '@/services/authService';
+import { defineStore } from 'pinia';
 
 const formatUserData = async (user) => {
     let profilePictureSrc = await imageService.getImageSrc(
@@ -28,7 +28,7 @@ export const useStoreUser = defineStore('storeUser', {
         },
         getSearchedUsersByUsername: (state) => (searchedUsername) => {
             const searchLowerCase = searchedUsername.toLowerCase();
-            const currentUser = state.getUserByID(authService.getAuthUserID());
+            const currentUser = state.getUserByID(getAuthData().id);
 
             return state.users.filter((user) => {
                 const fullNameLowerCase = user.fullName.toLowerCase();
@@ -36,7 +36,7 @@ export const useStoreUser = defineStore('storeUser', {
                     `${user.surname} ${user.name}`.toLowerCase();
 
                 return (
-                    (authService.isAuthUserDemos() || user !== currentUser) &&
+                    (isAuthUserDemos() || user !== currentUser) &&
                     (fullNameLowerCase.includes(searchLowerCase) ||
                         reversedFullNameLowerCase.includes(searchLowerCase))
                 );
