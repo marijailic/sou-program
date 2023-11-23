@@ -18,7 +18,19 @@ export const containsUppercase = (value) =>
 
 export const containsSpecialCharacter = (value) =>
     /[!@#$%^&*(),.?":{}|<>]/.test(value) ||
-    'Tekst mora imat barem jedan poseban znak.';
+    'Tekst mora imati barem jedan poseban znak.';
 
 export const regex = (pattern) => (value) =>
     pattern.test(value) || `Neispravna vrijednost.`;
+
+export const password = (value) => {
+    return required(value) !== true
+        ? 'Lozinka je obavezna'
+        : minLength(8)(value) !== true
+        ? 'Lozinka mora biti duža od 7 znakova'
+        : containsUppercase(value) !== true
+        ? 'Lozinka mora imati barem jedno veliko slovo'
+        : containsSpecialCharacter(value) !== true
+        ? 'Lozinka mora imati barem jedan poseban znak'
+        : true;
+};

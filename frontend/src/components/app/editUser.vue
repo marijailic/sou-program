@@ -80,6 +80,7 @@ export default {
                 email: this.user.email,
                 bio: this.user.bio,
                 type: this.user.type,
+                profile_picture_key: this.user.profile_picture_key,
             },
             validationRules: {
                 name: [required, maxLength(30)],

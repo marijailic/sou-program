@@ -32,7 +32,11 @@
                 <router-link
                     to="/search"
                     class="nav-link"
-                    :class="{ 'nav-link-active': isRouteActive('/search') }"
+                    :class="{
+                        'nav-link-active':
+                            isRouteActive('/search') ||
+                            isRouteActive('/user-profile'),
+                    }"
                     data-text="Stalkaonica"
                     @click="toggleNav"
                 >
@@ -90,7 +94,7 @@ export default {
     },
     methods: {
         isRouteActive(routeName) {
-            return this.$route.path === routeName;
+            return this.$route.path.startsWith(routeName);
         },
         async logout() {
             const res = await backendApiService.post({ url: '/logout' });
