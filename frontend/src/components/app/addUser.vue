@@ -82,9 +82,7 @@ import {
     email,
     maxLength,
     noWhitespace,
-    minLength,
-    containsUppercase,
-    containsSpecialCharacter,
+    password,
 } from '@/utils/validations.js';
 
 const props = {
@@ -120,11 +118,7 @@ export default {
                 surname: [required, maxLength(30)],
                 email: [required, email],
                 username: [required, maxLength(30), noWhitespace],
-                password: [
-                    containsUppercase,
-                    containsSpecialCharacter,
-                    minLength(8),
-                ],
+                password: [password],
                 // bio: [maxLength(250)],
             },
         };
@@ -147,14 +141,13 @@ export default {
                 return;
             }
 
+            this.user.profile_picture_key = null;
             if (this.selectedImage) {
-                const profilePictureKey = (
-                    await this.storeGallery.googleUploadImages({
-                        images: [this.selectedImage],
-                        folderName: 'user',
-                    })
-                )[0];
-                this.user.profile_picture_key = profilePictureKey;
+                const images = await this.storeGallery.googleUploadImages({
+                    images: [this.selectedImage],
+                    folderName: 'user',
+                });
+                this.user.profile_picture_key = images[0];
             }
 
             await this.storeUser.createUser(this.user);
