@@ -1,7 +1,7 @@
 import { config } from 'dotenv';
 config();
 
-const { DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD } = process.env;
+const { DB_HOST, DB_PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_SSL } = process.env;
 
 /**
  * @type { import("knex").Knex.Config }
@@ -14,6 +14,7 @@ export default {
         user: DB_USER,
         database: DB_NAME,
         password: DB_PASSWORD,
+        ssl: DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
     },
     pool: {
         min: 2,
