@@ -16,7 +16,7 @@ export const addAuthCookieToRes = (res, accessToken) => {
         expires: now().add(1, 'year').toDate(),
         httpOnly: true,
         secure: true,
-        sameSite: 'lax',
+        sameSite: 'none',
     });
 };
 
